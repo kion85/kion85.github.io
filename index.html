@@ -3,269 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kion85 - Мой уголок Программирования</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>kion85 - История Языков Программирования</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #1a1a2e; /* Темно-синий */
-            --secondary-bg: #16213e; /* Чуть светлее */
-            --accent-color: #e94560; /* Красный акцент */
-            --text-color: #e0e0e0; /* Светлый текст */
-            --highlight-color: #0f3460; /* Темный акцент */
-            --gradient-start: #0f4c75;
-            --gradient-end: #3282b8;
+            --bg-color: #1a1a2e;
+            --text-color: #e0e0e0;
+            --accent-color: #0f3460;
+            --highlight-color: #e94560;
+            --code-bg: #2a2a4a;
+            --card-bg: #16213e;
+            --timeline-line: #0f3460;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
+            background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at top left, rgba(15, 52, 96, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at bottom right, rgba(233, 69, 96, 0.2) 0%, transparent 50%);
+            z-index: -1;
+        }
+
         header {
-            background: linear-gradient(45deg, var(--highlight-color), var(--primary-bg));
+            background-color: var(--accent-color);
             color: white;
-            padding: 40px 20px;
+            padding: 2rem 0;
             text-align: center;
             position: relative;
+            z-index: 10;
+            border-bottom: 3px solid var(--highlight-color);
             overflow: hidden;
-            animation: fadeIn 2s ease-out;
-        }
-
-        header::before, header::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-            animation: bounce 10s infinite ease-in-out;
-        }
-
-        header::before {
-            width: 150px;
-            height: 150px;
-            top: -50px;
-            left: -50px;
-            animation-delay: 0s;
-        }
-
-        header::after {
-            width: 100px;
-            height: 100px;
-            bottom: -30px;
-            right: -30px;
-            animation-delay: 2s;
         }
 
         .header-content {
+            max-width: 900px;
+            margin: 0 auto;
             position: relative;
-            z-index: 1;
-        }
-
-        h1 {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 3em;
-            margin-bottom: 10px;
-            color: var(--accent-color);
-            text-shadow: 3px 3px 0px var(--highlight-color);
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: slideInFromTop 1s ease-out forwards;
-            animation-delay: 0.5s;
-        }
-
-        p.subtitle {
-            font-size: 1.2em;
-            margin-top: 0;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideInFromBottom 1s ease-out forwards;
-            animation-delay: 1s;
-        }
-
-        nav {
-            background: var(--secondary-bg);
-            padding: 15px 0;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        nav ul li {
-            margin: 0 15px;
+        .header-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--highlight-color);
         }
 
-        nav ul li a {
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+        .header-content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
         }
 
-        nav ul li a:hover {
-            background-color: var(--highlight-color);
-            transform: translateY(-3px);
-            color: white;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .language-card {
-            background: var(--secondary-bg);
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            padding: 25px;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
+        .avatar-container {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #3f5d81;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
-            border: 1px solid var(--highlight-color);
-            opacity: 0;
-            transform: translateY(50px);
-            animation: slideInUp 0.8s ease-out forwards;
-        }
-        .language-card:nth-child(even){ animation-delay: 0.2s; }
-        .language-card:nth-child(odd){ animation-delay: 0.4s; }
-        .language-card:nth-child(3){ animation-delay: 0.6s; }
-        .language-card:nth-child(4){ animation-delay: 0.8s; }
-
-
-        .language-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
-            border-color: var(--accent-color);
+            box-shadow: 0 0 25px rgba(233, 69, 96, 0.6);
+            position: relative;
+            z-index: 5;
+            transition: transform 0.3s ease-in-out;
         }
 
-        .language-card h2 {
-            color: var(--accent-color);
-            margin-top: 15px;
-            font-size: 1.8em;
-            letter-spacing: 1px;
+        .avatar-container:hover {
+            transform: scale(1.1) rotate(5deg);
         }
 
-        .language-card p {
-            font-size: 0.95em;
-            color: var(--text-color);
-            margin-bottom: 20px;
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            transition: transform 0.5s ease-in-out;
         }
 
-        .language-card .icon {
-            font-size: 4em;
-            color: var(--gradient-end);
-            margin-bottom: 15px;
-            display: block;
-            animation: пульсация 2s infinite ease-in-out;
-        }
-        
-        .language-card .icon.fa-java{ color: #E06C00; } /* Java */
-        .language-card .icon.fa-python{ color: #306998; } /* Python */
-        .language-card .icon.fa-csharp{ color: #6A1A7D; } /* C# */
-        /* For Scratch, using a general fa icon */
-        .language-card .icon.fa-hands-clapping{ color: #FFBB00; } /* Scratch */
-
-
-        footer {
-            background: var(--highlight-color);
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 50px;
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+        .avatar:hover {
+            transform: rotate(360deg);
         }
 
-        .github-link {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: var(--accent-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+        .github-logo-wrapper {
+            position: absolute;
+            top: 20%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            opacity: 0.8;
+            transition: transform 0.5s ease;
+            animation: bounce 3s infinite ease-in-out;
         }
 
-        .github-link:hover {
-            background-color: #c9354d;
-            transform: translateY(-3px);
+        .github-logo-wrapper:hover {
+            animation-play-state: paused;
+            transform: scale(1.2) rotate(-15deg);
         }
 
-        .github-link i {
-            margin-right: 8px;
-        }
-
-        /* Анимации */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideInFromTop {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideInFromBottom {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
+        .github-logo {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
         }
 
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px) scale(1.1); }
+            50% { transform: translateY(-15px); }
         }
-        @keyframes пульсация {
+
+        .statistics {
+            max-width: 900px;
+            margin: 2rem auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            flex: 1 1 calc(33% - 2rem);
+            min-width: 250px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            border-bottom: 3px solid var(--highlight-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background-color: #202b4a;
+        }
+
+        .stat-card h3 {
+            margin-top: 0;
+            color: var(--highlight-color);
+            font-size: 1.5rem;
+        }
+
+        .stat-card p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .timeline-section {
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .timeline-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background-color: var(--timeline-line);
+            transform: translateX(-50%);
+            animation: drawLine 5s ease-out forwards;
+        }
+
+        @keyframes drawLine {
+            0% { height: 0; }
+            100% { height: 100%; }
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: auto;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: auto;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-point {
+            left: unset;
+            right: calc(50% - 15px);
+        }
+
+        .timeline-item:nth-child(even) .timeline-point {
+           left: calc(50% - 15px);
+        }
+
+        .timeline-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            flex: 0 0 45%;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            animation: slideIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards var(--delay);
+            border-bottom: 3px solid var(--highlight-color);
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            top: 20px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            border-width: 10px 15px 10px 0;
+            border-color: transparent var(--card-bg) transparent transparent;
+            left: -15px;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            border-width: 10px 0 10px 15px;
+            border-color: transparent transparent transparent var(--card-bg);
+            right: -15px;
+        }
+
+        .timeline-content h2 {
+            color: var(--highlight-color);
+            margin-top: 0;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .timeline-content h2 img.lang-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+        }
+
+        .timeline-content h3 {
+            color: var(--text-color);
+            font-size: 1.3rem;
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        .timeline-point {
+            width: 30px;
+            height: 30px;
+            background-color: var(--highlight-color);
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            z-index: 1;
+            box-shadow: 0 0 10px var(--highlight-color), 0 0 20px rgba(233, 69, 96, 0.5);
+            animation: scalePulse 2s infinite ease-in-out;
+        }
+
+        @keyframes scalePulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); filter: brightness(1.2); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
 
-        /* Responsive adjustments */
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            background-color: var(--accent-color);
+            color: rgba(255, 255, 255, 0.7);
+            border-top: 3px solid var(--highlight-color);
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: var(--highlight-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2em;
+            .header-content h1 {
+                font-size: 2.5rem;
             }
-            p.subtitle {
-                font-size: 1em;
+
+            .header-content p {
+                font-size: 1rem;
             }
-            .container {
-                grid-template-columns: 1fr;
+
+            .avatar-container {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 1rem;
             }
-            nav ul {
-                flex-direction: column;
+
+            .avatar {
+                width: 110px;
+                height: 110px;
             }
-            nav ul li {
-                margin: 5px 0;
+
+            .github-logo-wrapper {
+                top: 0;
+                right: 5%;
+                width: 60px;
+                height: 60px;
+            }
+
+            .stat-card {
+                flex: 1 1 100%;
+                min-width: auto;
+            }
+
+            .timeline-section::before {
+                left: 5%;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+            }
+
+            .timeline-content {
+                flex: 0 0 90%;
+                margin: 0;
+                margin-left: 10% !important;
+                margin-right: 0 !important;
+            }
+            .timeline-content::before {
+                left: -15px !important;
+                border-width: 10px 15px 10px 0 !important;
+                border-color: transparent var(--card-bg) transparent transparent !important;
+            }
+
+            .timeline-point {
+                left: calc(5% - 15px) !important;
+                top: 20px; /* Adjust point position for mobile */
             }
         }
     </style>
@@ -273,116 +414,151 @@
 <body>
     <header>
         <div class="header-content">
+            <div class="avatar-container">
+                <img src="https://avatars.githubusercontent.com/u/ваш_id_пользователя?v=4" alt="Аватар kion85" class="avatar">
+            </div>
             <h1>kion85</h1>
-            <p class="subtitle">Добро пожаловать в мой мир кода и идей!</p>
-            <a href="https://github.com/kion85" target="_blank" class="github-link">
-                <i class="fab fa-github"></i> Мой GitHub
-            </a>
+            <p>Путешествие по миру кодинга</p>
+            <div class="github-logo-wrapper">
+                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub Logo" class="github-logo">
+            </div>
         </div>
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="#java">Java</a></li>
-            <li><a href="#python">Python</a></li>
-            <li><a href="#csharp">C#</a></li>
-            <li><a href="#scratch">Scratch</a></li>
-            <li><a href="#other">Другое</a></li>
-        </ul>
-    </nav>
+    <section class="statistics">
+        <div class="stat-card">
+            <h3>Репозиториев</h3>
+            <p id="repoCount">Загрузка...</p>
+        </div>
+        <div class="stat-card">
+            <h3>Звезд</h3>
+            <p id="starCount">Загрузка...</p>
+        </div>
+        <div class="stat-card">
+            <h3>Подписчиков</h3>
+            <p id="followerCount">Загрузка...</p>
+        </div>
+    </section>
 
-    <main class="container">
-        <section id="java" class="language-card">
-            <i class="fab fa-java icon"></i>
-            <h2>Java: "Напиши один раз, запускай где угодно"</h2>
-            <p>
-                Java, рожденная в 1995 году в Sun Microsystems, была создана как язык для интерактивного телевидения.
-                Её знаменитый принцип WORA (Write Once, Run Anywhere) сделал её краеугольным камнем для энтерпрайз-приложений, Android-разработки и бесчисленных серверных систем.
-                Мощная, надежная и масштабируемая, Java продолжает формировать цифровой ландшафт.
-            </p>
-        </section>
+    <main>
+        <section class="timeline-section">
+            <h2 style="text-align: center; color: var(--highlight-color); font-size: 3rem; margin-bottom: 4rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.5);">История Языков Программирования</h2>
 
-        <section id="python" class="language-card">
-            <i class="fab fa-python icon"></i>
-            <h2>Python: Изящество и Простота</h2>
-            <p>
-                Представленный Гвидо ван Россумом в конце 80-х, Python быстро завоевал популярность благодаря своей читаемости и простому синтаксису.
-                От веб-разработки (Django, Flask) до науки о данных, искусственного интеллекта и автоматизации,
-                Python стал языком выбора для быстрого прототипирования и сложных экосистем.
-                "Красота лучше уродства", - гласит одна из его философий.
-            </p>
-        </section>
+            <div class="timeline-item">
+                <div class="timeline-point"></div>
+                <div class="timeline-content hidden" style="--delay: 0s;">
+                    <h2><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Scratch_programming_language_logo.svg/1024px-Scratch_programming_language_logo.svg.png" alt="Scratch Icon" class="lang-icon"> Scratch</h2>
+                    <h3>Визуальный старт (2007)</h3>
+                    <p>Начнем наше путешествие с самых азов! Scratch, разработанный MIT Media Lab, не просто язык, а целая среда для обучения программированию. С его помощью миллионы детей и взрослых по всему миру делают свои первые шаги в кодинге, создавая интерактивные истории, игры и анимации, просто перетаскивая блоки кода. Это как строить из LEGO, но для ума!</p>
+                </div>
+            </div>
 
-        <section id="csharp" class="language-card">
-            <i class="fa-brands fa-microsoft fa-csharp icon"></i>
-            <h2>C#: Мощь в руках разработчика</h2>
-            <p>
-                Созданный Microsoft как часть платформы .NET в начале 2000-х, C# (произносится "Си шарп") объединяет мощь C++ с производительностью и простотой Java.
-                Он незаменим для Windows-приложений, разработки игр на Unity, а также для современных веб-сервисов с ASP.NET Core.
-                C# постоянно развивается, предлагая разработчикам передовые возможности.
-            </p>
-        </section>
+            <div class="timeline-item">
+                <div class="timeline-point"></div>
+                <div class="timeline-content hidden" style="--delay: 0.5s;">
+                    <h2><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/100px-Python-logo-notext.svg.png" alt="Python Icon" class="lang-icon"> Python</h2>
+                    <h3>Элегантность и Мощность (1991)</h3>
+                    <p>Ах, Python! Язык, названный в честь британской комедийной группы, но воспринимаемый абсолютно серьезно в мире разработки. Гвидо ван Россум создал его с акцентом на читаемость кода и простоту синтаксиса. От веб-разработки (Django, Flask) и анализа данных (Pandas, NumPy) до искусственного интеллекта и автоматизации – Python стал швейцарским армейским ножом программиста, любимым за свою универсальность и дружелюбность.</p>
+                </div>
+            </div>
 
-        <section id="scratch" class="language-card">
-            <i class="fa-solid fa-hands-clapping icon"></i>
-            <h2>Scratch: Первые шаги в кодинге</h2>
-            <p>
-                Разработанный MIT Media Lab, Scratch — это визуальный язык программирования,
-                который позволяет детям (и взрослым!) создавать интерактивные истории, игры и анимации,
-                просто перетаскивая блоки кода. Это идеальный инструмент для знакомства с основами логики программирования,
-                творческого мышления и решения задач без необходимости запоминать сложный синтаксис.
-            </p>
-        </section>
+            <div class="timeline-item">
+                <div class="timeline-point"></div>
+                <div class="timeline-content hidden" style="--delay: 1s;">
+                    <h2><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Java_logo_icon.png/100px-Java_logo_icon.png" alt="Java Icon" class="lang-icon"> Java</h2>
+                    <h3>"Напиши один раз, работай везде" (1995)</h3>
+                    <p>Java от Sun Microsystems (ныне Oracle) изменил мир. Его главная философия "Write Once, Run Anywhere" (WORA) позволила программам работать на любой платформе, имеющей Java Virtual Machine (JVM). От мощных корпоративных систем и мобильных приложений (Android) до больших данных и интернета вещей – Java остается одним из столпов современной разработки. Это целая экосистема, полная инструментов и фреймворков.</p>
+                </div>
+            </div>
 
-        <section id="other" class="language-card">
-            <i class="fa-solid fa-code icon"></i>
-            <h2>И многое другое...</h2>
-            <p>
-                Мир программирования огромен! Помимо этих языков, я исследую (или стремлюсь исследовать) JavaScript, Go, Swift,
-                понимаю основы баз данных (SQL, NoSQL), облачных технологий (AWS, Azure) и принципы DevOps.
-                Постоянное обучение и погружение в новые технологии — моя страсть!
-                Следите за обновлениями!
-            </p>
+            <div class="timeline-item">
+                <div class="timeline-point"></div>
+                <div class="timeline-content hidden" style="--delay: 1.5s;">
+                    <h2><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/C_Sharp_wordmark.svg/100px-C_Sharp_wordmark.svg.png" alt="C# Icon" class="lang-icon"> C# (C-Sharp)</h2>
+                    <h3>Путь к .NET (2000)</h3>
+                    <p>C#, созданный Microsoft как часть инициативы .NET, является элегантным, объектно-ориентированным языком, который берет лучшее от C++ и Java. Он доминирует в разработке под Windows (WPF, UWP), создании игр (Unity 3D) и веб-приложениях (ASP.NET). С появлением .NET Core и .NET 5+, C# стал кроссплатформенным, открывая новые горизонты и продолжая развиваться с поразительной скоростью.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-point"></div>
+                <div class="timeline-content hidden" style="--delay: 2s;">
+                    <h2> И Другие Логотипы</h2>
+                    <h3>Многообразие мира кодинга</h3>
+                    <p>Конечно, это лишь верхушка айсберга! Мир программирования богат и разнообразен. Есть JavaScript, который оживляет веб-страницы, C++ для высокопроизводительных систем, Go для облачных вычислений, Ruby для быстрой разработки, Swift для приложений Apple и еще сотни других, каждый со своей уникальной историей и предназначением. Каждое из этих имен – это глава в бесконечной книге инноваций и технологий, формирующих наш цифровой мир.</p>
+                </div>
+            </div>
+
         </section>
     </main>
 
     <footer>
-<<<<<<< HEAD
-        <p>&copy; 2025 kion85. Все права не защищены, код открыт для исследований! <i class="fa-solid fa-heart"></i></p>
-=======
-        <p>&copy; 2023 kion85. Все права не защищены, код открыт для исследований! <i class="fa-solid fa-heart"></i></p>
->>>>>>> b088037 (Добавил index.html и 404.html)
+        <p>&copy; 2025 kion85. Все права защищены.
+            <br>
+            Эта страница создана с любовью к коду и истории.
+            <br>
+            <a href="https://github.com/kion85" target="_blank">Мой GitHub профиль</a>
+        </p>
     </footer>
 
     <script>
-        // Анимация появления элементов при прокрутке
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            const githubUsername = 'kion85'; // Ваш ник на GitHub
+            const avatarImg = document.querySelector('.avatar');
+            avatarImg.src = `https://avatars.githubusercontent.com/u/100854490?v=4`; // ID пользователя kion85
 
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationPlayState = 'running';
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.language-card').forEach(card => {
-            card.style.animationPlayState = 'paused'; // Останавливаем анимацию по умолчанию
-            observer.observe(card);
-        });
-
-        // Плавная прокрутка для навигации
-        document.querySelectorAll('nav a').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+            // Fetch GitHub stats
+            fetch(`https://api.github.com/users/${githubUsername}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('repoCount').textContent = data.public_repos || 'N/A';
+                    document.getElementById('followerCount').textContent = data.followers || 'N/A';
+                })
+                .catch(error => {
+                    console.error('Ошибка при получении данных GitHub пользователя:', error);
+                    document.getElementById('repoCount').textContent = 'Ошибка';
+                    document.getElementById('followerCount').textContent = 'Ошибка';
                 });
+
+            // Fetch star count (more complex, requires iterating through repos)
+            // This is a simplified approach, a more accurate count would require pagination
+            fetch(`https://api.github.com/users/${githubUsername}/repos?per_page=100`)
+                .then(response => response.json())
+                .then(repos => {
+                    let totalStars = 0;
+                    if (Array.isArray(repos)) {
+                        repos.forEach(repo => {
+                            totalStars += repo.stargazers_count;
+                        });
+                    }
+                    document.getElementById('starCount').textContent = totalStars;
+                })
+                .catch(error => {
+                    console.error('Ошибка при получении данных о звездах GitHub:', error);
+                    document.getElementById('starCount').textContent = 'Ошибка';
+                });
+
+            // Intersection Observer for timeline animations
+            const timelineItems = document.querySelectorAll('.timeline-content');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.remove('hidden');
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            timelineItems.forEach(item => {
+                observer.observe(item);
             });
         });
     </script>
