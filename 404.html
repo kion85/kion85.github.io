@@ -1,198 +1,189 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Страница не найдена</title>
+    <title>kion85 | 404</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            background-color: #0d1117; /* GitHub Dark background */
-            color: #c9d1d9; /* GitHub text color */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0d1117, #161b22);
+            color: #c9d1d9;
             margin: 0;
+            padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
             text-align: center;
-            flex-direction: column;
-            overflow: hidden;
-            position: relative;
         }
-
+        
         .container {
-            background-color: #161b22; /* Slightly lighter background than body */
-            padding: 40px 60px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            max-width: 600px;
-            width: 90%;
-            border: 1px solid #30363d;
-            position: relative;
-            z-index: 10;
+            max-width: 900px;
+            padding: 2rem;
         }
-
+        
         h1 {
-            font-size: 8em;
-            margin-bottom: 0.1em;
-            color: #58a6ff; /* GitHub blue */
-            text-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
-            letter-spacing: -5px;
-            transition: color 0.3s ease-in-out;
+            font-size: 4rem;
+            margin: 0;
+            color: #58a6ff;
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
         }
-
-        h1:hover {
-            color: #79c0ff;
+        
+        .code-block {
+            background: rgba(13, 17, 23, 0.5);
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            text-align: left;
+            font-family: 'Courier New', Courier, monospace;
+            position: relative;
         }
-
-        h2 {
-            font-size: 2em;
+        
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: #161b22;
+            padding: 0 5px;
+            font-size: 0.8rem;
+            color: #58a6ff;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .info-card {
+            background: rgba(13, 17, 23, 0.5);
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem;
+            transition: transform 0.3s;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: #58a6ff;
+        }
+        
+        .info-card h3 {
+            color: #58a6ff;
             margin-top: 0;
-            color: #f0f6fc;
-            margin-bottom: 25px;
         }
-
-        p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
+        
         a {
             color: #58a6ff;
             text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease-in-out;
         }
-
+        
         a:hover {
-            color: #79c0ff;
             text-decoration: underline;
         }
-
-        .github-icon {
-            margin-top: 30px;
-            width: 60px;
-            height: 60px;
-            fill: #c9d1d9;
-            transition: fill 0.3s ease-in-out;
-            cursor: pointer;
+        
+        .cube-container {
+            margin-top: 3rem;
+            width: 200px;
+            height: 200px;
+            perspective: 800px;
         }
-
-        .github-icon:hover {
-            fill: #f0f6fc;
+        
+        .cube {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: spin 10s infinite linear;
         }
-
-        .suggestions {
-            margin-top: 30px;
-            font-size: 0.95em;
+        
+        .face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 2px solid #58a6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            background: rgba(88, 166, 255, 0.1);
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
+        }
+        
+        .front  { transform: rotateY(0deg) translateZ(100px); }
+        .back   { transform: rotateY(180deg) translateZ(100px); }
+        .right  { transform: rotateY(90deg) translateZ(100px); }
+        .left   { transform: rotateY(-90deg) translateZ(100px); }
+        .top    { transform: rotateX(90deg) translateZ(100px); }
+        .bottom { transform: rotateX(-90deg) translateZ(100px); }
+        
+        @keyframes spin {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+        
+        .footer {
+            margin-top: 3rem;
+            font-size: 0.9rem;
             color: #8b949e;
         }
-
-        .suggestions ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 15px;
-        }
-
-        .suggestions li {
-            margin-bottom: 8px;
-        }
-
-        .suggestions li::before {
-            content: "• ";
-            color: #58a6ff;
-            margin-right: 5px;
-        }
-
-        /* Animated background particles */
-        .particle {
-            position: absolute;
-            background-color: rgba(94, 166, 255, 0.2);
-            border-radius: 50%;
-            animation: float 15s infinite ease-in-out alternate;
-            opacity: 0;
-            transform: scale(0);
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg) scale(0);
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-                transform: translateY(-50px) rotate(180deg) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-100px) rotate(360deg) scale(0.5);
-            }
-        }
-
-        .particle:nth-child(2n) { animation-duration: 18s; animation-delay: 2s; }
-        .particle:nth-child(3n) { animation-duration: 20s; animation-delay: 4s; background-color: rgba(201, 209, 217, 0.2); }
-        .particle:nth-child(4n) { animation-duration: 16s; animation-delay: 1s; }
-        .particle:nth-child(5n) { animation-duration: 22s; animation-delay: 3s; background-color: rgba(255, 255, 255, 0.1); }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>404</h1>
-        <h2>Страница не найдена</h2>
-        <p>К сожалению, страница, которую вы ищете, не существует или была перемещена. Возможно, вы ошиблись в адресе?</p>
-        <p>Не переживайте, это случается даже с самыми опытными разработчиками.</p>
-
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-            Вернуться на главную GitHub
-        </a>
-
-        <div class="suggestions">
-            <h3>Может быть, вы ищете:</h3>
-            <ul>
-                <li><a href="https://docs.github.com/ru" target="_blank" rel="noopener noreferrer">Документация GitHub</a></li>
-                <li><a href="https://github.com/trending" target="_blank" rel="noopener noreferrer">Популярные репозитории</a></li>
-                <li><a href="https://github.com/explore" target="_blank" rel="noopener noreferrer">Исследуйте GitHub</a></li>
-            </ul>
+        <p>Page not found | kion85</p>
+        
+        <div class="code-block" data-lang="C++">
+            <span style="color: #569cd6">#include</span> <span style="color: #ce9178">&lt;iostream&gt;</span><br><br>
+            <span style="color: #569cd6">int</span> <span style="color: #dcdcaa">main</span>() {<br>
+            &nbsp;&nbsp;<span style="color: #9cdcfe">std</span><span style="color: #d4d4d4">::</span><span style="color: #dcdcaa">cout</span> <span style="color: #d4d4d4"><<</span> <span style="color: #ce9178">"C++ was created by Bjarne Stroustrup in 1985\\n"</span>;<br>
+            &nbsp;&nbsp;<span style="color: #569cd6">return</span> <span style="color: #b5cea8">0</span>;<br>
+            }
         </div>
-
-        <svg class="github-icon" aria-hidden="true" height="24" viewBox="0 0 16 16" version="1.1" width="24" data-view-component="true">
-            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.19.01-.82.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21-.15.46-.55.38A8.013 8.013 0 0 1 8 0Z"></path>
-        </svg>
+        
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>Ассемблер</h3>
+                <p>Ассемблер - язык низкого уровня, появившийся в 1940-х. Позволяет напрямую обращаться к аппаратным ресурсам процессора. Каждая архитектура имеет свой набор инструкций.</p>
+            </div>
+            
+            <div class="info-card">
+                <h3>HTML</h3>
+                <p>HTML (HyperText Markup Language) создан Тимом Бернерсом-Ли в 1991 году как язык разметки для World Wide Web. Стал основой современного интернета.</p>
+            </div>
+            
+            <div class="info-card">
+                <h3>Ядро Linux</h3>
+                <p>Ядро Linux создал Линус Торвальдс в 1991 году. Это монолитное UNIX-подобное ядро с открытым исходным кодом, ставшее основой многих операционных систем.</p>
+            </div>
+            
+            <div class="info-card">
+                <h3>Windows NT</h3>
+                <p>Ядро Windows NT разработано Дэйвом Катлером в 1993 году. Это гибридное ядро, сочетающее особенности микроядерной и монолитной архитектур.</p>
+            </div>
+        </div>
+        
+        <div class="cube-container">
+            <div class="cube">
+                <div class="face front">C++</div>
+                <div class="face back">ASM</div>
+                <div class="face right">HTML</div>
+                <div class="face left">Linux</div>
+                <div class="face top">NT</div>
+                <div class="face bottom">kion85</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2025 kion85 | <a href="https://github.com/kion85" target="_blank">GitHub</a>
+        </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const body = document.body;
-            const container = document.querySelector('.container');
-
-            function createParticle() {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                body.appendChild(particle);
-
-                const size = Math.random() * 20 + 5; // 5 to 25px
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${Math.random() * 100}vw`;
-                particle.style.top = `${Math.random() * 100}vh`;
-
-                // Random animation delay to make them appear at different times
-                particle.style.animationDelay = `${Math.random() * 10}s`;
-                particle.style.animationDuration = `${Math.random() * 10 + 10}s`; // 10 to 20s
-            }
-
-            // Create a few particles
-            for (let i = 0; i < 20; i++) {
-                createParticle();
-            }
-
-            // Add an event listener to the GitHub icon to go to the main page
-            const githubIcon = document.querySelector('.github-icon');
-            githubIcon.addEventListener('click', () => {
-                window.open('https://github.com', '_blank');
-            });
-        });
-    </script>
 </body>
 </html>
