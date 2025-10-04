@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Страница не найдена</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background-color: #0d1117; /* GitHub Dark background */
+            color: #c9d1d9; /* GitHub text color */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            background-color: #161b22; /* Slightly lighter background than body */
+            padding: 40px 60px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid #30363d;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 8em;
+            margin-bottom: 0.1em;
+            color: #58a6ff; /* GitHub blue */
+            text-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
+            letter-spacing: -5px;
+            transition: color 0.3s ease-in-out;
+        }
+
+        h1:hover {
+            color: #79c0ff;
+        }
+
+        h2 {
+            font-size: 2em;
+            margin-top: 0;
+            color: #f0f6fc;
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        a {
+            color: #58a6ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease-in-out;
+        }
+
+        a:hover {
+            color: #79c0ff;
+            text-decoration: underline;
+        }
+
+        .github-icon {
+            margin-top: 30px;
+            width: 60px;
+            height: 60px;
+            fill: #c9d1d9;
+            transition: fill 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .github-icon:hover {
+            fill: #f0f6fc;
+        }
+
+        .suggestions {
+            margin-top: 30px;
+            font-size: 0.95em;
+            color: #8b949e;
+        }
+
+        .suggestions ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .suggestions li {
+            margin-bottom: 8px;
+        }
+
+        .suggestions li::before {
+            content: "• ";
+            color: #58a6ff;
+            margin-right: 5px;
+        }
+
+        /* Animated background particles */
+        .particle {
+            position: absolute;
+            background-color: rgba(94, 166, 255, 0.2);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out alternate;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-50px) rotate(180deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(360deg) scale(0.5);
+            }
+        }
+
+        .particle:nth-child(2n) { animation-duration: 18s; animation-delay: 2s; }
+        .particle:nth-child(3n) { animation-duration: 20s; animation-delay: 4s; background-color: rgba(201, 209, 217, 0.2); }
+        .particle:nth-child(4n) { animation-duration: 16s; animation-delay: 1s; }
+        .particle:nth-child(5n) { animation-duration: 22s; animation-delay: 3s; background-color: rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404</h1>
+        <h2>Страница не найдена</h2>
+        <p>К сожалению, страница, которую вы ищете, не существует или была перемещена. Возможно, вы ошиблись в адресе?</p>
+        <p>Не переживайте, это случается даже с самыми опытными разработчиками.</p>
+
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+            Вернуться на главную GitHub
+        </a>
+
+        <div class="suggestions">
+            <h3>Может быть, вы ищете:</h3>
+            <ul>
+                <li><a href="https://docs.github.com/ru" target="_blank" rel="noopener noreferrer">Документация GitHub</a></li>
+                <li><a href="https://github.com/trending" target="_blank" rel="noopener noreferrer">Популярные репозитории</a></li>
+                <li><a href="https://github.com/explore" target="_blank" rel="noopener noreferrer">Исследуйте GitHub</a></li>
+            </ul>
+        </div>
+
+        <svg class="github-icon" aria-hidden="true" height="24" viewBox="0 0 16 16" version="1.1" width="24" data-view-component="true">
+            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.19.01-.82.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21-.15.46-.55.38A8.013 8.013 0 0 1 8 0Z"></path>
+        </svg>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const container = document.querySelector('.container');
+
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                body.appendChild(particle);
+
+                const size = Math.random() * 20 + 5; // 5 to 25px
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+
+                // Random animation delay to make them appear at different times
+                particle.style.animationDelay = `${Math.random() * 10}s`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`; // 10 to 20s
+            }
+
+            // Create a few particles
+            for (let i = 0; i < 20; i++) {
+                createParticle();
+            }
+
+            // Add an event listener to the GitHub icon to go to the main page
+            const githubIcon = document.querySelector('.github-icon');
+            githubIcon.addEventListener('click', () => {
+                window.open('https://github.com', '_blank');
+            });
+        });
+    </script>
+</body>
+</html>
