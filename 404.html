@@ -1,19 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 | Страница не найдена</title>
+    <title>404 - Page Not Found</title>
     <style>
-        :root {
-            --cube-color-1: #238636;
-            --cube-color-2: #2ea043;
-            --cube-color-3: #3fb950;
-            --bg-color: #f6f8fa;
-            --text-color: #24292f;
-            --shadow-color: rgba(27, 31, 36, 0.15);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -21,222 +12,303 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0d1117, #161b22);
+            color: #c9d1d9;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
+            position: relative;
         }
 
         .container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 2rem;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        p {
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            margin-bottom: 2rem;
-            max-width: 600px;
-            opacity: 0.8;
-        }
-
-        .username {
-            position: absolute;
-            bottom: 2rem;
-            right: 2rem;
-            font-size: 0.9rem;
-            color: var(--text-color);
-            opacity: 0.7;
-            font-family: 'Courier New', monospace;
-        }
-
-        .cube-container {
             position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 2rem auto;
-            perspective: 1000px;
-            transform-style: preserve-3d;
+            z-index: 2;
         }
 
-        @media (max-width: 600px) {
-            .cube-container {
-                width: 200px;
-                height: 200px;
-            }
+        /* 3D Scene */
+        .scene-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
         .cube {
-            position: relative;
-            width: 100%;
-            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
             transform-style: preserve-3d;
-            animation: rotate 15s infinite linear;
+            animation: rotate 20s infinite linear;
         }
 
         .face {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--cube-color-1), var(--cube-color-2));
-            border: 1px solid var(--shadow-color);
+            width: 200px;
+            height: 200px;
+            background: rgba(88, 166, 255, 0.1);
+            border: 2px solid #58a6ff;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px var(--shadow-color);
-            opacity: 0.9;
-            transition: all 0.3s ease;
+            font-size: 3rem;
+            color: #58a6ff;
+            backface-visibility: visible;
         }
 
-        .face svg {
-            width: 60%;
-            height: 60%;
-            opacity: 0.8;
+        .face-front { transform: translateZ(100px); }
+        .face-back { transform: rotateY(180deg) translateZ(100px); }
+        .face-right { transform: rotateY(90deg) translateZ(100px); }
+        .face-left { transform: rotateY(-90deg) translateZ(100px); }
+        .face-top { transform: rotateX(90deg) translateZ(100px); }
+        .face-bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+        /* Floating elements */
+        .floating-number {
+            position: absolute;
+            font-size: 8rem;
+            font-weight: bold;
+            color: rgba(88, 166, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
         }
 
-        .face:nth-child(1) {
-            transform: rotateY(0deg) translateZ(150px);
-            background: linear-gradient(135deg, var(--cube-color-1), var(--cube-color-2));
-        }
-        .face:nth-child(2) {
-            transform: rotateY(90deg) translateZ(150px);
-            background: linear-gradient(135deg, var(--cube-color-2), var(--cube-color-3));
-        }
-        .face:nth-child(3) {
-            transform: rotateY(180deg) translateZ(150px);
-            background: linear-gradient(135deg, var(--cube-color-3), var(--cube-color-1));
-        }
-        .face:nth-child(4) {
-            transform: rotateY(-90deg) translateZ(150px);
-            background: linear-gradient(135deg, var(--cube-color-1), var(--cube-color-3));
-        }
-        .face:nth-child(5) {
-            transform: rotateX(90deg) translateZ(150px);
-            background: linear-gradient(135deg, var(--cube-color-2), var(--cube-color-1));
-        }
-        .face:nth-child(6) {
-            transform: rotateX(-90deg) translateZ(150px);
-            background: linear-gradient(135deg, var(--cube-color-3), var(--cube-color-2));
+        .number-4-1 { top: 20%; left: 10%; animation-delay: 0s; }
+        .number-0 { top: 30%; right: 15%; animation-delay: 1s; }
+        .number-4-2 { bottom: 25%; left: 20%; animation-delay: 2s; }
+
+        /* Content */
+        .content {
+            text-align: center;
+            position: relative;
+            z-index: 3;
+            margin-top: 20vh;
         }
 
-        @media (max-width: 600px) {
-            .face:nth-child(1) { transform: rotateY(0deg) translateZ(100px); }
-            .face:nth-child(2) { transform: rotateY(90deg) translateZ(100px); }
-            .face:nth-child(3) { transform: rotateY(180deg) translateZ(100px); }
-            .face:nth-child(4) { transform: rotateY(-90deg) translateZ(100px); }
-            .face:nth-child(5) { transform: rotateX(90deg) translateZ(100px); }
-            .face:nth-child(6) { transform: rotateX(-90deg) translateZ(100px); }
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #58a6ff, #bc8cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(88, 166, 255, 0.3);
+        }
+
+        .error-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #f0f6fc;
+        }
+
+        .error-description {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            color: #8b949e;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
         }
 
         .btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background-color: var(--cube-color-2);
-            color: white;
-            text-decoration: none;
+            padding: 12px 24px;
+            border: none;
             border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.2s;
-            border: 1px solid rgba(27, 31, 36, 0.15);
-            box-shadow: var(--shadow-color) 0 1px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn:hover {
-            background-color: var(--cube-color-3);
+        .btn-primary {
+            background: linear-gradient(45deg, #238636, #2ea043);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(35, 134, 54, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(88, 166, 255, 0.1);
+            color: #58a6ff;
+            border: 1px solid #30363d;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(88, 166, 255, 0.2);
             transform: translateY(-2px);
         }
 
-        @keyframes rotate {
-            0% { transform: rotateX(-15deg) rotateY(15deg); }
-            100% { transform: rotateX(345deg) rotateY(375deg); }
+        /* Theme selector */
+        .theme-selector {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 4;
         }
 
-        /* GitHub Icons for cube faces */
-        .github-icon {
-            width: 80%;
-            height: 80%;
+        .theme-btn {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            background: rgba(88, 166, 255, 0.2);
+        }
+
+        /* Animations */
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotateX(0) rotateY(0) rotateZ(0); }
+            100% { transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Theme variations */
+        .theme-dark {
+            background: linear-gradient(135deg, #0d1117, #161b22);
+        }
+
+        .theme-light {
+            background: linear-gradient(135deg, #ffffff, #f6f8fa);
+            color: #24292f;
+        }
+
+        .theme-light .error-title {
+            color: #24292f;
+        }
+
+        .theme-light .error-description {
+            color: #656d76;
+        }
+
+        .theme-light .btn-secondary {
+            background: rgba(9, 105, 218, 0.1);
+            color: #0969da;
+        }
+
+        .theme-ocean {
+            background: linear-gradient(135deg, #0a192f, #112240);
+        }
+
+        .theme-matrix {
+            background: #000;
+            color: #00ff41;
+        }
+
+        .theme-matrix .error-code {
+            background: linear-gradient(45deg, #00ff41, #008f11);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>404</h1>
-        <p>Кажется, мы потеряли эту страницу среди кубиков кода...</p>
+<body class="theme-dark">
+    <!-- 3D Scene -->
+    <div class="scene-3d">
+        <div class="cube">
+            <div class="face face-front">4</div>
+            <div class="face face-back">0</div>
+            <div class="face face-right">4</div>
+            <div class="face face-left">❓</div>
+            <div class="face face-top">🚫</div>
+            <div class="face face-bottom">⚡</div>
+        </div>
         
-        <div class="cube-container">
-            <div class="cube">
-                <div class="face">
-                    <svg class="github-icon" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        <div class="floating-number number-4-1">4</div>
+        <div class="floating-number number-0">0</div>
+        <div class="floating-number number-4-2">4</div>
+    </div>
+
+    <!-- Theme Selector -->
+    <div class="theme-selector">
+        <select class="theme-btn" id="themeSelect">
+            <option value="theme-dark">Dark Theme</option>
+            <option value="theme-light">Light Theme</option>
+            <option value="theme-ocean">Ocean Theme</option>
+            <option value="theme-matrix">Matrix Theme</option>
+        </select>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="content">
+            <div class="error-code">404</div>
+            <h1 class="error-title">Page Not Found</h1>
+            <p class="error-description">
+                The page you're looking for doesn't exist or has been moved. 
+                Let's get you back to familiar territory.
+            </p>
+            
+            <div class="buttons">
+                <a href="https://github.com/kion85" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
                     </svg>
-                </div>
-                <div class="face">
-                    <svg viewBox="0 0 16 16" fill="currentColor">
-                        <path fill-rule="evenodd" d="M1.5 3.25a2.25 2.25 0 112.25 2.25 2.25 2.25 0 01-2.25-2.25zM3.75 4.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-1.27 5.42a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06-1.06l-2-2zm6.52-3.75a.75.75 0 011.06 0l2 2a.75.75 0 11-1.06 1.06l-2-2a.75.75 0 010-1.06zm.22-2.92a1.5 1.5 0 00-2.12 0L8.53 5.03a1.5 1.5 0 000 2.12l1.06 1.06a1.5 1.5 0 002.12 0l1.06-1.06a1.5 1.5 0 000-2.12z"></path>
-                        <path fill-rule="evenodd" d="M6.44 2.13a1.5 1.5 0 012.12 0l1.06 1.06a1.5 1.5 0 010 2.12L8.56 6.38a1.5 1.5 0 01-2.12 0L5.38 5.31a1.5 1.5 0 010-2.12zM6.56 8.13a1.5 1.5 0 00-2.12 0l-1.06 1.06a1.5 1.5 0 000 2.12l1.06 1.06a1.5 1.5 0 002.12 0l1.06-1.06a1.5 1.5 0 000-2.12z"></path>
+                    GitHub kion85
+                </a>
+                <a href="https://github.com" class="btn btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
                     </svg>
-                </div>
-                <div class="face">
-                    <svg viewBox="0 0 16 16" fill="currentColor">
-                        <path fill-rule="evenodd" d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3h-6.5a.25.25 0 01-.2-.1l-.9-1.2c-.33-.44-.85-.7-1.4-.7H1.75z"></path>
+                    GitHub Home
+                </a>
+                <a href="https://support.github.com" class="btn btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 16A8 8 0 108 0a8 8 0 000 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 110-2 1 1 0 010 2z"/>
                     </svg>
-                </div>
-                <div class="face">
-                    <svg viewBox="0 0 16 16" fill="currentColor">
-                        <path fill-rule="evenodd" d="M1.643 3.143L8 9.5l6.357-6.357a.5.5 0 01.7.7L8.7 10.2a.5.5 0 01-.7 0L.943 3.843a.5.5 0 01.7-.7z"></path>
-                    </svg>
-                </div>
-                <div class="face">
-                    <svg viewBox="0 0 16 16" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.75 1a.75.75 0 01.75.75v2.5a.75.75 0 01-1.5 0v-2.5A.75.75 0 015.75 1zm1 0a.75.75 0 01.75.75v2.5a.75.75 0 01-1.5 0v-2.5A.75.75 0 016.75 1zM2 5.75A.75.75 0 012.75 5h2.5a.75.75 0 010 1.5h-2.5A.75.75 0 012 5.75zm6.75-.75a.75.75 0 000 1.5h2.5a.75.75 0 000-1.5h-2.5z"></path>
-                        <path d="M1 2.5a1 1 0 00-1 1v1a1 1 0 001 1h.5v6a1.5 1.5 0 001.5 1.5h8a1.5 1.5 0 001.5-1.5v-6h.5a1 1 0 001-1v-1a1 1 0 00-1-1h-10zM0 3.5a2.5 2.5 0 012.5-2.5h10A2.5 2.5 0 0115 3.5v1a2.5 2.5 0 01-2.5 2.5h-10A2.5 2.5 0 010 4.5v-1z"></path>
-                    </svg>
-                </div>
-                <div class="face">
-                    <svg viewBox="0 0 16 16" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm1.43.75a4.002 4.002 0 01-7.86 0H.75a.75.75 0 010-1.5h3.32a4.001 4.001 0 017.86 0h3.32a.75.75 0 010 1.5h-3.32z"></path>
-                    </svg>
-                </div>
+                    Support
+                </a>
             </div>
         </div>
-
-        <a href="/" class="btn">Вернуться на главную</a>
-        <div class="username">kion85</div>
     </div>
 
     <script>
-        // Add slight user interaction for mobile devices
-        document.addEventListener('mousemove', handleMove);
-        document.addEventListener('touchmove', handleMove);
+        // Theme switching
+        const themeSelect = document.getElementById('themeSelect');
+        const body = document.body;
 
-        function handleMove(e) {
+        themeSelect.addEventListener('change', function() {
+            // Remove all theme classes
+            body.className = body.className.replace(/theme-\w+/g, '');
+            // Add selected theme
+            body.classList.add(this.value);
+        });
+
+        // Additional 3D effects
+        document.addEventListener('mousemove', function(e) {
             const cube = document.querySelector('.cube');
-            if (!cube) return;
+            const x = (e.clientX / window.innerWidth - 0.5) * 50;
+            const y = (e.clientY / window.innerHeight - 0.5) * 50;
             
-            const x = e.clientX || e.touches[0].clientX;
-            const y = e.clientY || e.touches[0].clientY;
-            
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            
-            const rotateY = (x - centerX) / 50;
-            const rotateX = (y - centerY) / -50;
-            
-            cube.style.transform = `rotateX(${-15 + rotateX}deg) rotateY(${15 + rotateY}deg)`;
-        }
+            cube.style.transform = `translate(-50%, -50%) rotateX(${y}deg) rotateY(${x}deg)`;
+        });
     </script>
 </body>
 </html>
