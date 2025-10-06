@@ -1,460 +1,600 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>История языков программирования и BIOS/UEFI</title>
+    <title>kion85 - GitHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #4a6bff;
-            --dark: #1a1a2e;
-            --light: #f5f7fa;
-            --accent: #ff6b6b;
-            --gray: #6c757d;
-            --transition: all 0.3s ease;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #58a6ff;
+            --secondary-color: #bc8cff;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --accent-color: #238636;
         }
 
         body {
-            background-color: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            position: relative;
             overflow-x: hidden;
         }
 
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+            opacity: 0.15;
+            transition: opacity 0.5s ease;
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 17, 23, 0.8);
+            z-index: -1;
+        }
+
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Header styles */
-        header {
-            background: linear-gradient(135deg, var(--primary), #6a11cb);
-            color: white;
-            padding: 80px 0 60px;
+        /* Header */
+        .header {
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
         }
 
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z" /></svg>');
-            opacity: 0.1;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            position: relative;
-            animation: fadeInDown 1s ease;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 700px;
-            margin: 0 auto;
-            animation: fadeIn 1.5s ease;
-        }
-
-        /* Section styles */
-        section {
-            padding: 60px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        section:last-child {
-            border-bottom: none;
-        }
-
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: var(--primary);
-            position: relative;
-            display: inline-block;
-        }
-
-        h2::after {
-            content: "";
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: var(--accent);
-        }
-
-        h3 {
-            font-size: 1.5rem;
-            margin: 30px 0 15px;
-            color: var(--dark);
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-            line-height: 1.7;
-        }
-
-        ul, ol {
-            margin-bottom: 20px;
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 10px;
-        }
-
-        /* Card styles */
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            padding: 30px;
-            margin-bottom: 30px;
-            transition: var(--transition);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .timeline {
-            position: relative;
-            padding-left: 50px;
-        }
-
-        .timeline::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 15px;
-            height: 100%;
-            width: 3px;
-            background: var(--primary);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 40px;
-        }
-
-        .timeline-item::before {
-            content: "";
-            position: absolute;
-            top: 5px;
-            left: -40px;
-            width: 20px;
-            height: 20px;
+        .avatar {
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background: white;
-            border: 3px solid var(--primary);
+            border: 3px solid var(--primary-color);
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
         }
 
-        .timeline-date {
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .name {
+            font-size: 2.5rem;
             font-weight: bold;
-            color: var(--primary);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Cube animation */
-        .cube-container {
-            perspective: 1000px;
-            width: 100px;
-            height: 100px;
-            margin: 30px auto;
+        .username {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            opacity: 0.8;
         }
 
-        .cube {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: rotateCube 10s infinite linear;
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
         }
 
-        .cube-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(74, 107, 255, 0.8);
-            border: 1px solid white;
+        .stat-item {
+            text-align: center;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border-radius: 10px;
+            min-width: 140px;
+            border: 1px solid #30363d;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* Controls */
+        .controls {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            background: var(--card-bg);
+            border: 1px solid #30363d;
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
         }
 
-        .face-front { transform: translateZ(50px); }
-        .face-back { transform: rotateY(180deg) translateZ(50px); }
-        .face-right { transform: rotateY(90deg) translateZ(50px); }
-        .face-left { transform: rotateY(-90deg) translateZ(50px); }
-        .face-top { transform: rotateX(90deg) translateZ(50px); }
-        .face-bottom { transform: rotateX(-90deg) translateZ(50px); }
-
-        /* Icons */
-        .icon {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-            vertical-align: middle;
+        .control-btn:hover {
+            background: var(--primary-color);
+            color: white;
         }
 
-        .icon-code { background-color: #4a6bff; }
-        .icon-bios { background-color: #ff6b6b; }
-        .icon-chip { background-color: #6a11cb; }
+        /* Music Player */
+        .music-player {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 1px solid #30363d;
+            border-radius: 25px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
 
-        /* Footer */
-        footer {
-            background: var(--dark);
+        .music-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .music-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .music-btn:hover {
+            background: var(--primary-color);
             color: white;
-            padding: 30px 0;
+        }
+
+        .music-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Theme Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid #30363d;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .theme-option {
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
             text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.05);
+        }
+
+        .theme-option.active {
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            opacity: 0.7;
         }
 
         /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes fadeInDown {
-            from { 
-                opacity: 0; 
-                transform: translateY(-20px);
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0);
-            }
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
         }
 
-        @keyframes rotateCube {
-            from { transform: rotateX(0) rotateY(0); }
-            to { transform: rotateX(360deg) rotateY(360deg); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* Responsive styles */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .subtitle {
-                font-size: 1rem;
-            }
-            
-            h2 {
-                font-size: 1.7rem;
-            }
-            
-            section {
-                padding: 40px 0;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
-            .cube-container {
-                width: 80px;
-                height: 80px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .timeline {
-                padding-left: 30px;
-            }
-            
-            .timeline::before {
-                left: 8px;
-            }
-            
-            .timeline-item::before {
-                left: -25px;
-            }
-        }
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>Эволюция языков программирования и BIOS/UEFI</h1>
-            <p class="subtitle">От первых машинных кодов до современных высокоуровневых языков и систем загрузки</p>
+    <!-- Background -->
+    <div class="background-image" id="backgroundImage"></div>
+    <div class="background-overlay"></div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button class="control-btn" onclick="openSettings()" title="Settings">
+            <i class="fas fa-cog"></i>
+        </button>
+        <button class="control-btn" onclick="toggleMusic()" title="Music Player">
+            <i class="fas fa-music"></i>
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header class="header fade-in">
+            <div class="avatar">
+                <img src="" alt="kion85" id="userAvatar" onerror="this.style.display='none'">
+            </div>
+            <h1 class="name" id="userName">kion85</h1>
+            <div class="username">@kion85</div>
+            
+            <div class="stats">
+                <div class="stat-item fade-in delay-1">
+                    <div class="stat-number" id="repoCount">...</div>
+                    <div class="stat-label">Repositories</div>
+                </div>
+                <div class="stat-item fade-in delay-2">
+                    <div class="stat-number" id="followerCount">...</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat-item fade-in delay-3">
+                    <div class="stat-number" id="contributionCount">...</div>
+                    <div class="stat-label">Contributions</div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- Music Player -->
+    <div class="music-player" id="musicPlayer" style="display: none;">
+        <div class="music-controls">
+            <button class="music-btn" onclick="playPause()">
+                <i class="fas fa-play" id="playIcon"></i>
+            </button>
+            <button class="music-btn" onclick="stopMusic()">
+                <i class="fas fa-stop"></i>
+            </button>
         </div>
-    </header>
-
-    <main class="container">
-        <section id="intro">
-            <div class="card">
-                <h2>Введение</h2>
-                <p>История языков программирования - это увлекательное путешествие от примитивных машинных кодов до современных абстрактных языков. Параллельно развивались и системы инициализации компьютеров - от простого BIOS до современного UEFI.</p>
-                
-                <div class="cube-container">
-                    <div class="cube">
-                        <div class="cube-face face-front">BIOS</div>
-                        <div class="cube-face face-back">UEFI</div>
-                        <div class="cube-face face-right">Assembler</div>
-                        <div class="cube-face face-left">C</div>
-                        <div class="cube-face face-top">Python</div>
-                        <div class="cube-face face-bottom">Java</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="early-languages">
-            <h2>Ранние языки программирования</h2>
-            <div class="card">
-                <h3>Машинный код и ассемблер</h3>
-                <p>Первые компьютеры программировались непосредственно в машинных кодах - последовательностях нулей и единиц. Позже появились ассемблеры, которые позволяли использовать мнемонические обозначения вместо двоичных кодов.</p>
-                
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-date">1940-е</div>
-                        <p>Программирование переключателями и перфокартами. Первые машинные коды для ENIAC и других компьютеров.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">1950-е</div>
-                        <p>Появление ассемблеров - первых языков, более близких к человеческому языку, чем машинный код.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="high-level-languages">
-            <h2>Высокоуровневые языки</h2>
-            <div class="card">
-                <h3>Fortran, COBOL, C</h3>
-                <p>1950-1970-е годы стали временем появления первых высокоуровневых языков программирования:</p>
-                <ul>
-                    <li><span class="icon icon-code"></span> <strong>Fortran (1957)</strong> - первый язык высокого уровня, предназначенный для научных вычислений</li>
-                    <li><span class="icon icon-code"></span> <strong>COBOL (1959)</strong> - язык для бизнес-приложений, используется до сих пор</li>
-                    <li><span class="icon icon-code"></span> <strong>C (1972)</strong> - язык системного программирования, повлиявший на многие современные языки</li>
-                </ul>
-                <p>Эти языки ввели абстракции, которые позволяли программистам не задумываться о конкретных процессорных инструкциях.</p>
-            </div>
-        </section>
-
-        <section id="modern-languages">
-            <h2>Современные языки</h2>
-            <div class="card">
-                <h3>Объектно-ориентированные и скриптовые языки</h3>
-                <p>С 1980-х годов началась эра объектно-ориентированного программирования и скриптовых языков:</p>
-                
-                <ol>
-                    <li>C++ (1985) - расширение C с поддержкой ООП</li>
-                    <li>Java (1995) - кроссплатформенный язык с виртуальной машиной</li>
-                    <li>Python (1991) - язык общего назначения с простым синтаксисом</li>
-                    <li>JavaScript (1995) - язык для веб-страниц, теперь используется и вне браузера</li>
-                </ol>
-                
-                <p>Современные языки продолжают развиваться, предлагая всё более высокий уровень абстракции и удобства для программистов.</p>
-            </div>
-        </section>
-
-        <section id="bios-uefi">
-            <h2>BIOS и UEFI</h2>
-            <div class="card">
-                <h3>Эволюция систем инициализации</h3>
-                <p>Пока развивались языки программирования, менялись и системы, отвечающие за запуск компьютеров:</p>
-                
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-date">1981</div>
-                        <p><span class="icon icon-bios"></span> <strong>BIOS</strong> (Basic Input/Output System) появляется в первых IBM PC. Это прошивка, которая инициализирует оборудование и загружает ОС.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">2005</div>
-                        <p><span class="icon icon-chip"></span> <strong>UEFI</strong> (Unified Extensible Firmware Interface) начинает заменять BIOS. UEFI предлагает более современный интерфейс, поддержку GPT и другие преимущества.</p>
-                    </div>
-                </div>
-                
-                <h3>Основные отличия UEFI от BIOS:</h3>
-                <ul>
-                    <li>Поддержка дисков большого размера (GPT вместо MBR)</li>
-                    <li>Более быстрая загрузка</li>
-                    <li>Графический интерфейс и возможность управления мышью</li>
-                    <li>Безопасная загрузка (Secure Boot)</li>
-                    <li>Модульная архитектура</li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="conclusion">
-            <div class="card">
-                <h2>Заключение</h2>
-                <p>Эволюция языков программирования и систем инициализации демонстрирует постоянное стремление к абстракции, удобству и эффективности. От машинных кодов мы пришли к высокоуровневым языкам, а от простого BIOS к сложному UEFI.</p>
-                <p>Эта история продолжается - появляются новые языки (Rust, Go, Swift), а UEFI добавляет новые возможности. Понимание этой эволюции помогает лучше ориентироваться в современном мире вычислений.</p>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>© 2025 История языков программирования и BIOS/UEFI</p>
+        <div class="music-info">
+            Music: <span id="currentSong">No song selected</span>
         </div>
-    </footer>
+        <input type="file" id="musicFile" accept="audio/*" style="display: none;" onchange="loadMusic(this.files[0])">
+        <button class="music-btn" onclick="document.getElementById('musicFile').click()">
+            <i class="fas fa-upload"></i>
+        </button>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h3 class="modal-title"><i class="fas fa-cog"></i> Customize Your Page</h3>
+            
+            <div class="input-group">
+                <label for="bgImageInput">Background Image URL</label>
+                <input type="text" id="bgImageInput" placeholder="Paste image URL here">
+            </div>
+
+            <div class="input-group">
+                <label>Select Theme</label>
+                <div class="theme-options">
+                    <div class="theme-option active" style="background: #0d1117; color: #c9d1d9;" onclick="selectTheme('dark')">
+                        Dark
+                    </div>
+                    <div class="theme-option" style="background: #ffffff; color: #24292f;" onclick="selectTheme('light')">
+                        Light
+                    </div>
+                    <div class="theme-option" style="background: #0a192f; color: #64ffda;" onclick="selectTheme('ocean')">
+                        Ocean
+                    </div>
+                    <div class="theme-option" style="background: #1a1a2e; color: #e94560;" onclick="selectTheme('purple')">
+                        Purple
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                <button class="btn" onclick="closeSettings()" style="background: #30363d; color: white;">Cancel</button>
+                <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" loop></audio>
 
     <script>
-        // Простые анимации при прокрутке
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.card');
-            const cubes = document.querySelectorAll('.cube');
+        // Configuration
+        const config = {
+            autoPlayMusic: false,
+            defaultBackground: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80',
+            githubUsername: 'kion85'
+        };
+
+        // State
+        let currentTheme = 'dark';
+        let isMusicPlaying = false;
+
+        // DOM Elements
+        const backgroundImage = document.getElementById('backgroundImage');
+        const musicPlayer = document.getElementById('musicPlayer');
+        const settingsModal = document.getElementById('settingsModal');
+        const audioElement = document.getElementById('backgroundMusic');
+
+        // Initialize
+        async function init() {
+            loadSettings();
+            applyTheme(currentTheme);
+            await loadGitHubData();
             
-            // Анимация карточек при прокрутке
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animation = 'fadeIn 0.8s ease forwards';
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            cards.forEach(card => {
-                card.style.opacity = '0';
-                observer.observe(card);
-            });
-            
-            // Интерактивность для кубиков
-            cubes.forEach(cube => {
-                cube.addEventListener('mouseenter', () => {
-                    cube.style.animation = 'rotateCube 2s linear infinite';
-                });
+            if (!config.autoPlayMusic) {
+                musicPlayer.style.display = 'none';
+            }
+        }
+
+        // Load GitHub Data
+        async function loadGitHubData() {
+            try {
+                // Get user data
+                const userResponse = await fetch(`https://api.github.com/users/${config.githubUsername}`);
+                const userData = await userResponse.json();
                 
-                cube.addEventListener('mouseleave', () => {
-                    cube.style.animation = 'rotateCube 10s infinite linear';
-                });
-            });
-        });
+                // Get contributions (approximate)
+                const contributionsResponse = await fetch(`https://api.github.com/users/${config.githubUsername}/events`);
+                const contributionsData = await contributionsResponse.json();
+                
+                // Update DOM
+                document.getElementById('userName').textContent = userData.name || config.githubUsername;
+                document.getElementById('repoCount').textContent = userData.public_repos || '0';
+                document.getElementById('followerCount').textContent = userData.followers || '0';
+                
+                // Calculate approximate contributions (unique events)
+                const uniqueEvents = new Set(contributionsData.map(event => event.repo.id));
+                document.getElementById('contributionCount').textContent = uniqueEvents.size || '0';
+                
+                // Set avatar if available
+                if (userData.avatar_url) {
+                    document.getElementById('userAvatar').src = userData.avatar_url;
+                }
+                
+            } catch (error) {
+                console.error('Error loading GitHub data:', error);
+                document.getElementById('repoCount').textContent = '0';
+                document.getElementById('followerCount').textContent = '0';
+                document.getElementById('contributionCount').textContent = '0';
+            }
+        }
+
+        // Settings Management
+        function openSettings() {
+            settingsModal.style.display = 'flex';
+            document.getElementById('bgImageInput').value = backgroundImage.style.backgroundImage.slice(5, -2) || config.defaultBackground;
+        }
+
+        function closeSettings() {
+            settingsModal.style.display = 'none';
+        }
+
+        function saveSettings() {
+            const bgImage = document.getElementById('bgImageInput').value || config.defaultBackground;
+            
+            backgroundImage.style.backgroundImage = `url('${bgImage}')`;
+            
+            // Save to localStorage
+            localStorage.setItem('githubPage_settings', JSON.stringify({
+                bgImage,
+                theme: currentTheme
+            }));
+            
+            closeSettings();
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('githubPage_settings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                backgroundImage.style.backgroundImage = `url('${settings.bgImage}')`;
+                currentTheme = settings.theme;
+                applyTheme(currentTheme);
+            } else {
+                backgroundImage.style.backgroundImage = `url('${config.defaultBackground}')`;
+            }
+        }
+
+        // Theme Management
+        function selectTheme(theme) {
+            currentTheme = theme;
+            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            
+            switch(theme) {
+                case 'light':
+                    root.style.setProperty('--bg-color', '#ffffff');
+                    root.style.setProperty('--card-bg', '#f6f8fa');
+                    root.style.setProperty('--text-color', '#24292f');
+                    break;
+                case 'ocean':
+                    root.style.setProperty('--bg-color', '#0a192f');
+                    root.style.setProperty('--card-bg', '#112240');
+                    root.style.setProperty('--text-color', '#e6f1ff');
+                    root.style.setProperty('--primary-color', '#64ffda');
+                    break;
+                case 'purple':
+                    root.style.setProperty('--bg-color', '#1a1a2e');
+                    root.style.setProperty('--card-bg', '#16213e');
+                    root.style.setProperty('--text-color', '#ffffff');
+                    root.style.setProperty('--primary-color', '#e94560');
+                    break;
+                default: // dark
+                    root.style.setProperty('--bg-color', '#0d1117');
+                    root.style.setProperty('--card-bg', '#161b22');
+                    root.style.setProperty('--text-color', '#c9d1d9');
+                    root.style.setProperty('--primary-color', '#58a6ff');
+            }
+        }
+
+        // Music Management
+        function toggleMusic() {
+            if (musicPlayer.style.display === 'none') {
+                musicPlayer.style.display = 'flex';
+            } else {
+                musicPlayer.style.display = 'none';
+                stopMusic();
+            }
+        }
+
+        function loadMusic(file) {
+            if (file) {
+                const url = URL.createObjectURL(file);
+                audioElement.src = url;
+                document.getElementById('currentSong').textContent = file.name;
+            }
+        }
+
+        function playPause() {
+            if (audioElement.src) {
+                if (isMusicPlaying) {
+                    audioElement.pause();
+                    document.getElementById('playIcon').className = 'fas fa-play';
+                } else {
+                    audioElement.play();
+                    document.getElementById('playIcon').className = 'fas fa-pause';
+                }
+                isMusicPlaying = !isMusicPlaying;
+            }
+        }
+
+        function stopMusic() {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+            isMusicPlaying = false;
+            document.getElementById('playIcon').className = 'fas fa-play';
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
