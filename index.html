@@ -1,52 +1,265 @@
-<!-- Раздел загрузки своих обоев -->
-<div class="settings-section">
-  <h3>Загрузка своих обоев</h3>
-  <p class="note" style="margin-top: 0; margin-bottom: 20px;">Загрузите свои изображения для обоев.</p>
-  <label for="customWallpaperUpload" class="upload-button">Загрузить JPG/PNG</label>
-  <input type="file" id="customWallpaperUpload" accept=".jpg, .jpeg, .png" style="display: none;">
-  <div id="customWallpaperPreview" style="margin-top: 15px; max-width: 100%; height: 200px; background-color: #222; border-radius: 8px; overflow: hidden; background-size: cover; background-position: center;"></div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Информация и настройки</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    transition: background-color 0.5s, color 0.5s;
+  }
+
+  /* Светлая тема */
+  body.light-theme {
+    background-color: #f0f0f0;
+    color: #222;
+  }
+
+  /* Оформление блоков */
+  .info-box {
+    padding: 20px;
+    background-color: #1a1a2a;
+    border-radius: 12px;
+    margin-bottom: 30px;
+  }
+
+  body.light-theme .info-box {
+    background-color: #fff;
+    color: #222;
+  }
+
+  h2, h3 {
+    margin-top: 0;
+  }
+
+  .section {
+    margin-bottom: 30px;
+  }
+
+  /* Кнопки */
+  .button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3333ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  .button:hover {
+    background-color: #5555ff;
+  }
+
+  /* Скрытые инпуты */
+  input[type="file"] {
+    display: none;
+  }
+
+  /* Предварительный просмотр обоев */
+  #customWallpaperPreview {
+    margin-top: 15px;
+    width: 100%;
+    max-height: 200px;
+    background-color: #222;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Название файла музыки */
+  #musicFileName {
+    margin-top: 10px;
+  }
+
+  /* Переключатель темы */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-left: 10px;
+  }
+
+  .switch input { display: none; }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #66bb6a;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+</style>
+</head>
+<body>
+
+<!-- Переключатель темы -->
+<div class="theme-toggle">
+  <label for="themeSwitch">Светлая тема</label>
+  <label class="switch">
+    <input type="checkbox" id="themeSwitch" />
+    <span class="slider"></span>
+  </label>
 </div>
 
-<!-- Раздел загрузки своих песен -->
-<div class="settings-section">
-  <h3>Загрузка своих песен</h3>
-  <p class="note" style="margin-top: 0; margin-bottom: 20px;">Выберите MP3 файл для проигрывания в фоновом режиме.</p>
-  <label for="customMusicUpload" class="upload-button">Загрузить MP3</label>
-  <input type="file" id="customMusicUpload" accept=".mp3" style="display: none;">
-  <div id="musicFileName" style="margin-top: 15px; color: var(--text-color-light);"></div>
+<!-- Информация о системе и сетевых параметрах -->
+<div class="info-box">
+  <h2>Информация о системе и сетевых параметрах</h2>
+  <p><strong>IP-адрес:</strong> <span id="ip">Загрузка...</span></p>
+  <p><strong>User-Agent:</strong> <span id="ua"></span></p>
+  <p><strong>Браузер:</strong> <span id="browser"></span></p>
+  <p><strong>Платформа:</strong> <span id="platform"></span></p>
+  <p><strong>Шлюз по умолчанию:</strong> <span id="gateway">Загрузка...</span></p>
+  <p><strong>MAC-адрес:</strong> <span id="mac">Недоступно в браузере</span></p>
 </div>
 
+<!-- Настройки фона и музыки -->
+<div class="section">
+  <h3>Настройки фона и музыки</h3>
+  <button class="button" id="btnUploadWallpaper">Загрузить обои</button>
+  <input type="file" id="fileWallpaper" accept=".jpg, .jpeg, .png" />
+  <div id="customWallpaperPreview"></div>
+  
+  <button class="button" id="btnUploadMusic" style="margin-left: 20px;">Загрузить музыку</button>
+  <input type="file" id="fileMusic" accept=".mp3" />
+  <div id="musicFileName"></div>
+</div>
+
+<!-- Воспроизводимый аудио -->
+<audio id="backgroundMusic" controls style="margin-top:20px; width:100%; max-width:300px; display:none;"></audio>
+
+<!-- Скрипты -->
 <script>
+  // Переключение темы
+  const themeSwitch = document.getElementById('themeSwitch');
+  themeSwitch.addEventListener('change', () => {
+    document.body.classList.toggle('light-theme', themeSwitch.checked);
+  });
+
+  // Получение IP
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => { document.getElementById('ip').textContent = data.ip; })
+    .catch(() => { document.getElementById('ip').textContent = 'Не удалось'; });
+
+  // User-Agent и платформа
+  document.getElementById('ua').textContent = navigator.userAgent;
+  document.getElementById('platform').textContent = navigator.platform;
+
+  // Определение браузера
+  const ua = navigator.userAgent;
+  let browserName = 'Не определен';
+  if (ua.indexOf('Firefox') !== -1) browserName = 'Firefox';
+  else if (ua.indexOf('Chrome') !== -1) browserName = 'Chrome';
+  else if (ua.indexOf('Safari') !== -1) browserName = 'Safari';
+  else if (ua.indexOf('Edge') !== -1 || ua.indexOf('Edg') !== -1) browserName = 'Edge';
+  else if (ua.indexOf('OPR') !== -1 || ua.indexOf('Opera') !== -1) browserName = 'Opera';
+  document.getElementById('browser').textContent = browserName;
+
+  // MAC-адрес недоступен
+  document.getElementById('mac').textContent = 'Недоступно в браузере';
+
+  // Получение шлюза по умолчанию
+  function getGateway() {
+    return new Promise((resolve) => {
+      const rtc = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+      if (!rtc) {
+        resolve('Недоступно');
+        return;
+      }
+      const pc = new rtc({iceServers:[]});
+      pc.createDataChannel('');
+      pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(() => {});
+      pc.onicecandidate = (ice) => {
+        if (!ice || !ice.candidate || !ice.candidate.candidate) return;
+        const candidate = ice.candidate.candidate;
+        const parts = candidate.split(' ');
+        const gateway = parts.find(part => part.includes('.'));
+        resolve(gateway || 'Недоступно');
+        pc.onicecandidate = null;
+      };
+      setTimeout(() => resolve('Недоступно'), 3000);
+    });
+  }
+
+  getGateway().then(gateway => {
+    document.getElementById('gateway').textContent = gateway;
+  });
+
   // Обработка загрузки обоев
-  document.getElementById('customWallpaperUpload').addEventListener('change', function(e) {
-    const file = e.target.files[0];
+  document.getElementById('btnUploadWallpaper').addEventListener('click', () => {
+    document.getElementById('fileWallpaper').click();
+  });
+
+  document.getElementById('fileWallpaper').addEventListener('change', function() {
+    const file = this.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = function(ev) {
-        document.getElementById('customWallpaperPreview').style.backgroundImage = `url('${ev.target.result}')`;
-        // Можно дополнительно установить как фон страницы
-        document.body.style.backgroundImage = `url('${ev.target.result}')`;
+      reader.onload = function(e) {
+        document.getElementById('customWallpaperPreview').style.backgroundImage = `url('${e.target.result}')`;
+        document.body.style.backgroundImage = `url('${e.target.result}')`;
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundRepeat = 'no-repeat';
       };
       reader.readAsDataURL(file);
     }
   });
 
-  // Обработка загрузки песен
-  document.getElementById('customMusicUpload').addEventListener('change', function(e) {
-    const file = e.target.files[0];
+  // Обработка загрузки музыки
+  document.getElementById('btnUploadMusic').addEventListener('click', () => {
+    document.getElementById('fileMusic').click();
+  });
+
+  document.getElementById('fileMusic').addEventListener('change', function() {
+    const file = this.files[0];
     if (file) {
       document.getElementById('musicFileName').textContent = 'Выбран файл: ' + file.name;
-      // Можно установить трек для воспроизведения
-      const audio = document.getElementById('backgroundMusic');
       const reader = new FileReader();
-      reader.onload = function(ev) {
-        audio.src = ev.target.result;
+      reader.onload = function(e) {
+        const audio = document.getElementById('backgroundMusic');
+        audio.src = e.target.result;
+        audio.style.display = 'block';
         audio.play();
       };
       reader.readAsDataURL(file);
     }
   });
 </script>
+
+</body>
+</html>
