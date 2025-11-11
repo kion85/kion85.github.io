@@ -61,7 +61,6 @@
     transition: all 0.3s ease;
     box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    color: #fff;
   }
 
   button:hover {
@@ -69,7 +68,7 @@
     opacity: 0.9;
   }
 
-  /* Темы для body */
+  /* Темы */
   .dark { --bg-color: #222; --text-color: #fff; }
   .ocean { --bg-color: #006994; --text-color: #fff; }
   .light { --bg-color: #f0f0f0; --text-color: #222; }
@@ -79,9 +78,9 @@
   /* Музыкальный плеер */
   #music {
     margin-top: 20px;
+    max-width: 300px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     border-radius: 10px;
-    overflow: hidden;
   }
 
   /* Кнопка загрузки песни */
@@ -97,10 +96,11 @@
     cursor: pointer;
     box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
+    transform: perspective(1000px) rotateY(0deg);
   }
 
   #loadBtn:hover {
-    transform: translateY(-2px) scale(1.05);
+    transform: perspective(1000px) rotateY(10deg);
     opacity: 0.9;
   }
 </style>
@@ -124,7 +124,7 @@
 <input type="file" id="fileInput" accept="audio/*" style="display:none" />
 
 <!-- Музыкальный плеер -->
-<audio id="music" controls autoplay loop style="margin-top:20px; max-width:300px; box-shadow:0 4px 12px rgba(0,0,0,0.3); border-radius:10px;">
+<audio id="music" controls autoplay loop>
   <source src="ваша_музыка.mp3" type="audio/mpeg" />
   Ваш браузер не поддерживает аудио.
 </audio>
