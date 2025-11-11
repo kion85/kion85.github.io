@@ -1,34 +1,52 @@
-<div id="browser-info" style="padding:20px; background:#1a1a2a; border-radius:10px; margin:20px; color:#ffd700;">
-  <h2>Информация о браузере и IP</h2>
-  <p><strong>IP-адрес:</strong> <span id="ip">Загрузка...</span></p>
-  <p><strong>User-Agent:</strong> <span id="ua"></span></p>
-  <p><strong>Браузер:</strong> <span id="browser"></span></p>
-  <p><strong>Платформа:</strong> <span id="platform"></span></p>
-  <p><strong>Маски MAC (имитация):</strong> <span id="mac">Недоступно в браузере</span></p>
+<!-- Раздел загрузки своих обоев -->
+<div class="settings-section">
+  <h3>Загрузка своих обоев</h3>
+  <p class="note" style="margin-top: 0; margin-bottom: 20px;">Загрузите свои изображения для обоев.</p>
+  <label for="customWallpaperUpload" class="upload-button">Загрузить JPG/PNG</label>
+  <input type="file" id="customWallpaperUpload" accept=".jpg, .jpeg, .png" style="display: none;">
+  <div id="customWallpaperPreview" style="margin-top: 15px; max-width: 100%; height: 200px; background-color: #222; border-radius: 8px; overflow: hidden; background-size: cover; background-position: center;"></div>
+</div>
+
+<!-- Раздел загрузки своих песен -->
+<div class="settings-section">
+  <h3>Загрузка своих песен</h3>
+  <p class="note" style="margin-top: 0; margin-bottom: 20px;">Выберите MP3 файл для проигрывания в фоновом режиме.</p>
+  <label for="customMusicUpload" class="upload-button">Загрузить MP3</label>
+  <input type="file" id="customMusicUpload" accept=".mp3" style="display: none;">
+  <div id="musicFileName" style="margin-top: 15px; color: var(--text-color-light);"></div>
 </div>
 
 <script>
-  // Получение IP через внешний API
-  fetch('https://api.ipify.org?format=json')
-    .then(res => res.json())
-    .then(data => { document.getElementById('ip').textContent = data.ip; })
-    .catch(() => { document.getElementById('ip').textContent = 'Не удалось'; });
+  // Обработка загрузки обоев
+  document.getElementById('customWallpaperUpload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        document.getElementById('customWallpaperPreview').style.backgroundImage = `url('${ev.target.result}')`;
+        // Можно дополнительно установить как фон страницы
+        document.body.style.backgroundImage = `url('${ev.target.result}')`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
-  // Получение User-Agent, платформы, браузера
-  document.getElementById('ua').textContent = navigator.userAgent;
-  document.getElementById('platform').textContent = navigator.platform;
-
-  // Определение браузера (пример)
-  const ua = navigator.userAgent;
-  let browserName = 'Не определен';
-  if (ua.indexOf('Firefox') !== -1) browserName = 'Firefox';
-  else if (ua.indexOf('Chrome') !== -1) browserName = 'Chrome';
-  else if (ua.indexOf('Safari') !== -1) browserName = 'Safari';
-  else if (ua.indexOf('Edge') !== -1) browserName = 'Edge';
-  else if (ua.indexOf('OPR') !== -1 || ua.indexOf('Opera') !== -1) browserName = 'Opera';
-  document.getElementById('browser').textContent = browserName;
-
-  // MAC-адреса в браузере недоступна по соображениям безопасности, можно показать "Недоступно"
-  // или имитировать случайное значение
-  document.getElementById('mac').textContent = 'Недоступно в браузере';
+  // Обработка загрузки песен
+  document.getElementById('customMusicUpload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      document.getElementById('musicFileName').textContent = 'Выбран файл: ' + file.name;
+      // Можно установить трек для воспроизведения
+      const audio = document.getElementById('backgroundMusic');
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        audio.src = ev.target.result;
+        audio.play();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 </script>
