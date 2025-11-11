@@ -1,115 +1,34 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Главная - Kion85</title>
-<!-- Подключение шрифтов Google -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --bg-color: #222;
-    --text-color: #fff;
-  }
-
-  body {
-    margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    transition: background-color 0.5s, color 0.5s;
-  }
-
-  h1 {
-    font-size: 3em;
-    margin-bottom: 0.2em;
-  }
-
-  p {
-    font-size: 1.5em;
-    margin: 0.2em 0 1em 0;
-  }
-
-  #projectsCount {
-    font-size: 2.5em;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-
-  .buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-  }
-
-  button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s;
-  }
-
-  button:hover {
-    opacity: 0.8;
-  }
-
-  /* Темы */
-  .dark { --bg-color: #222; --text-color: #fff; }
-  .ocean { --bg-color: #006994; --text-color: #fff; }
-  .light { --bg-color: #f0f0f0; --text-color: #222; }
-  .red { --bg-color: #c0392b; --text-color: #fff; }
-  .blue { --bg-color: #2980b9; --text-color: #fff; }
-
-  /* Музыкальный плеер */
-  #music {
-    margin-top: 20px;
-  }
-</style>
-</head>
-<body>
-
-<h1>Kion85</h1>
-<p>Количество моих проектов на GitHub:</p>
-<div id="projectsCount">Загрузка...</div>
-
-<div class="buttons">
-  <button onclick="setTheme('dark')">Темная</button>
-  <button onclick="setTheme('ocean')">Океанская</button>
-  <button onclick="setTheme('light')">Светлая</button>
-  <button onclick="setTheme('red')">Красная</button>
-  <button onclick="setTheme('blue')">Синяя</button>
+<div id="browser-info" style="padding:20px; background:#1a1a2a; border-radius:10px; margin:20px; color:#ffd700;">
+  <h2>Информация о браузере и IP</h2>
+  <p><strong>IP-адрес:</strong> <span id="ip">Загрузка...</span></p>
+  <p><strong>User-Agent:</strong> <span id="ua"></span></p>
+  <p><strong>Браузер:</strong> <span id="browser"></span></p>
+  <p><strong>Платформа:</strong> <span id="platform"></span></p>
+  <p><strong>Маски MAC (имитация):</strong> <span id="mac">Недоступно в браузере</span></p>
 </div>
 
-<!-- Вставьте сюда свою музыку -->
-<audio id="music" controls autoplay loop>
-  <source src="ваша_музыка.mp3" type="audio/mpeg" />
-  Ваш браузер не поддерживает аудио.
-</audio>
-
 <script>
-  // Функция для смены темы
-  function setTheme(theme) {
-    document.body.className = theme;
-  }
+  // Получение IP через внешний API
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => { document.getElementById('ip').textContent = data.ip; })
+    .catch(() => { document.getElementById('ip').textContent = 'Не удалось'; });
 
-  // Получить количество проектов с GitHub API
-  async function fetchProjectsCount() {
-    const username = 'kion85';
-    const response = await fetch(`https://api.github.com/users/${username}/repos`);
-    const repos = await response.json();
-    document.getElementById('projectsCount').textContent = repos.length;
-  }
+  // Получение User-Agent, платформы, браузера
+  document.getElementById('ua').textContent = navigator.userAgent;
+  document.getElementById('platform').textContent = navigator.platform;
 
-  fetchProjectsCount();
+  // Определение браузера (пример)
+  const ua = navigator.userAgent;
+  let browserName = 'Не определен';
+  if (ua.indexOf('Firefox') !== -1) browserName = 'Firefox';
+  else if (ua.indexOf('Chrome') !== -1) browserName = 'Chrome';
+  else if (ua.indexOf('Safari') !== -1) browserName = 'Safari';
+  else if (ua.indexOf('Edge') !== -1) browserName = 'Edge';
+  else if (ua.indexOf('OPR') !== -1 || ua.indexOf('Opera') !== -1) browserName = 'Opera';
+  document.getElementById('browser').textContent = browserName;
+
+  // MAC-адреса в браузере недоступна по соображениям безопасности, можно показать "Недоступно"
+  // или имитировать случайное значение
+  document.getElementById('mac').textContent = 'Недоступно в браузере';
 </script>
-
-</body>
-</html>
