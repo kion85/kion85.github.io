@@ -1,265 +1,485 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Информация и настройки</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: #f0f0f0;
-    margin: 0;
-    padding: 20px;
-    transition: background-color 0.5s, color 0.5s;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя Интерактивная Страница - kion85.github.io</title>
+    <style>
+        /*
+        ================================================================================
+        CSS Стили
+        ================================================================================
+        */
 
-  /* Светлая тема */
-  body.light-theme {
-    background-color: #f0f0f0;
-    color: #222;
-  }
+        /* Общие переменные для тем */
+        :root {
+            --background-color: #f0f2f5; /* Светлая тема по умолчанию */
+            --text-color: #333;
+            --header-bg-color: #007bff;
+            --header-text-color: #fff;
+            --card-bg-color: #fff;
+            --card-border-color: #ddd;
+            --button-bg-color: #007bff;
+            --button-text-color: #fff;
+            --link-color: #0056b3;
+            --focus-outline-color: #0056b3;
+        }
 
-  /* Оформление блоков */
-  .info-box {
-    padding: 20px;
-    background-color: #1a1a2a;
-    border-radius: 12px;
-    margin-bottom: 30px;
-  }
+        /* Тёмная тема */
+        body.theme-dark {
+            --background-color: #2c2c2c;
+            --text-color: #f0f0f0;
+            --header-bg-color: #1a1a1a;
+            --header-text-color: #eee;
+            --card-bg-color: #3a3a3a;
+            --card-border-color: #555;
+            --button-bg-color: #0056b3;
+            --button-text-color: #eee;
+            --link-color: #87ceeb;
+            --focus-outline-color: #87ceeb;
+        }
 
-  body.light-theme .info-box {
-    background-color: #fff;
-    color: #222;
-  }
+        /* Красная тема */
+        body.theme-red {
+            --background-color: #ffe6e6;
+            --text-color: #8b0000;
+            --header-bg-color: #cc0000;
+            --header-text-color: #fff;
+            --card-bg-color: #fff0f0;
+            --card-border-color: #ffcccc;
+            --button-bg-color: #cc0000;
+            --button-text-color: #fff;
+            --link-color: #800000;
+            --focus-outline-color: #800000;
+        }
 
-  h2, h3 {
-    margin-top: 0;
-  }
+        /* Общие стили для body */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-  .section {
-    margin-bottom: 30px;
-  }
+        /* Общие стили для контейнера */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
 
-  /* Кнопки */
-  .button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #3333ff;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
+        /* Стили для карточек информации */
+        .card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--card-border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-  .button:hover {
-    background-color: #5555ff;
-  }
+        .card h2 {
+            color: var(--header-bg-color);
+            margin-top: 0;
+            border-bottom: 2px solid var(--header-bg-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
 
-  /* Скрытые инпуты */
-  input[type="file"] {
-    display: none;
-  }
+        .card ol, .card ul {
+            padding-left: 20px;
+        }
 
-  /* Предварительный просмотр обоев */
-  #customWallpaperPreview {
-    margin-top: 15px;
-    width: 100%;
-    max-height: 200px;
-    background-color: #222;
-    border-radius: 8px;
-    background-size: cover;
-    background-position: center;
-  }
+        /* Стили для заголовка страницы */
+        header {
+            background-color: var(--header-bg-color);
+            color: var(--header-text-color);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-  /* Название файла музыки */
-  #musicFileName {
-    margin-top: 10px;
-  }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
 
-  /* Переключатель темы */
-  .theme-toggle {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
+        /* Стили для кнопок */
+        button {
+            background-color: var(--button-bg-color);
+            color: var(--button-text-color);
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-    margin-left: 10px;
-  }
+        button:hover {
+            background-color: var(--link-color);
+            transform: translateY(-2px);
+        }
 
-  .switch input { display: none; }
+        button:focus {
+            outline: 2px solid var(--focus-outline-color);
+            outline-offset: 2px;
+        }
 
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 24px;
-  }
+        /* Стили для форм ввода */
+        input[type="file"] {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid var(--card-border-color);
+            border-radius: 5px;
+            background-color: var(--card-bg-color);
+            color: var(--text-color);
+        }
 
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-  }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
 
-  input:checked + .slider {
-    background-color: #66bb6a;
-  }
+        /* Стили для медиа-плеера */
+        #audioPlayer {
+            width: 100%;
+            margin-top: 15px;
+            background-color: var(--card-bg-color);
+            border-radius: 5px;
+        }
 
-  input:checked + .slider:before {
-    transform: translateX(26px);
-  }
-</style>
+        /* Стили для списка репозиториев (если решите отображать) */
+        #github-repos ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #github-repos li {
+            background-color: rgba(0,0,0,0.05); /* Легкий фон для списка */
+            margin-bottom: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 3px solid var(--button-bg-color);
+        }
+
+        #github-repos li:nth-child(even) {
+            background-color: rgba(0,0,0,0.02);
+        }
+
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: var(--header-bg-color);
+            color: var(--header-text-color);
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr; /* Одна колонка на узких экранах */
+                padding: 10px;
+            }
+            header h1 {
+                font-size: 2em;
+            }
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <h1>Моя Интерактивная Страница kion85.github.io</h1>
+        <p>Привет! Добро пожаловать на мою страницу.</p>
+        <div class="theme-switchers">
+            <button id="lightThemeBtn">Светлая тема</button>
+            <button id="darkThemeBtn">Тёмная тема</button>
+            <button id="redThemeBtn">Красная тема</button>
+        </div>
+    </header>
 
-<!-- Переключатель темы -->
-<div class="theme-toggle">
-  <label for="themeSwitch">Светлая тема</label>
-  <label class="switch">
-    <input type="checkbox" id="themeSwitch" />
-    <span class="slider"></span>
-  </label>
-</div>
+    <main class="container">
+        <!-- Информация о браузере и системе -->
+        <section class="card" id="browser-info">
+            <h2>Информация о браузере и системе</h2>
+            <p><strong>Имя браузера:</strong> <span id="browserName"></span></p>
+            <p><strong>Версия браузера:</strong> <span id="browserVersion"></span></p>
+            <p><strong>Операционная система:</strong> <span id="os"></span></p>
+            <p><strong>Язык браузера:</strong> <span id="language"></span></p>
+            <p><strong>Текущее время и дата (локальное):</strong> <span id="localDateTime"></span></p>
+        </section>
 
-<!-- Информация о системе и сетевых параметрах -->
-<div class="info-box">
-  <h2>Информация о системе и сетевых параметрах</h2>
-  <p><strong>IP-адрес:</strong> <span id="ip">Загрузка...</span></p>
-  <p><strong>User-Agent:</strong> <span id="ua"></span></p>
-  <p><strong>Браузер:</strong> <span id="browser"></span></p>
-  <p><strong>Платформа:</strong> <span id="platform"></span></p>
-  <p><strong>Шлюз по умолчанию:</strong> <span id="gateway">Загрузка...</span></p>
-  <p><strong>MAC-адрес:</strong> <span id="mac">Недоступно в браузере</span></p>
-</div>
+        <!-- Информация о GitHub -->
+        <section class="card" id="github-info">
+            <h2>Информация о GitHub (kion85)</h2>
+            <p><strong>Количество репозиториев:</strong> <b id="repoCount">Загрузка...</b></p>
+            <div id="github-repos" style="display: none;">
+                <h3>Названия репозиториев:</h3>
+                <ul>
+                    <!-- Репозитории будут добавлены сюда -->
+                </ul>
+            </div>
+            <button id="toggleReposBtn" style="display: none;">Показать репозитории</button>
+        </section>
 
-<!-- Настройки фона и музыки -->
-<div class="section">
-  <h3>Настройки фона и музыки</h3>
-  <button class="button" id="btnUploadWallpaper">Загрузить обои</button>
-  <input type="file" id="fileWallpaper" accept=".jpg, .jpeg, .png" />
-  <div id="customWallpaperPreview"></div>
-  
-  <button class="button" id="btnUploadMusic" style="margin-left: 20px;">Загрузить музыку</button>
-  <input type="file" id="fileMusic" accept=".mp3" />
-  <div id="musicFileName"></div>
-</div>
+        <!-- Любимые языки и Linux -->
+        <section class="card" id="favorites-info">
+            <h2>Мои предпочтения: C++, C и Linux</h2>
+            <p>Я очень ценю языки программирования C++ и C за их мощь, производительность и возможность низкоуровневого контроля. Они являются основой для множества высокопроизводительных приложений, системного программирования и встраиваемых систем.</p>
+            <p>Операционная система Linux — это не просто инструмент, а целая философия. Её открытость, гибкость, надежность и обширная экосистема делают её незаменимой для разработки, системного администрирования и повседневного использования. У меня всегда есть несколько дистрибутивов, и я продолжаю исследовать её возможности.</p>
+            Дополнительно:
+            <ul>
+                <li><strong>C++:</strong> Шаблоны, STL, многопоточность, оптимизация.</li>
+                <li><strong>C:</strong> Микроконтроллеры, драйверы, системные вызовы.</li>
+                <li><strong>Linux:</strong> Bash, Docker, системные утилиты, разработка под FOSS.</li>
+            </ul>
+        </section>
 
-<!-- Воспроизводимый аудио -->
-<audio id="backgroundMusic" controls style="margin-top:20px; width:100%; max-width:300px; display:none;"></audio>
+        <!-- Загрузка медиа и управление -->
+        <section class="card" id="media-upload-section">
+            <h2>Загрузить свои медиа</h2>
+            <div>
+                <label for="wallpaperUpload">Загрузить фоновое изображение:</label>
+                <input type="file" id="wallpaperUpload" accept="image/*">
+                <p><i>Выбранное изображение станет фоном страницы.</i></p>
+            </div>
+            <div>
+                <label for="audioUpload">Загрузить аудиофайл:</label>
+                <input type="file" id="audioUpload" accept="audio/*">
+                <audio id="audioPlayer" controls style="display: none;"></audio>
+                <p><i>Местная музыка для души!</i></p>
+            </div>
+        </section>
+    </main>
 
-<!-- Скрипты -->
-<script>
-  // Переключение темы
-  const themeSwitch = document.getElementById('themeSwitch');
-  themeSwitch.addEventListener('change', () => {
-    document.body.classList.toggle('light-theme', themeSwitch.checked);
-  });
+    <footer>
+        <p>&copy; 2026 kion85. Все права не защищены, используйте свободно.</p>
+        <p>Создано с любовью с использованием HTML, CSS и JavaScript.</p>
+    </footer>
 
-  // Получение IP
-  fetch('https://api.ipify.org?format=json')
-    .then(res => res.json())
-    .then(data => { document.getElementById('ip').textContent = data.ip; })
-    .catch(() => { document.getElementById('ip').textContent = 'Не удалось'; });
+    <script>
+        /*
+        ================================================================================
+        JavaScript Скрипты
+        ================================================================================
+        */
 
-  // User-Agent и платформа
-  document.getElementById('ua').textContent = navigator.userAgent;
-  document.getElementById('platform').textContent = navigator.platform;
+        document.addEventListener('DOMContentLoaded', () => {
+            // ============================================================================
+            // 1. Информация о браузере и системе
+            // ============================================================================
+            function getBrowserInfo() {
+                const userAgent = navigator.userAgent;
+                let browserName = "Неизвестно";
+                let browserVersion = "Неизвестно";
+                let os = "Неизвестно";
 
-  // Определение браузера
-  const ua = navigator.userAgent;
-  let browserName = 'Не определен';
-  if (ua.indexOf('Firefox') !== -1) browserName = 'Firefox';
-  else if (ua.indexOf('Chrome') !== -1) browserName = 'Chrome';
-  else if (ua.indexOf('Safari') !== -1) browserName = 'Safari';
-  else if (ua.indexOf('Edge') !== -1 || ua.indexOf('Edg') !== -1) browserName = 'Edge';
-  else if (ua.indexOf('OPR') !== -1 || ua.indexOf('Opera') !== -1) browserName = 'Opera';
-  document.getElementById('browser').textContent = browserName;
+                // Определение браузера
+                if (userAgent.match(/chrome|chromium|crios/i)) {
+                    browserName = "Google Chrome";
+                    browserVersion = userAgent.match(/(chrome|chromium|crios)\/(\d+\.\d+\.\d+\.\d+)/i) ? userAgent.match(/(chrome|chromium|crios)\/(\d+\.\d+\.\d+\.\d+)/i)[2] : "N/A";
+                } else if (userAgent.match(/firefox|fxios/i)) {
+                    browserName = "Mozilla Firefox";
+                    browserVersion = userAgent.match(/(firefox|fxios)\/(\d+\.\d+)/i) ? userAgent.match(/(firefox|fxios)\/(\d+\.\d+)/i)[2] : "N/A";
+                } else if (userAgent.match(/safari/i)) {
+                    browserName = "Apple Safari";
+                    browserVersion = userAgent.match(/version\/(\d+\.\d+)\s.*safari/i) ? userAgent.match(/version\/(\d+\.\d+)\s.*safari/i)[1] : "N/A";
+                } else if (userAgent.match(/opera|opr\//i)) {
+                    browserName = "Opera";
+                    browserVersion = userAgent.match(/(opera|opr)\/(\d+\.\d+)/i) ? userAgent.match(/(opera|opr)\/(\d+\.\d+)/i)[2] : "N/A";
+                } else if (userAgent.match(/edg/i)) {
+                    browserName = "Microsoft Edge";
+                    browserVersion = userAgent.match(/edg\/(\d+\.\d+\.\d+\.\d+)/i) ? userAgent.match(/edg\/(\d+\.\d+\.\d+\.\d+)/i)[1] : "N/A";
+                } else if (userAgent.match(/msie|trident/i)) {
+                    browserName = "Internet Explorer";
+                    browserVersion = userAgent.match(/(msie|rv:)(\d+\.\d+)/i) ? userAgent.match(/(msie|rv:)(\d+\.\d+)/i)[2] : "N/A";
+                }
 
-  // MAC-адрес недоступен
-  document.getElementById('mac').textContent = 'Недоступно в браузере';
+                // Определение ОС
+                if (navigator.platform.includes("Win")) {
+                    os = "Windows";
+                } else if (navigator.platform.includes("Mac")) {
+                    os = "macOS";
+                } else if (navigator.platform.includes("Linux")) { // Более надежно, чем "Linux" в userAgent для десктопа
+                    os = "Linux";
+                } else if (navigator.userAgent.includes("Android")) {
+                    os = "Android";
+                } else if (navigator.userAgent.includes("iOS")) {
+                    os = "iOS";
+                } else {
+                    os = navigator.platform || "Неизвестно";
+                }
 
-  // Получение шлюза по умолчанию
-  function getGateway() {
-    return new Promise((resolve) => {
-      const rtc = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-      if (!rtc) {
-        resolve('Недоступно');
-        return;
-      }
-      const pc = new rtc({iceServers:[]});
-      pc.createDataChannel('');
-      pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(() => {});
-      pc.onicecandidate = (ice) => {
-        if (!ice || !ice.candidate || !ice.candidate.candidate) return;
-        const candidate = ice.candidate.candidate;
-        const parts = candidate.split(' ');
-        const gateway = parts.find(part => part.includes('.'));
-        resolve(gateway || 'Недоступно');
-        pc.onicecandidate = null;
-      };
-      setTimeout(() => resolve('Недоступно'), 3000);
-    });
-  }
+                document.getElementById('browserName').textContent = browserName;
+                document.getElementById('browserVersion').textContent = browserVersion;
+                document.getElementById('os').textContent = os;
+                document.getElementById('language').textContent = navigator.language || 'Неизвестно';
+                document.getElementById('localDateTime').textContent = new Date().toLocaleString();
+            }
 
-  getGateway().then(gateway => {
-    document.getElementById('gateway').textContent = gateway;
-  });
+            getBrowserInfo();
 
-  // Обработка загрузки обоев
-  document.getElementById('btnUploadWallpaper').addEventListener('click', () => {
-    document.getElementById('fileWallpaper').click();
-  });
+            // Обновление времени каждую секунду
+            setInterval(() => {
+                document.getElementById('localDateTime').textContent = new Date().toLocaleString();
+            }, 1000);
 
-  document.getElementById('fileWallpaper').addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('customWallpaperPreview').style.backgroundImage = `url('${e.target.result}')`;
-        document.body.style.backgroundImage = `url('${e.target.result}')`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-      };
-      reader.readAsDataURL(file);
-    }
-  });
 
-  // Обработка загрузки музыки
-  document.getElementById('btnUploadMusic').addEventListener('click', () => {
-    document.getElementById('fileMusic').click();
-  });
+            // ============================================================================
+            // 2. Информация о проектах на GitHub
+            // ===================================
+            const githubUsername = 'kion85';
+            const githubApiUrl = `https://api.github.com/users/${githubUsername}/repos`;
 
-  document.getElementById('fileMusic').addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) {
-      document.getElementById('musicFileName').textContent = 'Выбран файл: ' + file.name;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const audio = document.getElementById('backgroundMusic');
-        audio.src = e.target.result;
-        audio.style.display = 'block';
-        audio.play();
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-</script>
+            async function getGithubRepos() {
+                try {
+                    const response = await fetch(githubApiUrl);
+                    if (!response.ok) {
+                        throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+                    }
+                    const repos = await response.json();
+                    document.getElementById('repoCount').textContent = repos.length;
 
+                    // Опциональное отображение названий репозиториев
+                    const repoList = document.querySelector('#github-repos ul');
+                    if (repoList && repos.length > 0) {
+                        repos.forEach(repo => {
+                            const listItem = document.createElement('li');
+                            const link = document.createElement('a');
+                            link.href = repo.html_url;
+                            link.textContent = repo.name;
+                            link.target = "_blank"; // Открывать в новой вкладке
+                            link.rel = "noopener noreferrer"; // Безопасность
+                            listItem.appendChild(link);
+                            repoList.appendChild(listItem);
+                        });
+                        document.getElementById('toggleReposBtn').style.display = 'block'; // Показать кнопку
+                    }
+                } catch (error) {
+                    console.error("Ошибка при получении данных GitHub:", error);
+                    document.getElementById('repoCount').textContent = `Ошибка: ${error.message}`;
+                }
+            }
+
+            getGithubRepos();
+
+            // Переключение видимости списка репозиториев
+            document.getElementById('toggleReposBtn').addEventListener('click', () => {
+                const githubReposDiv = document.getElementById('github-repos');
+                const button = document.getElementById('toggleReposBtn');
+                if (githubReposDiv.style.display === 'none') {
+                    githubReposDiv.style.display = 'block';
+                    button.textContent = 'Скрыть репозитории';
+                } else {
+                    githubReposDiv.style.display = 'none';
+                    button.textContent = 'Показать репозитории';
+                }
+            });
+
+            // ============================================================================
+            // 3. Тематические переключатели
+            // ===============================
+            const body = document.body;
+            const lightThemeBtn = document.getElementById('lightThemeBtn');
+            const darkThemeBtn = document.getElementById('darkThemeBtn');
+            const redThemeBtn = document.getElementById('redThemeBtn');
+
+            function applyTheme(themeName) {
+                body.classList.remove('theme-dark', 'theme-red'); // Удалить все темы
+                if (themeName !== 'light') { // Если не светлая, добавить соответствующий класс
+                    body.classList.add(`theme-${themeName}`);
+                }
+                localStorage.setItem('selectedTheme', themeName); // Сохранить выбор пользователя
+            }
+
+            // Загрузить сохраненную тему при старте
+            const savedTheme = localStorage.getItem('selectedTheme') || 'light'; // По умолчанию светлая
+            applyTheme(savedTheme);
+
+            lightThemeBtn.addEventListener('click', () => applyTheme('light'));
+            darkThemeBtn.addEventListener('click', () => applyTheme('dark'));
+            redThemeBtn.addEventListener('click', () => applyTheme('red'));
+
+            // ============================================================================
+            // 4. Загрузка медиа (обои и аудио)
+            // ===============================
+            const wallpaperUpload = document.getElementById('wallpaperUpload');
+            const audioUpload = document.getElementById('audioUpload');
+            const audioPlayer = document.getElementById('audioPlayer');
+
+            // Загрузка обоев
+            wallpaperUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.body.style.backgroundImage = `url(${e.target.result})`;
+                        document.body.style.backgroundSize = 'cover';
+                        document.body.style.backgroundPosition = 'center center';
+                        document.body.style.backgroundAttachment = 'fixed'; // Фиксированный фон
+                        // Сохранить base64-строку в localStorage
+                        localStorage.setItem('background_image', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Загрузка аудио
+            audioUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        audioPlayer.src = e.target.result;
+                        audioPlayer.style.display = 'block'; // Показать плеер
+                        audioPlayer.load(); // Перезагрузить плеер, чтобы воспроизвести новый файл
+                        // Опционально: автоматически начать воспроизведение
+                        // audioPlayer.play();
+                        // Сохранить base64-строку в localStorage (может быть большой!)
+                        localStorage.setItem('audio_file', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Загрузка сохраненных медиа при старте страницы
+            function loadSavedMedia() {
+                const savedWallpaper = localStorage.getItem('background_image');
+                if (savedWallpaper) {
+                    document.body.style.backgroundImage = `url(${savedWallpaper})`;
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundPosition = 'center center';
+                    document.body.style.backgroundAttachment = 'fixed';
+                }
+
+                const savedAudio = localStorage.getItem('audio_file');
+                if (savedAudio) {
+                    audioPlayer.src = savedAudio;
+                    audioPlayer.style.display = 'block';
+                    audioPlayer.load();
+                }
+            }
+            loadSavedMedia();
+        });
+    </script>
 </body>
 </html>
