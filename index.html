@@ -1,337 +1,731 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kion85 | GitHub & GitLab</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kion85 — GitHub / GitLab Profile</title>
+  <meta name="description" content="Персональная страница Kion85 с GitHub, GitLab, 3D-кубом и живой загрузкой репозиториев и активности." />
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Unbounded:wght@500;700&display=swap');
-
     :root {
-      --bg: #0f1720;
-      --bg-soft: #172330;
-      --panel: rgba(16, 24, 34, 0.8);
-      --line: rgba(255, 255, 255, 0.12);
-      --text: #eef2f1;
-      --muted: #9db0b6;
-      --accent: #f97316;
-      --accent-soft: #fdba74;
-      --cyan: #67e8f9;
+      color-scheme: dark;
     }
 
-    * {
-      box-sizing: border-box;
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Space Grotesk', sans-serif;
-      color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(103, 232, 249, 0.16), transparent 28%),
-        radial-gradient(circle at 85% 20%, rgba(249, 115, 22, 0.18), transparent 25%),
-        linear-gradient(135deg, #091018 0%, #0f1720 45%, #172330 100%);
+        radial-gradient(circle at top left, rgba(88, 28, 135, 0.35), transparent 28%),
+        radial-gradient(circle at top right, rgba(30, 64, 175, 0.28), transparent 26%),
+        radial-gradient(circle at bottom, rgba(5, 150, 105, 0.15), transparent 30%),
+        linear-gradient(135deg, #050816 0%, #0b1023 45%, #111827 100%);
+      min-height: 100vh;
       overflow-x: hidden;
     }
 
-    body::before {
+    .glass {
+      background: rgba(15, 23, 42, 0.62);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
+    }
+
+    .glow {
+      box-shadow:
+        0 0 0 1px rgba(96, 165, 250, 0.12),
+        0 8px 30px rgba(59, 130, 246, 0.15),
+        0 0 60px rgba(168, 85, 247, 0.08);
+    }
+
+    .grid-bg::before {
       content: "";
       position: fixed;
       inset: 0;
       pointer-events: none;
       background-image:
-        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: radial-gradient(circle at center, black, transparent 85%);
-      opacity: 0.3;
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
+      z-index: 0;
     }
 
-    .title-font {
-      font-family: 'Unbounded', sans-serif;
-    }
-
-    .glass {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(18px);
-    }
-
-    .hero-glow {
-      position: absolute;
-      inset: auto;
-      width: 22rem;
-      height: 22rem;
-      border-radius: 9999px;
-      filter: blur(70px);
-      opacity: 0.35;
-      pointer-events: none;
-    }
-
-    .scene {
-      perspective: 1200px;
-      width: min(72vw, 320px);
-      height: min(72vw, 320px);
+    .cube-scene {
+      width: 240px;
+      height: 240px;
+      perspective: 1000px;
       margin: 0 auto;
     }
 
     .cube {
       position: relative;
-      width: 100%;
-      height: 100%;
+      width: 160px;
+      height: 160px;
+      margin: 40px auto;
       transform-style: preserve-3d;
-      animation: cube-spin 18s linear infinite;
+      animation: spinCube 14s linear infinite;
     }
 
     .cube-face {
       position: absolute;
-      inset: 0;
+      width: 160px;
+      height: 160px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
       text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 1.5rem;
-      font-family: 'Unbounded', sans-serif;
-      font-size: clamp(1.1rem, 3vw, 1.8rem);
+      border-radius: 18px;
+      font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      backdrop-filter: blur(18px);
-      box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.06), 0 0 30px rgba(0, 0, 0, 0.24);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(6px);
+      box-shadow: inset 0 0 40px rgba(255,255,255,0.05), 0 0 30px rgba(0,0,0,0.25);
     }
 
-    .cube-face span {
-      text-shadow: 0 0 18px rgba(255, 255, 255, 0.16);
+    .face-front {
+      transform: translateZ(80px);
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.92), rgba(37, 99, 235, 0.45));
+      color: #93c5fd;
     }
 
-    .front, .back {
-      background: linear-gradient(145deg, rgba(249, 115, 22, 0.36), rgba(9, 16, 24, 0.62));
+    .face-back {
+      transform: rotateY(180deg) translateZ(80px);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(251, 146, 60, 0.35));
+      color: #fdba74;
     }
 
-    .left, .right {
-      background: linear-gradient(145deg, rgba(103, 232, 249, 0.26), rgba(9, 16, 24, 0.62));
+    .face-right {
+      transform: rotateY(90deg) translateZ(80px);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(249, 115, 22, 0.4));
+      color: #fed7aa;
     }
 
-    .top, .bottom {
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(9, 16, 24, 0.72));
+    .face-left {
+      transform: rotateY(-90deg) translateZ(80px);
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.92), rgba(59, 130, 246, 0.35));
+      color: #bfdbfe;
     }
 
-    .front  { transform: translateZ(160px); }
-    .back   { transform: rotateY(180deg) translateZ(160px); }
-    .right  { transform: rotateY(90deg) translateZ(160px); }
-    .left   { transform: rotateY(-90deg) translateZ(160px); }
-    .top    { transform: rotateX(90deg) translateZ(160px); }
-    .bottom { transform: rotateX(-90deg) translateZ(160px); }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 9999px;
-      padding: 0.5rem 0.9rem;
-      font-size: 0.9rem;
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.04);
+    .face-top {
+      transform: rotateX(90deg) translateZ(80px);
+      background: linear-gradient(135deg, rgba(76, 29, 149, 0.85), rgba(59, 130, 246, 0.25));
+      color: #ddd6fe;
     }
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+    .face-bottom {
+      transform: rotateX(-90deg) translateZ(80px);
+      background: linear-gradient(135deg, rgba(20, 83, 45, 0.85), rgba(14, 165, 233, 0.2));
+      color: #bbf7d0;
     }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @keyframes cube-spin {
+    @keyframes spinCube {
       0% { transform: rotateX(-18deg) rotateY(0deg); }
+      50% { transform: rotateX(18deg) rotateY(180deg); }
       100% { transform: rotateX(-18deg) rotateY(360deg); }
     }
 
-    @media (max-width: 768px) {
-      .scene {
-        width: 260px;
-        height: 260px;
-      }
-
-      .front  { transform: translateZ(130px); }
-      .back   { transform: rotateY(180deg) translateZ(130px); }
-      .right  { transform: rotateY(90deg) translateZ(130px); }
-      .left   { transform: rotateY(-90deg) translateZ(130px); }
-      .top    { transform: rotateX(90deg) translateZ(130px); }
-      .bottom { transform: rotateX(-90deg) translateZ(130px); }
+    .shine {
+      position: relative;
+      overflow: hidden;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .cube {
-        animation-duration: 30s;
-      }
+    .shine::after {
+      content: "";
+      position: absolute;
+      inset: -120% auto auto -20%;
+      width: 40%;
+      height: 320%;
+      transform: rotate(20deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+      animation: shineMove 6s linear infinite;
+      pointer-events: none;
+    }
 
-      .reveal {
-        transition: none;
-        opacity: 1;
-        transform: none;
-      }
+    @keyframes shineMove {
+      0% { left: -30%; }
+      100% { left: 130%; }
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    .repo-card:hover,
+    .event-card:hover,
+    .info-tile:hover {
+      transform: translateY(-4px);
+      border-color: rgba(96, 165, 250, 0.35);
+      box-shadow: 0 16px 40px rgba(2, 6, 23, 0.45), 0 0 24px rgba(59, 130, 246, 0.12);
+    }
+
+    .repo-card,
+    .event-card,
+    .info-tile {
+      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+
+    .loader {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 4px solid rgba(148, 163, 184, 0.24);
+      border-top-color: #60a5fa;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .section-anchor {
+      scroll-margin-top: 96px;
     }
   </style>
 </head>
-<body>
-  <main class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 py-8 sm:px-8 lg:px-12">
-    <div class="hero-glow left-[-6rem] top-20 bg-cyan-300"></div>
-    <div class="hero-glow bottom-10 right-[-4rem] bg-orange-400"></div>
-
-    <section class="grid flex-1 items-center gap-10 py-8 lg:grid-cols-[1.15fr_0.85fr] lg:py-16">
-      <div class="reveal space-y-7">
-        <div class="flex flex-wrap gap-3">
-          <span class="tag">Linux user</span>
-          <span class="tag">Firefox by default</span>
-          <span class="tag">Debian LTE node</span>
-        </div>
-
-        <div class="space-y-5">
-          <p class="title-font text-sm uppercase tracking-[0.35em] text-orange-300">Kion85 Hub</p>
-          <h1 class="title-font max-w-3xl text-4xl leading-tight sm:text-5xl lg:text-6xl">
-            Личный индекс с GitHub, GitLab и домашней сетью в одном месте.
-          </h1>
-          <p class="max-w-2xl text-lg leading-8 text-slate-300">
-            Здесь собраны мои основные ссылки, краткая информация о системе и сетевой схеме: три роутера, Linux как основная среда и Firefox как браузер по умолчанию.
-          </p>
-        </div>
-
-        <div class="flex flex-col gap-4 sm:flex-row">
-          <a href="https://github.com/kion85" target="_blank" rel="noreferrer" class="rounded-2xl border border-orange-300/30 bg-orange-500 px-6 py-4 text-center font-semibold text-slate-950 transition hover:-translate-y-1 hover:bg-orange-400">
-            Открыть GitHub
+<body class="text-slate-100 grid-bg">
+  <div class="relative z-10">
+    <header class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/60 backdrop-blur-xl">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-between gap-4 py-4">
+          <a href="#top" class="flex items-center gap-3 text-white font-semibold tracking-wide">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-orange-500 shadow-lg shadow-blue-500/20">K</span>
+            <span>Kion85</span>
           </a>
-          <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="rounded-2xl border border-cyan-300/30 bg-cyan-300/10 px-6 py-4 text-center font-semibold text-cyan-100 transition hover:-translate-y-1 hover:bg-cyan-300/20">
-            Открыть GitLab
-          </a>
-          <a href="https://discord.com/users/1476465632190140427" target="_blank" rel="noreferrer" class="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-center font-semibold text-white transition hover:-translate-y-1 hover:bg-white/10">
-            Discord ID
-          </a>
+          <nav class="flex flex-wrap items-center gap-2 text-sm text-slate-200">
+            <a href="#profile" class="rounded-full border border-white/10 px-4 py-2 hover:border-blue-400/50 hover:bg-white/5">Профиль</a>
+            <a href="#hardware" class="rounded-full border border-white/10 px-4 py-2 hover:border-blue-400/50 hover:bg-white/5">Сеть и железо</a>
+            <a href="#github-live" class="rounded-full border border-white/10 px-4 py-2 hover:border-blue-400/50 hover:bg-white/5">GitHub</a>
+            <a href="#gitlab-live" class="rounded-full border border-white/10 px-4 py-2 hover:border-orange-400/50 hover:bg-white/5">GitLab</a>
+            <a href="#contacts" class="rounded-full border border-white/10 px-4 py-2 hover:border-purple-400/50 hover:bg-white/5">Контакты</a>
+          </nav>
         </div>
       </div>
+    </header>
 
-      <div class="reveal glass relative rounded-[2rem] p-6 sm:p-8">
-        <div class="mb-6 flex items-center justify-between gap-4">
+    <main id="top" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+      <section id="profile" class="section-anchor grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <div class="space-y-6">
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300">
+            <span class="status-dot text-emerald-400 bg-current"></span>
+            Онлайн-профиль разработчика / Linux user
+          </div>
+
+          <div class="space-y-4">
+            <h1 class="text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+              Персональная страница
+              <span class="bg-gradient-to-r from-blue-400 via-cyan-300 to-orange-400 bg-clip-text text-transparent">Kion85</span>
+            </h1>
+            <p class="max-w-3xl text-lg text-slate-300 sm:text-xl">
+              GitHub и GitLab в одном месте: живая загрузка репозиториев и активности, 3D-куб, ссылки на профили и краткая информация о моей системе, сети и привычной рабочей среде.
+            </p>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div class="info-tile glass glow rounded-3xl p-5">
+              <div class="text-sm text-slate-400">Основная ОС</div>
+              <div class="mt-2 text-xl font-bold text-white">Linux</div>
+              <div class="mt-1 text-sm text-slate-300">Рабочая среда на Linux</div>
+            </div>
+            <div class="info-tile glass glow rounded-3xl p-5">
+              <div class="text-sm text-slate-400">Браузер по умолчанию</div>
+              <div class="mt-2 text-xl font-bold text-white">Firefox</div>
+              <div class="mt-1 text-sm text-slate-300">Используется по умолчанию</div>
+            </div>
+            <div class="info-tile glass glow rounded-3xl p-5">
+              <div class="text-sm text-slate-400">Маршрутизация</div>
+              <div class="mt-2 text-xl font-bold text-white">3 роутера</div>
+              <div class="mt-1 text-sm text-slate-300">Основной + резерв + 4G</div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <a href="https://github.com/kion85" target="_blank" rel="noreferrer" class="shine inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-400 px-6 py-3 font-semibold text-slate-950 shadow-lg shadow-blue-500/30 transition hover:scale-[1.02]">Открыть GitHub</a>
+            <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="shine inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-orange-400 to-amber-300 px-6 py-3 font-semibold text-slate-950 shadow-lg shadow-orange-500/30 transition hover:scale-[1.02]">Открыть GitLab</a>
+            <a href="#github-live" class="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white transition hover:border-blue-400/60 hover:bg-white/10">Смотреть репозитории</a>
+          </div>
+        </div>
+
+        <div class="glass glow rounded-[2rem] p-6 lg:p-8">
+          <div class="cube-scene">
+            <div class="cube" aria-label="3D куб GitHub и GitLab">
+              <div class="cube-face face-front">GitHub</div>
+              <div class="cube-face face-back">GitLab</div>
+              <div class="cube-face face-right">Kion85</div>
+              <div class="cube-face face-left">Repos</div>
+              <div class="cube-face face-top">Linux</div>
+              <div class="cube-face face-bottom">Firefox</div>
+            </div>
+          </div>
+          <div class="mt-4 text-center">
+            <div class="text-lg font-bold text-white">3D-куб профиля</div>
+            <p class="mt-2 text-sm text-slate-300">Вращающийся куб с акцентом на GitHub, GitLab и рабочее окружение.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="hardware" class="section-anchor mt-14 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <div class="glass glow rounded-[2rem] p-6 sm:p-8">
+          <div class="flex items-center gap-3">
+            <div class="rounded-2xl bg-gradient-to-br from-emerald-500/25 to-cyan-400/25 p-3 text-2xl">🛰️</div>
+            <div>
+              <h2 class="text-2xl font-bold text-white">Сеть, роутеры и окружение</h2>
+              <p class="text-slate-400">Краткая информация о домашней инфраструктуре и системе</p>
+            </div>
+          </div>
+
+          <div class="mt-6 space-y-4">
+            <div class="info-tile rounded-3xl border border-white/10 bg-slate-900/50 p-5">
+              <div class="text-sm text-slate-400">Основной роутер</div>
+              <div class="mt-1 text-xl font-semibold text-white">RV6699</div>
+            </div>
+            <div class="info-tile rounded-3xl border border-white/10 bg-slate-900/50 p-5">
+              <div class="text-sm text-slate-400">Второй роутер</div>
+              <div class="mt-1 text-xl font-semibold text-white">Rostelecom S1010</div>
+            </div>
+            <div class="info-tile rounded-3xl border border-white/10 bg-slate-900/50 p-5">
+              <div class="text-sm text-slate-400">Третий роутер</div>
+              <div class="mt-1 text-xl font-semibold text-white">4G LTE на Debian</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass glow rounded-[2rem] p-6 sm:p-8">
+          <h3 class="text-2xl font-bold text-white">Рабочий профиль</h3>
+          <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <div class="info-tile rounded-3xl border border-blue-400/15 bg-gradient-to-br from-blue-500/10 to-slate-900/70 p-5">
+              <div class="text-sm uppercase tracking-[0.18em] text-blue-300">Система</div>
+              <div class="mt-2 text-xl font-bold text-white">Linux</div>
+              <p class="mt-2 text-sm text-slate-300">Основная рабочая ОС для повседневного использования и задач.</p>
+            </div>
+            <div class="info-tile rounded-3xl border border-orange-400/15 bg-gradient-to-br from-orange-500/10 to-slate-900/70 p-5">
+              <div class="text-sm uppercase tracking-[0.18em] text-orange-300">Браузер</div>
+              <div class="mt-2 text-xl font-bold text-white">Firefox</div>
+              <p class="mt-2 text-sm text-slate-300">Используется по умолчанию как основной браузер.</p>
+            </div>
+            <div class="info-tile rounded-3xl border border-cyan-400/15 bg-gradient-to-br from-cyan-500/10 to-slate-900/70 p-5 sm:col-span-2">
+              <div class="text-sm uppercase tracking-[0.18em] text-cyan-300">Сетевой стек</div>
+              <div class="mt-2 text-xl font-bold text-white">Основной канал + резерв + мобильный LTE</div>
+              <p class="mt-2 text-sm text-slate-300">Три устройства в инфраструктуре позволяют держать гибкую домашнюю сеть: RV6699, Rostelecom S1010 и Debian-маршрутизатор с 4G LTE.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-14 grid gap-6 lg:grid-cols-3">
+        <div class="glass glow rounded-[2rem] p-6">
+          <div class="text-sm text-slate-400">Профиль GitHub</div>
+          <div class="mt-2 text-2xl font-black text-white">github.com/kion85</div>
+          <a href="https://github.com/kion85" target="_blank" rel="noreferrer" class="mt-5 inline-flex rounded-2xl border border-blue-400/30 bg-blue-400/10 px-5 py-3 font-semibold text-blue-200 hover:bg-blue-400/15">Перейти</a>
+        </div>
+        <div class="glass glow rounded-[2rem] p-6">
+          <div class="text-sm text-slate-400">Профиль GitLab</div>
+          <div class="mt-2 text-2xl font-black text-white">gitlab.com/kion85</div>
+          <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="mt-5 inline-flex rounded-2xl border border-orange-400/30 bg-orange-400/10 px-5 py-3 font-semibold text-orange-200 hover:bg-orange-400/15">Перейти</a>
+        </div>
+        <div id="contacts" class="glass glow rounded-[2rem] p-6">
+          <div class="text-sm text-slate-400">Discord</div>
+          <div class="mt-2 break-all text-xl font-black text-white">1476465632190140427</div>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <a href="https://discord.com/users/1476465632190140427" target="_blank" rel="noreferrer" class="inline-flex rounded-2xl border border-purple-400/30 bg-purple-400/10 px-5 py-3 font-semibold text-purple-200 hover:bg-purple-400/15">Открыть Discord</a>
+            <button id="copyDiscordBtn" class="inline-flex rounded-2xl border border-white/15 bg-white/5 px-5 py-3 font-semibold text-white hover:bg-white/10">Копировать ID</button>
+          </div>
+          <p id="copyStatus" class="mt-3 text-sm text-slate-400">Можно открыть профиль Discord или скопировать ID.</p>
+        </div>
+      </section>
+
+      <section id="github-live" class="section-anchor mt-16">
+        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p class="text-sm uppercase tracking-[0.28em] text-slate-400">3D Cube</p>
-            <h2 class="title-font mt-2 text-2xl">GitHub / GitLab</h2>
+            <div class="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/10 px-4 py-2 text-sm text-blue-300">
+              <span class="status-dot text-blue-400 bg-current"></span>
+              Живые данные GitHub API
+            </div>
+            <h2 class="mt-3 text-3xl font-black text-white">Репозитории и активность GitHub</h2>
+            <p class="mt-2 text-slate-400">Ниже загружаются реальные публичные репозитории и события профиля <span class="font-semibold text-white">kion85</span>.</p>
           </div>
-          <div class="rounded-full border border-white/10 px-4 py-2 text-sm text-slate-300">
-            rotate live
-          </div>
+          <div id="githubSummary" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">Загрузка данных GitHub...</div>
         </div>
 
-        <div class="scene">
-          <div class="cube" id="cube">
-            <div class="cube-face front"><span>GitHub</span></div>
-            <div class="cube-face back"><span>GitLab</span></div>
-            <div class="cube-face right"><span>Kion85</span></div>
-            <div class="cube-face left"><span>Linux</span></div>
-            <div class="cube-face top"><span>Firefox</span></div>
-            <div class="cube-face bottom"><span>Debian LTE</span></div>
+        <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+          <div class="glass glow rounded-[2rem] p-6 sm:p-8">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <h3 class="text-2xl font-bold text-white">Публичные репозитории GitHub</h3>
+              <a href="https://github.com/kion85?tab=repositories" target="_blank" rel="noreferrer" class="text-sm font-semibold text-blue-300 hover:text-blue-200">Открыть все</a>
+            </div>
+            <div id="githubReposLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка репозиториев GitHub...</p></div>
+            <div id="githubRepos" class="grid gap-4 md:grid-cols-2"></div>
+          </div>
+
+          <div class="glass glow rounded-[2rem] p-6 sm:p-8">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <h3 class="text-2xl font-bold text-white">Последняя активность GitHub</h3>
+              <a href="https://github.com/kion85" target="_blank" rel="noreferrer" class="text-sm font-semibold text-blue-300 hover:text-blue-200">Профиль</a>
+            </div>
+            <div id="githubEventsLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка активности GitHub...</p></div>
+            <div id="githubEvents" class="space-y-4"></div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="grid gap-6 pb-8 lg:grid-cols-[1.1fr_0.9fr]">
-      <article class="reveal glass rounded-[2rem] p-6 sm:p-8">
-        <div class="mb-6 flex items-center justify-between gap-4">
+      <section id="gitlab-live" class="section-anchor mt-16">
+        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p class="text-sm uppercase tracking-[0.28em] text-slate-400">Сеть</p>
-            <h2 class="title-font mt-2 text-2xl">Три роутера</h2>
+            <div class="inline-flex items-center gap-2 rounded-full border border-orange-400/20 bg-orange-400/10 px-4 py-2 text-sm text-orange-300">
+              <span class="status-dot text-orange-400 bg-current"></span>
+              Живые данные GitLab API
+            </div>
+            <h2 class="mt-3 text-3xl font-black text-white">Репозитории и активность GitLab</h2>
+            <p class="mt-2 text-slate-400">Ниже загружаются реальные проекты и события GitLab-профиля <span class="font-semibold text-white">kion85</span>.</p>
           </div>
-          <span class="rounded-full border border-orange-300/20 bg-orange-400/10 px-4 py-2 text-sm text-orange-200">home lab</span>
+          <div id="gitlabSummary" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">Загрузка данных GitLab...</div>
         </div>
 
-        <div class="grid gap-4 md:grid-cols-3">
-          <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
-            <p class="text-sm uppercase tracking-[0.24em] text-slate-400">01</p>
-            <h3 class="mt-3 text-xl font-semibold text-white">RV6699</h3>
-            <p class="mt-3 leading-7 text-slate-300">Основной роутер, который держит базовую домашнюю сеть и главный канал подключения.</p>
+        <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+          <div class="glass glow rounded-[2rem] p-6 sm:p-8">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <h3 class="text-2xl font-bold text-white">Публичные проекты GitLab</h3>
+              <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="text-sm font-semibold text-orange-300 hover:text-orange-200">Открыть профиль</a>
+            </div>
+            <div id="gitlabReposLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка проектов GitLab...</p></div>
+            <div id="gitlabRepos" class="grid gap-4 md:grid-cols-2"></div>
           </div>
-          <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
-            <p class="text-sm uppercase tracking-[0.24em] text-slate-400">02</p>
-            <h3 class="mt-3 text-xl font-semibold text-white">Rostelecom S1010</h3>
-            <p class="mt-3 leading-7 text-slate-300">Второй роутер в связке, дополняет инфраструктуру и расширяет сценарии подключения.</p>
-          </div>
-          <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
-            <p class="text-sm uppercase tracking-[0.24em] text-slate-400">03</p>
-            <h3 class="mt-3 text-xl font-semibold text-white">4G LTE на Debian</h3>
-            <p class="mt-3 leading-7 text-slate-300">Третий узел на Debian с LTE-модемом для мобильного канала и гибкости в сети.</p>
+
+          <div class="glass glow rounded-[2rem] p-6 sm:p-8">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <h3 class="text-2xl font-bold text-white">Последняя активность GitLab</h3>
+              <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="text-sm font-semibold text-orange-300 hover:text-orange-200">Профиль</a>
+            </div>
+            <div id="gitlabEventsLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка активности GitLab...</p></div>
+            <div id="gitlabEvents" class="space-y-4"></div>
           </div>
         </div>
-      </article>
+      </section>
 
-      <aside class="reveal glass rounded-[2rem] p-6 sm:p-8">
-        <p class="text-sm uppercase tracking-[0.28em] text-slate-400">Система</p>
-        <h2 class="title-font mt-2 text-2xl">Рабочая среда</h2>
-
-        <div class="mt-6 space-y-4">
-          <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
-            <p class="text-sm uppercase tracking-[0.24em] text-slate-400">OS</p>
-            <p class="mt-2 text-lg font-semibold text-white">Linux</p>
-            <p class="mt-2 leading-7 text-slate-300">Основная система для повседневной работы, сетевых задач и серверных сценариев.</p>
-          </div>
-
-          <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
-            <p class="text-sm uppercase tracking-[0.24em] text-slate-400">Browser</p>
-            <p class="mt-2 text-lg font-semibold text-white">Firefox по умолчанию</p>
-            <p class="mt-2 leading-7 text-slate-300">Привычный браузер для обычной работы, серфинга и доступа к сервисам.</p>
-          </div>
-
-          <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
-            <p class="text-sm uppercase tracking-[0.24em] text-slate-400">Discord</p>
-            <p class="mt-2 break-all text-lg font-semibold text-white">1476465632190140427</p>
-            <a href="https://discord.com/users/1476465632190140427" target="_blank" rel="noreferrer" class="mt-3 inline-flex text-sm font-semibold text-cyan-200 transition hover:text-cyan-100">
-              Перейти в Discord
-            </a>
-          </div>
-        </div>
-      </aside>
-    </section>
-  </main>
+      <footer class="mt-16 border-t border-white/10 py-8 text-center text-sm text-slate-400">
+        <p>все в одном</p>
+        <p class="mt-2">данные зависят от доступности github api и gitlab api</p>
+      </footer>
+    </main>
+  </div>
 
   <script>
-    const revealItems = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.18 });
+    const githubUsername = 'kion85';
+    const gitlabUsername = 'kion85';
+    const discordId = '1476465632190140427';
 
-    revealItems.forEach((item, index) => {
-      item.style.transitionDelay = `${index * 120}ms`;
-      observer.observe(item);
-    });
-
-    const cube = document.getElementById('cube');
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    if (!mediaQuery.matches) {
-      let mouseX = 0;
-      let mouseY = 0;
-
-      window.addEventListener('mousemove', (event) => {
-        mouseX = (event.clientX / window.innerWidth - 0.5) * 24;
-        mouseY = (event.clientY / window.innerHeight - 0.5) * -18;
-        cube.style.transform = `rotateX(${mouseY - 18}deg) rotateY(${mouseX}deg)`;
-      });
-
-      window.addEventListener('mouseleave', () => {
-        cube.style.transform = 'rotateX(-18deg) rotateY(0deg)';
-      });
+    function escapeHtml(value = '') {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
+
+    function formatDate(value) {
+      if (!value) return 'Дата неизвестна';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return new Intl.DateTimeFormat('ru-RU', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date);
+    }
+
+    function setSummary(id, text, type = 'default') {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = 'rounded-2xl border px-4 py-3 text-sm';
+      if (type === 'error') {
+        el.classList.add('border-red-400/20', 'bg-red-400/10', 'text-red-200');
+      } else if (type === 'success') {
+        el.classList.add('border-emerald-400/20', 'bg-emerald-400/10', 'text-emerald-200');
+      } else {
+        el.classList.add('border-white/10', 'bg-white/5', 'text-slate-300');
+      }
+    }
+
+    function repoLanguageBadge(language, accent) {
+      if (!language) return '';
+      const cls = accent === 'orange'
+        ? 'border-orange-400/20 bg-orange-400/10 text-orange-200'
+        : 'border-blue-400/20 bg-blue-400/10 text-blue-200';
+      return `<span class="rounded-full border ${cls} px-3 py-1 text-xs font-semibold">${escapeHtml(language)}</span>`;
+    }
+
+    function makeGithubRepoCard(repo) {
+      const stars = repo.stargazers_count ?? 0;
+      const forks = repo.forks_count ?? 0;
+      const issues = repo.open_issues_count ?? 0;
+      return `
+        <article class="repo-card rounded-3xl border border-white/10 bg-slate-900/55 p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h4 class="text-lg font-bold text-white">${escapeHtml(repo.name)}</h4>
+              <p class="mt-2 text-sm text-slate-300">${escapeHtml(repo.description || 'Описание отсутствует')}</p>
+            </div>
+            <span class="rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-xs font-bold text-blue-200">GitHub</span>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            ${repoLanguageBadge(repo.language, 'blue')}
+            ${repo.private ? '<span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">Private</span>' : '<span class="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">Public</span>'}
+          </div>
+          <div class="mt-4 grid grid-cols-3 gap-3 text-sm text-slate-300">
+            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Stars</div><div class="mt-1 font-bold text-white">${stars}</div></div>
+            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Forks</div><div class="mt-1 font-bold text-white">${forks}</div></div>
+            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Issues</div><div class="mt-1 font-bold text-white">${issues}</div></div>
+          </div>
+          <div class="mt-4 flex items-center justify-between gap-3 text-xs text-slate-400">
+            <span>Обновлён: ${formatDate(repo.updated_at)}</span>
+            <a href="${repo.html_url}" target="_blank" rel="noreferrer" class="font-semibold text-blue-300 hover:text-blue-200">Открыть →</a>
+          </div>
+        </article>
+      `;
+    }
+
+    function makeGitlabRepoCard(project) {
+      const stars = project.star_count ?? 0;
+      const forks = project.forks_count ?? 0;
+      return `
+        <article class="repo-card rounded-3xl border border-white/10 bg-slate-900/55 p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h4 class="text-lg font-bold text-white">${escapeHtml(project.name)}</h4>
+              <p class="mt-2 text-sm text-slate-300">${escapeHtml(project.description || 'Описание отсутствует')}</p>
+            </div>
+            <span class="rounded-full border border-orange-400/20 bg-orange-400/10 px-3 py-1 text-xs font-bold text-orange-200">GitLab</span>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            ${repoLanguageBadge(project.language, 'orange')}
+            <span class="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">${escapeHtml(project.visibility || 'public')}</span>
+          </div>
+          <div class="mt-4 grid grid-cols-3 gap-3 text-sm text-slate-300">
+            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Stars</div><div class="mt-1 font-bold text-white">${stars}</div></div>
+            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Forks</div><div class="mt-1 font-bold text-white">${forks}</div></div>
+            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Open issues</div><div class="mt-1 font-bold text-white">${project.open_issues_count ?? 0}</div></div>
+          </div>
+          <div class="mt-4 flex items-center justify-between gap-3 text-xs text-slate-400">
+            <span>Обновлён: ${formatDate(project.last_activity_at)}</span>
+            <a href="${project.web_url}" target="_blank" rel="noreferrer" class="font-semibold text-orange-300 hover:text-orange-200">Открыть →</a>
+          </div>
+        </article>
+      `;
+    }
+
+    function makeEventCard(title, subtitle, link, accent = 'blue') {
+      const accentClasses = accent === 'orange'
+        ? 'border-orange-400/20 bg-orange-400/10 text-orange-200'
+        : 'border-blue-400/20 bg-blue-400/10 text-blue-200';
+      const linkClass = accent === 'orange' ? 'text-orange-300 hover:text-orange-200' : 'text-blue-300 hover:text-blue-200';
+      return `
+        <article class="event-card rounded-3xl border border-white/10 bg-slate-900/55 p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="text-base font-bold text-white">${escapeHtml(title)}</div>
+              <div class="mt-2 text-sm text-slate-300">${escapeHtml(subtitle)}</div>
+            </div>
+            <span class="rounded-full border px-3 py-1 text-xs font-bold ${accentClasses}">${accent === 'orange' ? 'GitLab' : 'GitHub'}</span>
+          </div>
+          ${link ? `<div class="mt-4"><a href="${link}" target="_blank" rel="noreferrer" class="text-sm font-semibold ${linkClass}">Открыть связанный объект →</a></div>` : ''}
+        </article>
+      `;
+    }
+
+    function githubEventToText(event) {
+      const repoName = event.repo?.name || 'unknown repo';
+      switch (event.type) {
+        case 'PushEvent':
+          return {
+            title: `Push в ${repoName}`,
+            subtitle: `${event.payload?.commits?.length || 0} коммит(ов), ${formatDate(event.created_at)}`,
+            link: `https://github.com/${repoName}`
+          };
+        case 'CreateEvent':
+          return {
+            title: `Создан ${event.payload?.ref_type || 'объект'} в ${repoName}`,
+            subtitle: `${event.payload?.ref || 'без названия'}, ${formatDate(event.created_at)}`,
+            link: `https://github.com/${repoName}`
+          };
+        case 'WatchEvent':
+          return {
+            title: `Поставлена звезда ${repoName}`,
+            subtitle: `Событие WatchEvent, ${formatDate(event.created_at)}`,
+            link: `https://github.com/${repoName}`
+          };
+        case 'ForkEvent':
+          return {
+            title: `Форк репозитория ${repoName}`,
+            subtitle: `${formatDate(event.created_at)}`,
+            link: `https://github.com/${repoName}`
+          };
+        case 'IssuesEvent':
+          return {
+            title: `Работа с issue в ${repoName}`,
+            subtitle: `${event.payload?.action || 'изменение'} issue, ${formatDate(event.created_at)}`,
+            link: `https://github.com/${repoName}/issues`
+          };
+        case 'PullRequestEvent':
+          return {
+            title: `Pull Request в ${repoName}`,
+            subtitle: `${event.payload?.action || 'обновление'} PR, ${formatDate(event.created_at)}`,
+            link: `https://github.com/${repoName}/pulls`
+          };
+        default:
+          return {
+            title: `${event.type} в ${repoName}`,
+            subtitle: `${formatDate(event.created_at)}`,
+            link: `https://github.com/${repoName}`
+          };
+      }
+    }
+
+    function gitlabEventToText(event) {
+      const targetTitle = event.target_title || event.push_data?.ref || event.project?.name || 'проект';
+      const projectUrl = event.project?.web_url || event.project?.homepage || event.target?.web_url || '';
+      const action = event.action_name || event.action || 'activity';
+      return {
+        title: `${action} — ${targetTitle}`,
+        subtitle: `${event.project?.name ? 'Проект: ' + event.project.name + ' · ' : ''}${formatDate(event.created_at)}`,
+        link: projectUrl
+      };
+    }
+
+    async function fetchGitHubData() {
+      const reposContainer = document.getElementById('githubRepos');
+      const eventsContainer = document.getElementById('githubEvents');
+      const reposLoader = document.getElementById('githubReposLoader');
+      const eventsLoader = document.getElementById('githubEventsLoader');
+
+      try {
+        const [profileRes, reposRes, eventsRes] = await Promise.all([
+          fetch(`https://api.github.com/users/${githubUsername}`),
+          fetch(`https://api.github.com/users/${githubUsername}/repos?per_page=12&sort=updated`),
+          fetch(`https://api.github.com/users/${githubUsername}/events/public?per_page=8`)
+        ]);
+
+        if (!profileRes.ok || !reposRes.ok || !eventsRes.ok) {
+          throw new Error('Не удалось получить данные GitHub API');
+        }
+
+        const profile = await profileRes.json();
+        const repos = await reposRes.json();
+        const events = await eventsRes.json();
+
+        reposLoader.remove();
+        eventsLoader.remove();
+
+        if (Array.isArray(repos) && repos.length) {
+          reposContainer.innerHTML = repos.map(makeGithubRepoCard).join('');
+        } else {
+          reposContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Публичные репозитории GitHub не найдены.</div>';
+        }
+
+        if (Array.isArray(events) && events.length) {
+          eventsContainer.innerHTML = events.map((event) => {
+            const data = githubEventToText(event);
+            return makeEventCard(data.title, data.subtitle, data.link, 'blue');
+          }).join('');
+        } else {
+          eventsContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Нет доступной публичной активности GitHub.</div>';
+        }
+
+        setSummary('githubSummary', `GitHub: ${profile.public_repos ?? repos.length} публичных репозиториев, ${profile.followers ?? 0} подписчиков`, 'success');
+      } catch (error) {
+        console.error(error);
+        if (reposLoader) reposLoader.innerHTML = '';
+        if (eventsLoader) eventsLoader.innerHTML = '';
+        reposContainer.innerHTML = '<div class="rounded-3xl border border-red-400/20 bg-red-400/10 p-5 text-red-200">Ошибка загрузки репозиториев GitHub. Возможно, сработал лимит API или сеть недоступна.</div>';
+        eventsContainer.innerHTML = '<div class="rounded-3xl border border-red-400/20 bg-red-400/10 p-5 text-red-200">Ошибка загрузки активности GitHub.</div>';
+        setSummary('githubSummary', 'GitHub API временно недоступен или достигнут лимит запросов.', 'error');
+      }
+    }
+
+    async function fetchGitLabData() {
+      const reposContainer = document.getElementById('gitlabRepos');
+      const eventsContainer = document.getElementById('gitlabEvents');
+      const reposLoader = document.getElementById('gitlabReposLoader');
+      const eventsLoader = document.getElementById('gitlabEventsLoader');
+
+      try {
+        const searchRes = await fetch(`https://gitlab.com/api/v4/users?username=${encodeURIComponent(gitlabUsername)}`);
+        if (!searchRes.ok) {
+          throw new Error('Не удалось найти пользователя GitLab');
+        }
+
+        const users = await searchRes.json();
+        const user = Array.isArray(users) ? users[0] : null;
+        if (!user) {
+          throw new Error('Пользователь GitLab не найден');
+        }
+
+        const [projectsRes, eventsRes] = await Promise.all([
+          fetch(`https://gitlab.com/api/v4/users/${user.id}/projects?per_page=12&order_by=last_activity_at&sort=desc`),
+          fetch(`https://gitlab.com/api/v4/users/${user.id}/events?per_page=8`)
+        ]);
+
+        if (!projectsRes.ok || !eventsRes.ok) {
+          throw new Error('Не удалось получить проекты или события GitLab');
+        }
+
+        const projects = await projectsRes.json();
+        const events = await eventsRes.json();
+
+        reposLoader.remove();
+        eventsLoader.remove();
+
+        if (Array.isArray(projects) && projects.length) {
+          reposContainer.innerHTML = projects.map(makeGitlabRepoCard).join('');
+        } else {
+          reposContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Публичные проекты GitLab не найдены.</div>';
+        }
+
+        if (Array.isArray(events) && events.length) {
+          eventsContainer.innerHTML = events.map((event) => {
+            const data = gitlabEventToText(event);
+            return makeEventCard(data.title, data.subtitle, data.link, 'orange');
+          }).join('');
+        } else {
+          eventsContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Нет доступной публичной активности GitLab.</div>';
+        }
+
+        setSummary('gitlabSummary', `GitLab: ${projects.length} загруженных проектов, профиль ${user.username}`, 'success');
+      } catch (error) {
+        console.error(error);
+        if (reposLoader) reposLoader.innerHTML = '';
+        if (eventsLoader) eventsLoader.innerHTML = '';
+        reposContainer.innerHTML = '<div class="rounded-3xl border border-red-400/20 bg-red-400/10 p-5 text-red-200">Ошибка загрузки проектов GitLab. Проверь доступность API или приватность профиля.</div>';
+        eventsContainer.innerHTML = '<div class="rounded-3xl border border-red-400/20 bg-red-400/10 p-5 text-red-200">Ошибка загрузки активности GitLab.</div>';
+        setSummary('gitlabSummary', 'GitLab API временно недоступен, профиль не найден или данные скрыты.', 'error');
+      }
+    }
+
+    async function copyDiscordId() {
+      const status = document.getElementById('copyStatus');
+      try {
+        await navigator.clipboard.writeText(discordId);
+        status.textContent = `Discord ID ${discordId} скопирован.`;
+        status.className = 'mt-3 text-sm text-emerald-300';
+      } catch (error) {
+        status.textContent = `Не удалось скопировать автоматически. Discord ID: ${discordId}`;
+        status.className = 'mt-3 text-sm text-amber-300';
+      }
+    }
+
+    document.getElementById('copyDiscordBtn').addEventListener('click', copyDiscordId);
+
+    fetchGitHubData();
+    fetchGitLabData();
   </script>
 </body>
 </html>
