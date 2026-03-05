@@ -3,287 +3,593 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found</title>
+    <title>404 - Страница не найдена | kion85</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
             min-height: 100vh;
-            overflow: hidden;
-        }
-        
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        
-        .cube-container {
-            perspective: 1000px;
-        }
-        
-        .cube {
-            width: 200px;
-            height: 200px;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 25%, #0d1117 50%, #1c2128 75%, #0d1117 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            overflow-x: hidden;
             position: relative;
-            transform-style: preserve-3d;
-            animation: rotate 8s infinite linear;
         }
-        
-        @keyframes rotate {
-            from { transform: rotateX(-20deg) rotateY(0deg); }
-            to { transform: rotateX(-20deg) rotateY(360deg); }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        
-        .face {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(135deg, #238636 0%, #2ea043 50%, #238636 100%);
-            border: 3px solid #3fb950;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            font-weight: bold;
-            color: white;
-            text-shadow: 0 0 20px rgba(63, 185, 80, 0.5);
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
-        }
-        
-        .face.front  { transform: translateZ(100px); }
-        .face.back   { transform: rotateY(180deg) translateZ(100px); }
-        .face.right  { transform: rotateY(90deg) translateZ(100px); }
-        .face.left   { transform: rotateY(-90deg) translateZ(100px); }
-        .face.top    { transform: rotateX(90deg) translateZ(100px); }
-        .face.bottom { transform: rotateX(-90deg) translateZ(100px); }
-        
-        .stars {
+
+        /* Animated background particles */
+        .particles {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
         }
-        
-        .star {
+
+        .particle {
             position: absolute;
-            background: white;
+            width: 4px;
+            height: 4px;
+            background: rgba(88, 166, 255, 0.5);
             border-radius: 50%;
-            animation: twinkle 2s infinite ease-in-out;
+            animation: float 20s infinite;
         }
-        
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-        
-        .floating {
-            animation: float 3s ease-in-out infinite;
-        }
-        
+
         @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* 3D Cube */
+        .cube-container {
+            perspective: 1000px;
+            margin: 40px auto;
+        }
+
+        .cube {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 20s infinite linear;
+        }
+
+        @keyframes rotateCube {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+            100% {
+                transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+            }
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid rgba(88, 166, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .cube-face i {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .cube-face span {
+            display: block;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .face-front {
+            background: rgba(13, 17, 23, 0.9);
+            transform: translateZ(75px);
+        }
+
+        .face-back {
+            background: rgba(13, 17, 23, 0.9);
+            transform: rotateY(180deg) translateZ(75px);
+        }
+
+        .face-right {
+            background: rgba(13, 17, 23, 0.9);
+            transform: rotateY(90deg) translateZ(75px);
+        }
+
+        .face-left {
+            background: rgba(13, 17, 23, 0.9);
+            transform: rotateY(-90deg) translateZ(75px);
+        }
+
+        .face-top {
+            background: rgba(13, 17, 23, 0.9);
+            transform: rotateX(90deg) translateZ(75px);
+        }
+
+        .face-bottom {
+            background: rgba(13, 17, 23, 0.9);
+            transform: rotateX(-90deg) translateZ(75px);
+        }
+
+        /* 404 Text */
+        .error-code {
+            font-size: 180px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #58a6ff 0%, #8b949e 50%, #58a6ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 80px rgba(88, 166, 255, 0.5);
+            animation: pulse 3s ease-in-out infinite;
+            line-height: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% {
+                transform: scale(1.05);
+                filter: brightness(1.2);
+            }
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            border-radius: 16px;
+            padding: 25px 40px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(88, 166, 255, 0.8);
+            box-shadow: 0 10px 40px rgba(88, 166, 255, 0.2);
+        }
+
+        .stat-card.github:hover {
+            box-shadow: 0 10px 40px rgba(88, 166, 255, 0.3);
+        }
+
+        .stat-card.gitlab:hover {
+            box-shadow: 0 10px 40px rgba(252, 109, 38, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card.github .stat-icon {
+            color: #f0f6fc;
+        }
+
+        .stat-card.gitlab .stat-icon {
+            color: #fc6d26;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: #58a6ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Content */
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .message {
+            color: #8b949e;
+            font-size: 24px;
+            margin: 20px 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .sub-message {
+            color: #6e7681;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        /* Buttons */
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2ea043 0%, #3fb950 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(46, 160, 67, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #58a6ff;
+            border-color: #58a6ff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(88, 166, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(88, 166, 255, 0.3);
+        }
+
+        .btn-discord {
+            background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+            color: #ffffff;
+        }
+
+        .btn-discord:hover {
+            background: linear-gradient(135deg, #4752C4 0%, #3c45a8 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+        }
+
+        /* Loading animation */
+        .loading {
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Floating elements */
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
         }
-        
-        .git-branch {
+
+        /* Glitch effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
             position: absolute;
-            animation: branch 4s ease-in-out infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-        
-        @keyframes branch {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-10px) rotate(2deg); }
-            75% { transform: translateY(10px) rotate(-2deg); }
+
+        .glitch::before {
+            animation: glitch-1 0.3s infinite linear alternate-reverse;
+            color: #ff00c1;
+            z-index: -1;
         }
-        
-        .octocat {
-            animation: bounce 2s ease-in-out infinite;
+
+        .glitch::after {
+            animation: glitch-2 0.3s infinite linear alternate-reverse;
+            color: #00fff9;
+            z-index: -2;
         }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-15px) scale(1.05); }
+
+        @keyframes glitch-1 {
+            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+            40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+            80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 1px); }
+            100% { clip-path: inset(30% 0 50% 0); transform: translate(1px, -1px); }
         }
-        
-        .glow-green {
-            box-shadow: 0 0 30px rgba(63, 185, 80, 0.4), 0 0 60px rgba(63, 185, 80, 0.2);
+
+        @keyframes glitch-2 {
+            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -1px); }
+            20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(30% 0 20% 0); transform: translate(2px, 1px); }
+            60% { clip-path: inset(15% 0 80% 0); transform: translate(-1px, -2px); }
+            80% { clip-path: inset(55% 0 10% 0); transform: translate(1px, 2px); }
+            100% { clip-path: inset(40% 0 30% 0); transform: translate(-2px, 1px); }
         }
-        
-        .link-card {
-            transition: all 0.3s ease;
-        }
-        
-        .link-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        
-        .github-icon:hover {
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
-        }
-        
-        .gitlab-icon:hover {
-            filter: drop-shadow(0 0 10px rgba(252, 109, 38, 0.5));
-        }
-        
-        .terminal-line {
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 2px solid #3fb950;
-            animation: typing 3s steps(30) infinite, blink 0.5s step-end infinite;
-        }
-        
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        
-        @keyframes blink {
-            50% { border-color: transparent; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 120px;
+            }
+            
+            .cube {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .cube-face {
+                width: 100px;
+                height: 100px;
+                font-size: 18px;
+            }
+            
+            .cube-face i {
+                font-size: 35px;
+            }
+            
+            .face-front, .face-back, .face-right, .face-left, .face-top, .face-bottom {
+                transform: translateZ(50px);
+            }
+            
+            .face-back { transform: rotateY(180deg) translateZ(50px); }
+            .face-right { transform: rotateY(90deg) translateZ(50px); }
+            .face-left { transform: rotateY(-90deg) translateZ(50px); }
+            .face-top { transform: rotateX(90deg) translateZ(50px); }
+            .face-bottom { transform: rotateX(-90deg) translateZ(50px); }
+            
+            .stat-card {
+                padding: 20px 30px;
+            }
+            
+            .stat-number {
+                font-size: 32px;
+            }
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen relative">
-    <!-- Stars Background -->
-    <div class="stars" id="stars"></div>
-    
-    <!-- Git Branch Decorations -->
-    <svg class="git-branch absolute top-20 left-10 w-32 h-32 text-green-500/20" viewBox="0 0 24 24" fill="currentColor">
-        <circle cx="6" cy="6" r="3"/>
-        <circle cx="6" cy="18" r="3"/>
-        <circle cx="18" cy="12" r="3"/>
-        <path d="M6 9v6c0 1.1.9 2 2 2h10" stroke="currentColor" stroke-width="2" fill="none"/>
-    </svg>
-    
-    <svg class="git-branch absolute bottom-20 right-10 w-24 h-24 text-green-500/20" viewBox="0 0 24 24" fill="currentColor" style="animation-delay: -2s;">
-        <circle cx="6" cy="6" r="3"/>
-        <circle cx="6" cy="18" r="3"/>
-        <circle cx="18" cy="12" r="3"/>
-        <path d="M6 9v6c0 1.1.9 2 2 2h10" stroke="currentColor" stroke-width="2" fill="none"/>
-    </svg>
-    
+<body>
+    <!-- Background Particles -->
+    <div class="particles" id="particles"></div>
+
     <!-- Main Content -->
-    <div class="text-center z-10 px-4">
+    <div class="content">
         <!-- 3D Cube -->
-        <div class="cube-container mb-8">
+        <div class="cube-container floating">
             <div class="cube">
-                <div class="face front">4</div>
-                <div class="face back">4</div>
-                <div class="face right">0</div>
-                <div class="face left">0</div>
-                <div class="face top">4</div>
-                <div class="face bottom">0</div>
+                <div class="cube-face face-front">
+                    <div>
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </div>
+                </div>
+                <div class="cube-face face-back">
+                    <div>
+                        <i class="fab fa-gitlab"></i>
+                        <span>GitLab</span>
+                    </div>
+                </div>
+                <div class="cube-face face-right">
+                    <div>
+                        <i class="fab fa-linux"></i>
+                        <span>Linux</span>
+                    </div>
+                </div>
+                <div class="cube-face face-left">
+                    <div>
+                        <i class="fas fa-code"></i>
+                        <span>Code</span>
+                    </div>
+                </div>
+                <div class="cube-face face-top">
+                    <div>
+                        <i class="fas fa-terminal"></i>
+                        <span>Bash</span>
+                    </div>
+                </div>
+                <div class="cube-face face-bottom">
+                    <div>
+                        <i class="fas fa-server"></i>
+                        <span>DevOps</span>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <!-- Octocat -->
-        <div class="octocat mb-6">
-            <svg class="w-24 h-24 mx-auto" viewBox="0 0 24 24" fill="none">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" fill="#238636"/>
-            </svg>
+
+        <!-- 404 Error Code -->
+        <h1 class="error-code glitch" data-text="404">404</h1>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <a href="https://github.com/kion85" target="_blank" class="stat-card github">
+                <i class="fab fa-github stat-icon"></i>
+                <div class="stat-number loading" id="github-repos">--</div>
+                <div class="stat-label">GitHub Repositories</div>
+            </a>
+            <a href="https://gitlab.com/kion85" target="_blank" class="stat-card gitlab">
+                <i class="fab fa-gitlab stat-icon"></i>
+                <div class="stat-number loading" id="gitlab-repos">--</div>
+                <div class="stat-label">GitLab Projects</div>
+            </a>
         </div>
-        
-        <!-- Title -->
-        <h1 class="mono text-6xl md:text-8xl font-bold text-white mb-4 floating glow-green rounded-lg px-6 py-2 inline-block bg-black/30">
-            404
-        </h1>
-        
-        <!-- Subtitle -->
-        <p class="text-xl md:text-2xl text-gray-400 mb-2">
-            Repository not found
+
+        <!-- Message -->
+        <p class="message">Упс! Здесь ничего нет...</p>
+        <p class="sub-message">
+            Страница, которую вы ищете, не существует или была перемещена. 
+            Но вы всегда можете проверить мои репозитории!
         </p>
-        
-        <!-- Terminal style message -->
-        <div class="mono bg-black/50 rounded-lg p-4 max-w-md mx-auto mb-8 text-left">
-            <div class="text-green-400 text-sm">
-                <span class="text-blue-400">$</span> git clone page
-                <br>
-                <span class="text-red-400">error:</span> The page you're looking for doesn't exist
-                <br>
-                <span class="text-yellow-400">hint:</span> Check the URL or go home
-            </div>
-        </div>
-        
-        <!-- Links -->
-        <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
-            <!-- GitHub Link -->
-            <a href="https://github.com/kion85" target="_blank" rel="noopener noreferrer" 
-               class="link-card flex items-center gap-3 bg-gray-800/80 hover:bg-gray-700/80 border border-gray-600 rounded-xl px-6 py-4 transition-all">
-                <svg class="w-8 h-8 github-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-                </svg>
-                <div class="text-left">
-                    <div class="text-xs text-gray-400">GitHub</div>
-                    <div class="text-white font-semibold">@kion85</div>
-                </div>
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                </svg>
+
+        <!-- Buttons -->
+        <div class="btn-container">
+            <a href="https://github.com/kion85" target="_blank" class="btn btn-primary">
+                <i class="fab fa-github"></i>
+                GitHub Profile
             </a>
-            
-            <!-- GitLab Link -->
-            <a href="https://gitlab.com/kion85" target="_blank" rel="noopener noreferrer"
-               class="link-card flex items-center gap-3 bg-gray-800/80 hover:bg-gray-700/80 border border-gray-600 rounded-xl px-6 py-4 transition-all">
-                <svg class="w-8 h-8 gitlab-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"/>
-                </svg>
-                <div class="text-left">
-                    <div class="text-xs text-gray-400">GitLab</div>
-                    <div class="text-white font-semibold">@kion85</div>
-                </div>
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                </svg>
+            <a href="https://gitlab.com/kion85" target="_blank" class="btn btn-secondary">
+                <i class="fab fa-gitlab"></i>
+                GitLab Profile
             </a>
-        </div>
-        
-        <!-- Back button -->
-        <div class="mt-8">
-            <a href="/" class="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                </svg>
-                Go back home
+            <a href="https://discord.com/users/1476465632190140427" target="_blank" class="btn btn-discord">
+                <i class="fab fa-discord"></i>
+                Discord
+            </a>
+            <a href="/" class="btn btn-secondary">
+                <i class="fas fa-home"></i>
+                На главную
             </a>
         </div>
     </div>
-    
+
     <script>
-        // Generate stars
-        const starsContainer = document.getElementById('stars');
-        const starCount = 100;
-        
-        for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.width = Math.random() * 3 + 1 + 'px';
-            star.style.height = star.style.width;
-            star.style.animationDelay = Math.random() * 2 + 's';
-            star.style.animationDuration = (Math.random() * 2 + 1) + 's';
-            starsContainer.appendChild(star);
+        // Create background particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 20 + 15) + 's';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                particlesContainer.appendChild(particle);
+            }
         }
-        
-        // Add floating particles
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.className = 'absolute w-2 h-2 bg-green-500/30 rounded-full';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.bottom = '-10px';
-            particle.style.animation = `float ${Math.random() * 3 + 2}s linear forwards`;
-            document.body.appendChild(particle);
+
+        // Fetch GitHub stats
+        async function fetchGitHubStats() {
+            try {
+                const response = await fetch('https://api.github.com/users/kion85');
+                const data = await response.json();
+                
+                if (data.public_repos !== undefined) {
+                    document.getElementById('github-repos').textContent = data.public_repos;
+                    document.getElementById('github-repos').classList.remove('loading');
+                }
+            } catch (error) {
+                console.error('Error fetching GitHub stats:', error);
+                document.getElementById('github-repos').textContent = 'N/A';
+                document.getElementById('github-repos').classList.remove('loading');
+            }
+        }
+
+        // Fetch GitLab stats
+        async function fetchGitLabStats() {
+            try {
+                const response = await fetch('https://gitlab.com/api/v4/users?username=kion85');
+                const users = await response.json();
+                
+                if (users && users.length > 0) {
+                    const userId = users[0].id;
+                    const projectsResponse = await fetch(`https://gitlab.com/api/v4/users/${userId}/projects`);
+                    const projects = await projectsResponse.json();
+                    
+                    document.getElementById('gitlab-repos').textContent = projects.length;
+                    document.getElementById('gitlab-repos').classList.remove('loading');
+                }
+            } catch (error) {
+                console.error('Error fetching GitLab stats:', error);
+                document.getElementById('gitlab-repos').textContent = 'N/A';
+                document.getElementById('gitlab-repos').classList.remove('loading');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            fetchGitHubStats();
+            fetchGitLabStats();
+        });
+
+        // Add tilt effect to stat cards
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+            });
             
-            setTimeout(() => {
-                particle.remove();
-            }, 5000);
-        }
-        
-        setInterval(createParticle, 500);
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
     </script>
 </body>
 </html>
