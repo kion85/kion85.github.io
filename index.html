@@ -1,3 +1,7 @@
+
+
+
+Profile · HTML
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -10,11 +14,11 @@
     :root {
       color-scheme: dark;
     }
-
+ 
     html {
       scroll-behavior: smooth;
     }
-
+ 
     body {
       background:
         radial-gradient(circle at top left, rgba(88, 28, 135, 0.35), transparent 28%),
@@ -24,21 +28,21 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
+ 
     .glass {
       background: rgba(15, 23, 42, 0.62);
       border: 1px solid rgba(148, 163, 184, 0.16);
       backdrop-filter: blur(16px);
       box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
     }
-
+ 
     .glow {
       box-shadow:
         0 0 0 1px rgba(96, 165, 250, 0.12),
         0 8px 30px rgba(59, 130, 246, 0.15),
         0 0 60px rgba(168, 85, 247, 0.08);
     }
-
+ 
     .grid-bg::before {
       content: "";
       position: fixed;
@@ -51,14 +55,14 @@
       mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
       z-index: 0;
     }
-
+ 
     .cube-scene {
       width: 240px;
       height: 240px;
       perspective: 1000px;
       margin: 0 auto;
     }
-
+ 
     .cube {
       position: relative;
       width: 160px;
@@ -67,7 +71,7 @@
       transform-style: preserve-3d;
       animation: spinCube 14s linear infinite;
     }
-
+ 
     .cube-face {
       position: absolute;
       width: 160px;
@@ -84,54 +88,54 @@
       backdrop-filter: blur(6px);
       box-shadow: inset 0 0 40px rgba(255,255,255,0.05), 0 0 30px rgba(0,0,0,0.25);
     }
-
+ 
     .face-front {
       transform: translateZ(80px);
       background: linear-gradient(135deg, rgba(17, 24, 39, 0.92), rgba(37, 99, 235, 0.45));
       color: #93c5fd;
     }
-
+ 
     .face-back {
       transform: rotateY(180deg) translateZ(80px);
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(251, 146, 60, 0.35));
       color: #fdba74;
     }
-
+ 
     .face-right {
       transform: rotateY(90deg) translateZ(80px);
       background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(249, 115, 22, 0.4));
       color: #fed7aa;
     }
-
+ 
     .face-left {
       transform: rotateY(-90deg) translateZ(80px);
       background: linear-gradient(135deg, rgba(17, 24, 39, 0.92), rgba(59, 130, 246, 0.35));
       color: #bfdbfe;
     }
-
+ 
     .face-top {
       transform: rotateX(90deg) translateZ(80px);
       background: linear-gradient(135deg, rgba(76, 29, 149, 0.85), rgba(59, 130, 246, 0.25));
       color: #ddd6fe;
     }
-
+ 
     .face-bottom {
       transform: rotateX(-90deg) translateZ(80px);
       background: linear-gradient(135deg, rgba(20, 83, 45, 0.85), rgba(14, 165, 233, 0.2));
       color: #bbf7d0;
     }
-
+ 
     @keyframes spinCube {
       0% { transform: rotateX(-18deg) rotateY(0deg); }
       50% { transform: rotateX(18deg) rotateY(180deg); }
       100% { transform: rotateX(-18deg) rotateY(360deg); }
     }
-
+ 
     .shine {
       position: relative;
       overflow: hidden;
     }
-
+ 
     .shine::after {
       content: "";
       position: absolute;
@@ -143,12 +147,12 @@
       animation: shineMove 6s linear infinite;
       pointer-events: none;
     }
-
+ 
     @keyframes shineMove {
       0% { left: -30%; }
       100% { left: 130%; }
     }
-
+ 
     .status-dot {
       width: 10px;
       height: 10px;
@@ -156,21 +160,23 @@
       display: inline-block;
       box-shadow: 0 0 12px currentColor;
     }
-
+ 
     .repo-card:hover,
     .event-card:hover,
-    .info-tile:hover {
+    .info-tile:hover,
+    .game-card:hover {
       transform: translateY(-4px);
       border-color: rgba(96, 165, 250, 0.35);
       box-shadow: 0 16px 40px rgba(2, 6, 23, 0.45), 0 0 24px rgba(59, 130, 246, 0.12);
     }
-
+ 
     .repo-card,
     .event-card,
-    .info-tile {
+    .info-tile,
+    .game-card {
       transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
     }
-
+ 
     .loader {
       width: 42px;
       height: 42px;
@@ -180,13 +186,18 @@
       animation: spin 1s linear infinite;
       margin: 0 auto;
     }
-
+ 
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-
+ 
     .section-anchor {
       scroll-margin-top: 96px;
+    }
+ 
+    #flappyCanvas {
+      touch-action: none;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -204,30 +215,34 @@
             <a href="#hardware" class="rounded-full border border-white/10 px-4 py-2 hover:border-blue-400/50 hover:bg-white/5">Сеть и железо</a>
             <a href="#github-live" class="rounded-full border border-white/10 px-4 py-2 hover:border-blue-400/50 hover:bg-white/5">GitHub</a>
             <a href="#gitlab-live" class="rounded-full border border-white/10 px-4 py-2 hover:border-orange-400/50 hover:bg-white/5">GitLab</a>
+            <a href="#games" class="rounded-full border border-white/10 px-4 py-2 hover:border-emerald-400/50 hover:bg-white/5">Игры</a>
             <a href="#contacts" class="rounded-full border border-white/10 px-4 py-2 hover:border-purple-400/50 hover:bg-white/5">Контакты</a>
           </nav>
         </div>
       </div>
     </header>
-
+ 
     <main id="top" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
       <section id="profile" class="section-anchor grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
         <div class="space-y-6">
           <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300">
             <span class="status-dot text-emerald-400 bg-current"></span>
-            Онлайн-профиль разработчика / Linux user
+            Онлайн профиль разработчика, Linux user
           </div>
-
+ 
           <div class="space-y-4">
             <h1 class="text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
               Персональная страница
               <span class="bg-gradient-to-r from-blue-400 via-cyan-300 to-orange-400 bg-clip-text text-transparent">Kion85</span>
             </h1>
             <p class="max-w-3xl text-lg text-slate-300 sm:text-xl">
-              GitHub и GitLab в одном месте: живая загрузка репозиториев и активности, 3D-куб, ссылки на профили и краткая информация о моей системе, сети и привычной рабочей среде.
+              GitHub и GitLab в одном месте: живая загрузка репозиториев и активности, 3D куб, ссылки на профили и краткая информация о моей системе, сети и привычной рабочей среде.
+            </p>
+            <p class="max-w-3xl text-base text-slate-400">
+              Просто школьник, которому интересен Linux, сети и железо. Все проекты собраны на GitHub и GitLab под ником kion85.
             </p>
           </div>
-
+ 
           <div class="grid gap-4 sm:grid-cols-3">
             <div class="info-tile glass glow rounded-3xl p-5">
               <div class="text-sm text-slate-400">Основная ОС</div>
@@ -242,17 +257,17 @@
             <div class="info-tile glass glow rounded-3xl p-5">
               <div class="text-sm text-slate-400">Маршрутизация</div>
               <div class="mt-2 text-xl font-bold text-white">3 роутера</div>
-              <div class="mt-1 text-sm text-slate-300">Основной + резерв + 4G</div>
+              <div class="mt-1 text-sm text-slate-300">Основной, резерв и 4G</div>
             </div>
           </div>
-
+ 
           <div class="flex flex-wrap gap-3">
             <a href="https://github.com/kion85" target="_blank" rel="noreferrer" class="shine inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-400 px-6 py-3 font-semibold text-slate-950 shadow-lg shadow-blue-500/30 transition hover:scale-[1.02]">Открыть GitHub</a>
             <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="shine inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-orange-400 to-amber-300 px-6 py-3 font-semibold text-slate-950 shadow-lg shadow-orange-500/30 transition hover:scale-[1.02]">Открыть GitLab</a>
-            <a href="#github-live" class="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white transition hover:border-blue-400/60 hover:bg-white/10">Смотреть репозитории</a>
+            <a href="#games" class="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white transition hover:border-emerald-400/60 hover:bg-white/10">Простые игры</a>
           </div>
         </div>
-
+ 
         <div class="glass glow rounded-[2rem] p-6 lg:p-8">
           <div class="cube-scene">
             <div class="cube" aria-label="3D куб GitHub и GitLab">
@@ -265,12 +280,12 @@
             </div>
           </div>
           <div class="mt-4 text-center">
-            <div class="text-lg font-bold text-white">3D-куб профиля</div>
+            <div class="text-lg font-bold text-white">3D куб профиля</div>
             <p class="mt-2 text-sm text-slate-300">Вращающийся куб с акцентом на GitHub, GitLab и рабочее окружение.</p>
           </div>
         </div>
       </section>
-
+ 
       <section id="hardware" class="section-anchor mt-14 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
         <div class="glass glow rounded-[2rem] p-6 sm:p-8">
           <div class="flex items-center gap-3">
@@ -280,23 +295,23 @@
               <p class="text-slate-400">Краткая информация о домашней инфраструктуре и системе</p>
             </div>
           </div>
-
+ 
           <div class="mt-6 space-y-4">
             <div class="info-tile rounded-3xl border border-white/10 bg-slate-900/50 p-5">
               <div class="text-sm text-slate-400">Основной роутер</div>
-              <div class="mt-1 text-xl font-semibold text-white">RV6699</div>
+              <div class="mt-1 text-xl font-semibold text-white">RV669</div>
             </div>
             <div class="info-tile rounded-3xl border border-white/10 bg-slate-900/50 p-5">
               <div class="text-sm text-slate-400">Второй роутер</div>
-              <div class="mt-1 text-xl font-semibold text-white">Rostelecom S1010</div>
+              <div class="mt-1 text-xl font-semibold text-white">Rostelecom RT FL 1 | S1010</div>
             </div>
             <div class="info-tile rounded-3xl border border-white/10 bg-slate-900/50 p-5">
               <div class="text-sm text-slate-400">Третий роутер</div>
-              <div class="mt-1 text-xl font-semibold text-white">4G LTE на Debian</div>
+              <div class="mt-1 text-xl font-semibold text-white">ZTE 4G LTE</div>
             </div>
           </div>
         </div>
-
+ 
         <div class="glass glow rounded-[2rem] p-6 sm:p-8">
           <h3 class="text-2xl font-bold text-white">Рабочий профиль</h3>
           <div class="mt-6 grid gap-4 sm:grid-cols-2">
@@ -312,13 +327,13 @@
             </div>
             <div class="info-tile rounded-3xl border border-cyan-400/15 bg-gradient-to-br from-cyan-500/10 to-slate-900/70 p-5 sm:col-span-2">
               <div class="text-sm uppercase tracking-[0.18em] text-cyan-300">Сетевой стек</div>
-              <div class="mt-2 text-xl font-bold text-white">Основной канал + резерв + мобильный LTE</div>
-              <p class="mt-2 text-sm text-slate-300">Три устройства в инфраструктуре позволяют держать гибкую домашнюю сеть: RV6699, Rostelecom S1010 и Debian-маршрутизатор с 4G LTE.</p>
+              <div class="mt-2 text-xl font-bold text-white">Основной канал, резерв и мобильный LTE</div>
+              <p class="mt-2 text-sm text-slate-300">Три устройства в инфраструктуре позволяют держать гибкую домашнюю сеть: RV669, Rostelecom RT FL 1 | S1010 и ZTE 4G LTE.</p>
             </div>
           </div>
         </div>
       </section>
-
+ 
       <section class="mt-14 grid gap-6 lg:grid-cols-3">
         <div class="glass glow rounded-[2rem] p-6">
           <div class="text-sm text-slate-400">Профиль GitHub</div>
@@ -340,7 +355,7 @@
           <p id="copyStatus" class="mt-3 text-sm text-slate-400">Можно открыть профиль Discord или скопировать ID.</p>
         </div>
       </section>
-
+ 
       <section id="github-live" class="section-anchor mt-16">
         <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -353,7 +368,7 @@
           </div>
           <div id="githubSummary" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">Загрузка данных GitHub...</div>
         </div>
-
+ 
         <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
           <div class="glass glow rounded-[2rem] p-6 sm:p-8">
             <div class="mb-4 flex items-center justify-between gap-3">
@@ -363,7 +378,7 @@
             <div id="githubReposLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка репозиториев GitHub...</p></div>
             <div id="githubRepos" class="grid gap-4 md:grid-cols-2"></div>
           </div>
-
+ 
           <div class="glass glow rounded-[2rem] p-6 sm:p-8">
             <div class="mb-4 flex items-center justify-between gap-3">
               <h3 class="text-2xl font-bold text-white">Последняя активность GitHub</h3>
@@ -374,7 +389,7 @@
           </div>
         </div>
       </section>
-
+ 
       <section id="gitlab-live" class="section-anchor mt-16">
         <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -383,11 +398,11 @@
               Живые данные GitLab API
             </div>
             <h2 class="mt-3 text-3xl font-black text-white">Репозитории и активность GitLab</h2>
-            <p class="mt-2 text-slate-400">Ниже загружаются реальные проекты и события GitLab-профиля <span class="font-semibold text-white">kion85</span>.</p>
+            <p class="mt-2 text-slate-400">Ниже загружаются реальные проекты и события GitLab профиля <span class="font-semibold text-white">kion85</span>.</p>
           </div>
           <div id="gitlabSummary" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">Загрузка данных GitLab...</div>
         </div>
-
+ 
         <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
           <div class="glass glow rounded-[2rem] p-6 sm:p-8">
             <div class="mb-4 flex items-center justify-between gap-3">
@@ -397,7 +412,7 @@
             <div id="gitlabReposLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка проектов GitLab...</p></div>
             <div id="gitlabRepos" class="grid gap-4 md:grid-cols-2"></div>
           </div>
-
+ 
           <div class="glass glow rounded-[2rem] p-6 sm:p-8">
             <div class="mb-4 flex items-center justify-between gap-3">
               <h3 class="text-2xl font-bold text-white">Последняя активность GitLab</h3>
@@ -408,19 +423,68 @@
           </div>
         </div>
       </section>
-
+ 
+      <section id="games" class="section-anchor mt-16">
+        <div class="mb-6">
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300">
+            <span class="status-dot text-emerald-400 bg-current"></span>
+            Просто для развлечения
+          </div>
+          <h2 class="mt-3 text-3xl font-black text-white">Простые игры</h2>
+          <p class="mt-2 text-slate-400">Три маленькие игры прямо на странице: полёт птички, проверка реакции и быстрая математика.</p>
+        </div>
+ 
+        <div class="grid gap-6 lg:grid-cols-3">
+          <div class="game-card glass glow rounded-[2rem] p-6">
+            <h3 class="text-xl font-bold text-white">Флэппи Бёрд</h3>
+            <p class="mt-2 text-sm text-slate-300">Клик или пробел, чтобы взлетать. Не врезайся в трубы.</p>
+            <canvas id="flappyCanvas" width="320" height="360" class="mt-4 w-full rounded-2xl border border-white/10 bg-slate-950/70"></canvas>
+            <div class="mt-4 flex items-center justify-between text-sm text-slate-300">
+              <span>Счёт: <span id="flappyScore" class="font-bold text-white">0</span></span>
+              <button id="flappyRestart" class="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 font-semibold text-emerald-200 hover:bg-emerald-400/15">Заново</button>
+            </div>
+          </div>
+ 
+          <div class="game-card glass glow rounded-[2rem] p-6">
+            <h3 class="text-xl font-bold text-white">Игра на реакцию</h3>
+            <p class="mt-2 text-sm text-slate-300">Жди зелёный цвет и жми как можно быстрее.</p>
+            <button id="reactionBox" class="mt-4 flex h-48 w-full items-center justify-center rounded-2xl border border-white/10 bg-red-500/20 text-center text-lg font-semibold text-white transition">
+              Нажми, чтобы начать
+            </button>
+            <div class="mt-4 flex items-center justify-between text-sm text-slate-300">
+              <span>Время: <span id="reactionTime" class="font-bold text-white">—</span> мс</span>
+              <span>Лучшее: <span id="reactionBest" class="font-bold text-white">—</span> мс</span>
+            </div>
+          </div>
+ 
+          <div class="game-card glass glow rounded-[2rem] p-6">
+            <h3 class="text-xl font-bold text-white">Быстрая математика</h3>
+            <p class="mt-2 text-sm text-slate-300">Реши пример до конца таймера и набирай очки.</p>
+            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6 text-center">
+              <div id="mathQuestion" class="text-3xl font-black text-white">2 + 2</div>
+              <input id="mathInput" type="number" inputmode="numeric" placeholder="Ответ" class="mt-4 w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-3 text-center text-lg text-white outline-none focus:border-emerald-400/60" />
+            </div>
+            <div class="mt-4 flex items-center justify-between text-sm text-slate-300">
+              <span>Счёт: <span id="mathScore" class="font-bold text-white">0</span></span>
+              <span>Осталось: <span id="mathTimer" class="font-bold text-white">30</span> с</span>
+            </div>
+            <button id="mathRestart" class="mt-4 w-full rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 font-semibold text-emerald-200 hover:bg-emerald-400/15">Начать заново</button>
+          </div>
+        </div>
+      </section>
+ 
       <footer class="mt-16 border-t border-white/10 py-8 text-center text-sm text-slate-400">
         <p>все в одном</p>
         <p class="mt-2">данные зависят от доступности github api и gitlab api</p>
       </footer>
     </main>
   </div>
-
+ 
   <script>
     const githubUsername = 'kion85';
     const gitlabUsername = 'kion85';
     const discordId = '1476465632190140427';
-
+ 
     function escapeHtml(value = '') {
       return String(value)
         .replace(/&/g, '&amp;')
@@ -429,7 +493,7 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
     }
-
+ 
     function formatDate(value) {
       if (!value) return 'Дата неизвестна';
       const date = new Date(value);
@@ -442,7 +506,7 @@
         minute: '2-digit'
       }).format(date);
     }
-
+ 
     function setSummary(id, text, type = 'default') {
       const el = document.getElementById(id);
       el.textContent = text;
@@ -455,7 +519,7 @@
         el.classList.add('border-white/10', 'bg-white/5', 'text-slate-300');
       }
     }
-
+ 
     function repoLanguageBadge(language, accent) {
       if (!language) return '';
       const cls = accent === 'orange'
@@ -463,7 +527,7 @@
         : 'border-blue-400/20 bg-blue-400/10 text-blue-200';
       return `<span class="rounded-full border ${cls} px-3 py-1 text-xs font-semibold">${escapeHtml(language)}</span>`;
     }
-
+ 
     function makeGithubRepoCard(repo) {
       const stars = repo.stargazers_count ?? 0;
       const forks = repo.forks_count ?? 0;
@@ -493,7 +557,7 @@
         </article>
       `;
     }
-
+ 
     function makeGitlabRepoCard(project) {
       const stars = project.star_count ?? 0;
       const forks = project.forks_count ?? 0;
@@ -522,7 +586,7 @@
         </article>
       `;
     }
-
+ 
     function makeEventCard(title, subtitle, link, accent = 'blue') {
       const accentClasses = accent === 'orange'
         ? 'border-orange-400/20 bg-orange-400/10 text-orange-200'
@@ -541,7 +605,7 @@
         </article>
       `;
     }
-
+ 
     function githubEventToText(event) {
       const repoName = event.repo?.name || 'unknown repo';
       switch (event.type) {
@@ -589,48 +653,48 @@
           };
       }
     }
-
+ 
     function gitlabEventToText(event) {
       const targetTitle = event.target_title || event.push_data?.ref || event.project?.name || 'проект';
       const projectUrl = event.project?.web_url || event.project?.homepage || event.target?.web_url || '';
       const action = event.action_name || event.action || 'activity';
       return {
-        title: `${action} — ${targetTitle}`,
-        subtitle: `${event.project?.name ? 'Проект: ' + event.project.name + ' · ' : ''}${formatDate(event.created_at)}`,
+        title: `${action} ${targetTitle}`,
+        subtitle: `${event.project?.name ? 'Проект: ' + event.project.name + ', ' : ''}${formatDate(event.created_at)}`,
         link: projectUrl
       };
     }
-
+ 
     async function fetchGitHubData() {
       const reposContainer = document.getElementById('githubRepos');
       const eventsContainer = document.getElementById('githubEvents');
       const reposLoader = document.getElementById('githubReposLoader');
       const eventsLoader = document.getElementById('githubEventsLoader');
-
+ 
       try {
         const [profileRes, reposRes, eventsRes] = await Promise.all([
           fetch(`https://api.github.com/users/${githubUsername}`),
           fetch(`https://api.github.com/users/${githubUsername}/repos?per_page=12&sort=updated`),
           fetch(`https://api.github.com/users/${githubUsername}/events/public?per_page=8`)
         ]);
-
+ 
         if (!profileRes.ok || !reposRes.ok || !eventsRes.ok) {
           throw new Error('Не удалось получить данные GitHub API');
         }
-
+ 
         const profile = await profileRes.json();
         const repos = await reposRes.json();
         const events = await eventsRes.json();
-
+ 
         reposLoader.remove();
         eventsLoader.remove();
-
+ 
         if (Array.isArray(repos) && repos.length) {
           reposContainer.innerHTML = repos.map(makeGithubRepoCard).join('');
         } else {
           reposContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Публичные репозитории GitHub не найдены.</div>';
         }
-
+ 
         if (Array.isArray(events) && events.length) {
           eventsContainer.innerHTML = events.map((event) => {
             const data = githubEventToText(event);
@@ -639,7 +703,7 @@
         } else {
           eventsContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Нет доступной публичной активности GitHub.</div>';
         }
-
+ 
         setSummary('githubSummary', `GitHub: ${profile.public_repos ?? repos.length} публичных репозиториев, ${profile.followers ?? 0} подписчиков`, 'success');
       } catch (error) {
         console.error(error);
@@ -650,46 +714,46 @@
         setSummary('githubSummary', 'GitHub API временно недоступен или достигнут лимит запросов.', 'error');
       }
     }
-
+ 
     async function fetchGitLabData() {
       const reposContainer = document.getElementById('gitlabRepos');
       const eventsContainer = document.getElementById('gitlabEvents');
       const reposLoader = document.getElementById('gitlabReposLoader');
       const eventsLoader = document.getElementById('gitlabEventsLoader');
-
+ 
       try {
         const searchRes = await fetch(`https://gitlab.com/api/v4/users?username=${encodeURIComponent(gitlabUsername)}`);
         if (!searchRes.ok) {
           throw new Error('Не удалось найти пользователя GitLab');
         }
-
+ 
         const users = await searchRes.json();
         const user = Array.isArray(users) ? users[0] : null;
         if (!user) {
           throw new Error('Пользователь GitLab не найден');
         }
-
+ 
         const [projectsRes, eventsRes] = await Promise.all([
           fetch(`https://gitlab.com/api/v4/users/${user.id}/projects?per_page=12&order_by=last_activity_at&sort=desc`),
           fetch(`https://gitlab.com/api/v4/users/${user.id}/events?per_page=8`)
         ]);
-
+ 
         if (!projectsRes.ok || !eventsRes.ok) {
           throw new Error('Не удалось получить проекты или события GitLab');
         }
-
+ 
         const projects = await projectsRes.json();
         const events = await eventsRes.json();
-
+ 
         reposLoader.remove();
         eventsLoader.remove();
-
+ 
         if (Array.isArray(projects) && projects.length) {
           reposContainer.innerHTML = projects.map(makeGitlabRepoCard).join('');
         } else {
           reposContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Публичные проекты GitLab не найдены.</div>';
         }
-
+ 
         if (Array.isArray(events) && events.length) {
           eventsContainer.innerHTML = events.map((event) => {
             const data = gitlabEventToText(event);
@@ -698,7 +762,7 @@
         } else {
           eventsContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Нет доступной публичной активности GitLab.</div>';
         }
-
+ 
         setSummary('gitlabSummary', `GitLab: ${projects.length} загруженных проектов, профиль ${user.username}`, 'success');
       } catch (error) {
         console.error(error);
@@ -709,7 +773,7 @@
         setSummary('gitlabSummary', 'GitLab API временно недоступен, профиль не найден или данные скрыты.', 'error');
       }
     }
-
+ 
     async function copyDiscordId() {
       const status = document.getElementById('copyStatus');
       try {
@@ -721,11 +785,228 @@
         status.className = 'mt-3 text-sm text-amber-300';
       }
     }
-
+ 
     document.getElementById('copyDiscordBtn').addEventListener('click', copyDiscordId);
-
+ 
     fetchGitHubData();
     fetchGitLabData();
+ 
+    // Flappy Bird
+    (function flappyGame() {
+      const canvas = document.getElementById('flappyCanvas');
+      const ctx = canvas.getContext('2d');
+      const scoreEl = document.getElementById('flappyScore');
+      const restartBtn = document.getElementById('flappyRestart');
+      const W = canvas.width;
+      const H = canvas.height;
+ 
+      let bird, pipes, score, gravity, velocity, running, frame;
+ 
+      function resetFlappy() {
+        bird = { x: 70, y: H / 2, r: 12 };
+        pipes = [];
+        score = 0;
+        gravity = 0.45;
+        velocity = 0;
+        running = true;
+        frame = 0;
+        scoreEl.textContent = '0';
+      }
+ 
+      function spawnPipe() {
+        const gap = 120;
+        const top = 40 + Math.random() * (H - gap - 80);
+        pipes.push({ x: W, top, gap, w: 46, passed: false });
+      }
+ 
+      function update() {
+        if (!running) return;
+        frame++;
+        velocity += gravity;
+        bird.y += velocity;
+ 
+        if (frame % 90 === 0) spawnPipe();
+ 
+        pipes.forEach((p) => { p.x -= 2.6; });
+        pipes = pipes.filter((p) => p.x + p.w > -10);
+ 
+        pipes.forEach((p) => {
+          if (!p.passed && p.x + p.w < bird.x) {
+            p.passed = true;
+            score++;
+            scoreEl.textContent = String(score);
+          }
+          const withinX = bird.x + bird.r > p.x && bird.x - bird.r < p.x + p.w;
+          const hitTop = bird.y - bird.r < p.top;
+          const hitBottom = bird.y + bird.r > p.top + p.gap;
+          if (withinX && (hitTop || hitBottom)) {
+            running = false;
+          }
+        });
+ 
+        if (bird.y + bird.r > H || bird.y - bird.r < 0) {
+          running = false;
+        }
+      }
+ 
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = 'rgba(15,23,42,0.9)';
+        ctx.fillRect(0, 0, W, H);
+ 
+        ctx.fillStyle = '#34d399';
+        pipes.forEach((p) => {
+          ctx.fillRect(p.x, 0, p.w, p.top);
+          ctx.fillRect(p.x, p.top + p.gap, p.w, H - p.top - p.gap);
+        });
+ 
+        ctx.beginPath();
+        ctx.arc(bird.x, bird.y, bird.r, 0, Math.PI * 2);
+        ctx.fillStyle = '#fbbf24';
+        ctx.fill();
+ 
+        if (!running) {
+          ctx.fillStyle = 'rgba(2,6,23,0.6)';
+          ctx.fillRect(0, 0, W, H);
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 20px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('Конец игры', W / 2, H / 2 - 10);
+          ctx.font = '14px sans-serif';
+          ctx.fillText('Нажми Заново, чтобы попробовать снова', W / 2, H / 2 + 16);
+        }
+      }
+ 
+      function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+      }
+ 
+      function flap() {
+        if (!running) return;
+        velocity = -7.6;
+      }
+ 
+      canvas.addEventListener('pointerdown', flap);
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') flap();
+      });
+      restartBtn.addEventListener('click', resetFlappy);
+ 
+      resetFlappy();
+      loop();
+    })();
+ 
+    // Reaction game
+    (function reactionGame() {
+      const box = document.getElementById('reactionBox');
+      const timeEl = document.getElementById('reactionTime');
+      const bestEl = document.getElementById('reactionBest');
+      let state = 'idle';
+      let timeoutId = null;
+      let startTime = 0;
+      let best = null;
+ 
+      function setState(next, text, classes) {
+        state = next;
+        box.textContent = text;
+        box.className = 'mt-4 flex h-48 w-full items-center justify-center rounded-2xl border border-white/10 text-center text-lg font-semibold text-white transition ' + classes;
+      }
+ 
+      function startRound() {
+        setState('waiting', 'Жди зелёный...', 'bg-red-500/20');
+        const delay = 800 + Math.random() * 2200;
+        timeoutId = setTimeout(() => {
+          startTime = performance.now();
+          setState('ready', 'Жми сейчас', 'bg-emerald-500/30');
+        }, delay);
+      }
+ 
+      box.addEventListener('click', () => {
+        if (state === 'idle') {
+          startRound();
+          return;
+        }
+        if (state === 'waiting') {
+          clearTimeout(timeoutId);
+          setState('idle', 'Слишком рано, нажми чтобы начать', 'bg-amber-500/20');
+          return;
+        }
+        if (state === 'ready') {
+          const reaction = Math.round(performance.now() - startTime);
+          timeEl.textContent = String(reaction);
+          if (best === null || reaction < best) {
+            best = reaction;
+            bestEl.textContent = String(best);
+          }
+          setState('idle', 'Нажми, чтобы попробовать снова', 'bg-slate-500/20');
+        }
+      });
+    })();
+ 
+    // Math game
+    (function mathGame() {
+      const questionEl = document.getElementById('mathQuestion');
+      const inputEl = document.getElementById('mathInput');
+      const scoreEl = document.getElementById('mathScore');
+      const timerEl = document.getElementById('mathTimer');
+      const restartBtn = document.getElementById('mathRestart');
+ 
+      let score = 0;
+      let timeLeft = 30;
+      let answer = 0;
+      let timerId = null;
+ 
+      function newQuestion() {
+        const a = Math.floor(Math.random() * 20) + 1;
+        const b = Math.floor(Math.random() * 20) + 1;
+        const ops = ['+', '−', '×'];
+        const op = ops[Math.floor(Math.random() * ops.length)];
+        if (op === '+') answer = a + b;
+        if (op === '−') answer = a - b;
+        if (op === '×') answer = a * b;
+        questionEl.textContent = `${a} ${op} ${b}`;
+        inputEl.value = '';
+      }
+ 
+      function tick() {
+        timeLeft--;
+        timerEl.textContent = String(timeLeft);
+        if (timeLeft <= 0) {
+          clearInterval(timerId);
+          inputEl.disabled = true;
+          questionEl.textContent = `Готово, счёт ${score}`;
+        }
+      }
+ 
+      function checkAnswer() {
+        if (Number(inputEl.value) === answer) {
+          score++;
+          scoreEl.textContent = String(score);
+          newQuestion();
+        }
+      }
+ 
+      function startMath() {
+        score = 0;
+        timeLeft = 30;
+        scoreEl.textContent = '0';
+        timerEl.textContent = '30';
+        inputEl.disabled = false;
+        clearInterval(timerId);
+        timerId = setInterval(tick, 1000);
+        newQuestion();
+        inputEl.focus();
+      }
+ 
+      inputEl.addEventListener('input', checkAnswer);
+      restartBtn.addEventListener('click', startMath);
+ 
+      startMath();
+    })();
   </script>
 </body>
 </html>
+ 
+
