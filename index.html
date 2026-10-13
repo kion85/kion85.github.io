@@ -1,1012 +1,162 @@
-
-
-
-Profile · HTML
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kion85 — GitHub / GitLab Profile</title>
-  <meta name="description" content="Персональная страница Kion85 с GitHub, GitLab, 3D-кубом и живой загрузкой репозиториев и активности." />
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <style>
-    :root {
-      color-scheme: dark;
-    }
- 
-    html {
-      scroll-behavior: smooth;
-    }
- 
-    body {
-      background:
-        radial-gradient(circle at top left, rgba(88, 28, 135, 0.35), transparent 28%),
-        radial-gradient(circle at top right, rgba(30, 64, 175, 0.28), transparent 26%),
-        radial-gradient(circle at bottom, rgba(5, 150, 105, 0.15), transparent 30%),
-        linear-gradient(135deg, #050816 0%, #0b1023 45%, #111827 100%);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
- 
-    .glass {
-      background: rgba(15, 23, 42, 0.62);
-      border: 1px solid rgba(148, 163, 184, 0.16);
-      backdrop-filter: blur(16px);
-      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
-    }
- 
-    .glow {
-      box-shadow:
-        0 0 0 1px rgba(96, 165, 250, 0.12),
-        0 8px 30px rgba(59, 130, 246, 0.15),
-        0 0 60px rgba(168, 85, 247, 0.08);
-    }
- 
-    .grid-bg::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 32px 32px;
-      mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
-      z-index: 0;
-    }
- 
-    .cube-scene {
-      width: 240px;
-      height: 240px;
-      perspective: 1000px;
-      margin: 0 auto;
-    }
- 
-    .cube {
-      position: relative;
-      width: 160px;
-      height: 160px;
-      margin: 40px auto;
-      transform-style: preserve-3d;
-      animation: spinCube 14s linear infinite;
-    }
- 
-    .cube-face {
-      position: absolute;
-      width: 160px;
-      height: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      border-radius: 18px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border: 1px solid rgba(255,255,255,0.18);
-      backdrop-filter: blur(6px);
-      box-shadow: inset 0 0 40px rgba(255,255,255,0.05), 0 0 30px rgba(0,0,0,0.25);
-    }
- 
-    .face-front {
-      transform: translateZ(80px);
-      background: linear-gradient(135deg, rgba(17, 24, 39, 0.92), rgba(37, 99, 235, 0.45));
-      color: #93c5fd;
-    }
- 
-    .face-back {
-      transform: rotateY(180deg) translateZ(80px);
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(251, 146, 60, 0.35));
-      color: #fdba74;
-    }
- 
-    .face-right {
-      transform: rotateY(90deg) translateZ(80px);
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(249, 115, 22, 0.4));
-      color: #fed7aa;
-    }
- 
-    .face-left {
-      transform: rotateY(-90deg) translateZ(80px);
-      background: linear-gradient(135deg, rgba(17, 24, 39, 0.92), rgba(59, 130, 246, 0.35));
-      color: #bfdbfe;
-    }
- 
-    .face-top {
-      transform: rotateX(90deg) translateZ(80px);
-      background: linear-gradient(135deg, rgba(76, 29, 149, 0.85), rgba(59, 130, 246, 0.25));
-      color: #ddd6fe;
-    }
- 
-    .face-bottom {
-      transform: rotateX(-90deg) translateZ(80px);
-      background: linear-gradient(135deg, rgba(20, 83, 45, 0.85), rgba(14, 165, 233, 0.2));
-      color: #bbf7d0;
-    }
- 
-    @keyframes spinCube {
-      0% { transform: rotateX(-18deg) rotateY(0deg); }
-      50% { transform: rotateX(18deg) rotateY(180deg); }
-      100% { transform: rotateX(-18deg) rotateY(360deg); }
-    }
- 
-    .shine {
-      position: relative;
-      overflow: hidden;
-    }
- 
-    .shine::after {
-      content: "";
-      position: absolute;
-      inset: -120% auto auto -20%;
-      width: 40%;
-      height: 320%;
-      transform: rotate(20deg);
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-      animation: shineMove 6s linear infinite;
-      pointer-events: none;
-    }
- 
-    @keyframes shineMove {
-      0% { left: -30%; }
-      100% { left: 130%; }
-    }
- 
-    .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      display: inline-block;
-      box-shadow: 0 0 12px currentColor;
-    }
- 
-    .repo-card:hover,
-    .event-card:hover,
-    .info-tile:hover,
-    .game-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(96, 165, 250, 0.35);
-      box-shadow: 0 16px 40px rgba(2, 6, 23, 0.45), 0 0 24px rgba(59, 130, 246, 0.12);
-    }
- 
-    .repo-card,
-    .event-card,
-    .info-tile,
-    .game-card {
-      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
-    }
- 
-    .loader {
-      width: 42px;
-      height: 42px;
-      border-radius: 999px;
-      border: 4px solid rgba(148, 163, 184, 0.24);
-      border-top-color: #60a5fa;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
- 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
- 
-    .section-anchor {
-      scroll-margin-top: 96px;
-    }
- 
-    #flappyCanvas {
-      touch-action: none;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body class="text-slate-100 grid-bg">
-  <div class="relative z-10">
-    <header class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/60 backdrop-blur-xl">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-wrap items-center justify-between gap-4 py-4">
-          <a href="#top" class="flex items-center gap-3 text-white font-semibold tracking-wide">
-            <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-orange-500 shadow-lg shadow-blue-500/20">K</span>
-            <span>Kion85</span>
-          </a>
-          <nav class="flex flex-wrap items-center gap-2 text-sm text-slate-200">
-            <a href="#profile" class="rounded-full border border-white/10 px-4 py-2 hover:border-blue-400/50 hover:bg-white/5">Профиль</a>
-            <a href="#hardware" class="rounded-full border border-white/10 px-4 py-2 hover:border-blue-400/50 hover:bg-white/5">Сеть и железо</a>
-            <a href="#github-live" class="rounded-full border border-white/10 px-4 py-2 hover:border-blue-400/50 hover:bg-white/5">GitHub</a>
-            <a href="#gitlab-live" class="rounded-full border border-white/10 px-4 py-2 hover:border-orange-400/50 hover:bg-white/5">GitLab</a>
-            <a href="#games" class="rounded-full border border-white/10 px-4 py-2 hover:border-emerald-400/50 hover:bg-white/5">Игры</a>
-            <a href="#contacts" class="rounded-full border border-white/10 px-4 py-2 hover:border-purple-400/50 hover:bg-white/5">Контакты</a>
-          </nav>
-        </div>
-      </div>
-    </header>
- 
-    <main id="top" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
-      <section id="profile" class="section-anchor grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-        <div class="space-y-6">
-          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300">
-            <span class="status-dot text-emerald-400 bg-current"></span>
-            Онлайн профиль разработчика, Linux user
-          </div>
- 
-          <div class="space-y-4">
-            <h1 class="text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
-              Персональная страница
-              <span class="bg-gradient-to-r from-blue-400 via-cyan-300 to-orange-400 bg-clip-text text-transparent">Kion85</span>
-            </h1>
-            <p class="max-w-3xl text-lg text-slate-300 sm:text-xl">
-              GitHub и GitLab в одном месте: живая загрузка репозиториев и активности, 3D куб, ссылки на профили и краткая информация о моей системе, сети и привычной рабочей среде.
-            </p>
-            <p class="max-w-3xl text-base text-slate-400">
-              Просто школьник, которому интересен Linux, сети и железо. Все проекты собраны на GitHub и GitLab под ником kion85.
-            </p>
-          </div>
- 
-          <div class="grid gap-4 sm:grid-cols-3">
-            <div class="info-tile glass glow rounded-3xl p-5">
-              <div class="text-sm text-slate-400">Основная ОС</div>
-              <div class="mt-2 text-xl font-bold text-white">Linux</div>
-              <div class="mt-1 text-sm text-slate-300">Рабочая среда на Linux</div>
-            </div>
-            <div class="info-tile glass glow rounded-3xl p-5">
-              <div class="text-sm text-slate-400">Браузер по умолчанию</div>
-              <div class="mt-2 text-xl font-bold text-white">Firefox</div>
-              <div class="mt-1 text-sm text-slate-300">Используется по умолчанию</div>
-            </div>
-            <div class="info-tile glass glow rounded-3xl p-5">
-              <div class="text-sm text-slate-400">Маршрутизация</div>
-              <div class="mt-2 text-xl font-bold text-white">3 роутера</div>
-              <div class="mt-1 text-sm text-slate-300">Основной, резерв и 4G</div>
-            </div>
-          </div>
- 
-          <div class="flex flex-wrap gap-3">
-            <a href="https://github.com/kion85" target="_blank" rel="noreferrer" class="shine inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-400 px-6 py-3 font-semibold text-slate-950 shadow-lg shadow-blue-500/30 transition hover:scale-[1.02]">Открыть GitHub</a>
-            <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="shine inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-orange-400 to-amber-300 px-6 py-3 font-semibold text-slate-950 shadow-lg shadow-orange-500/30 transition hover:scale-[1.02]">Открыть GitLab</a>
-            <a href="#games" class="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white transition hover:border-emerald-400/60 hover:bg-white/10">Простые игры</a>
-          </div>
-        </div>
- 
-        <div class="glass glow rounded-[2rem] p-6 lg:p-8">
-          <div class="cube-scene">
-            <div class="cube" aria-label="3D куб GitHub и GitLab">
-              <div class="cube-face face-front">GitHub</div>
-              <div class="cube-face face-back">GitLab</div>
-              <div class="cube-face face-right">Kion85</div>
-              <div class="cube-face face-left">Repos</div>
-              <div class="cube-face face-top">Linux</div>
-              <div class="cube-face face-bottom">Firefox</div>
-            </div>
-          </div>
-          <div class="mt-4 text-center">
-            <div class="text-lg font-bold text-white">3D куб профиля</div>
-            <p class="mt-2 text-sm text-slate-300">Вращающийся куб с акцентом на GitHub, GitLab и рабочее окружение.</p>
-          </div>
-        </div>
-      </section>
- 
-      <section id="hardware" class="section-anchor mt-14 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <div class="glass glow rounded-[2rem] p-6 sm:p-8">
-          <div class="flex items-center gap-3">
-            <div class="rounded-2xl bg-gradient-to-br from-emerald-500/25 to-cyan-400/25 p-3 text-2xl">🛰️</div>
-            <div>
-              <h2 class="text-2xl font-bold text-white">Сеть, роутеры и окружение</h2>
-              <p class="text-slate-400">Краткая информация о домашней инфраструктуре и системе</p>
-            </div>
-          </div>
- 
-          <div class="mt-6 space-y-4">
-            <div class="info-tile rounded-3xl border border-white/10 bg-slate-900/50 p-5">
-              <div class="text-sm text-slate-400">Основной роутер</div>
-              <div class="mt-1 text-xl font-semibold text-white">RV669</div>
-            </div>
-            <div class="info-tile rounded-3xl border border-white/10 bg-slate-900/50 p-5">
-              <div class="text-sm text-slate-400">Второй роутер</div>
-              <div class="mt-1 text-xl font-semibold text-white">Rostelecom RT FL 1 | S1010</div>
-            </div>
-            <div class="info-tile rounded-3xl border border-white/10 bg-slate-900/50 p-5">
-              <div class="text-sm text-slate-400">Третий роутер</div>
-              <div class="mt-1 text-xl font-semibold text-white">ZTE 4G LTE</div>
-            </div>
-          </div>
-        </div>
- 
-        <div class="glass glow rounded-[2rem] p-6 sm:p-8">
-          <h3 class="text-2xl font-bold text-white">Рабочий профиль</h3>
-          <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            <div class="info-tile rounded-3xl border border-blue-400/15 bg-gradient-to-br from-blue-500/10 to-slate-900/70 p-5">
-              <div class="text-sm uppercase tracking-[0.18em] text-blue-300">Система</div>
-              <div class="mt-2 text-xl font-bold text-white">Linux</div>
-              <p class="mt-2 text-sm text-slate-300">Основная рабочая ОС для повседневного использования и задач.</p>
-            </div>
-            <div class="info-tile rounded-3xl border border-orange-400/15 bg-gradient-to-br from-orange-500/10 to-slate-900/70 p-5">
-              <div class="text-sm uppercase tracking-[0.18em] text-orange-300">Браузер</div>
-              <div class="mt-2 text-xl font-bold text-white">Firefox</div>
-              <p class="mt-2 text-sm text-slate-300">Используется по умолчанию как основной браузер.</p>
-            </div>
-            <div class="info-tile rounded-3xl border border-cyan-400/15 bg-gradient-to-br from-cyan-500/10 to-slate-900/70 p-5 sm:col-span-2">
-              <div class="text-sm uppercase tracking-[0.18em] text-cyan-300">Сетевой стек</div>
-              <div class="mt-2 text-xl font-bold text-white">Основной канал, резерв и мобильный LTE</div>
-              <p class="mt-2 text-sm text-slate-300">Три устройства в инфраструктуре позволяют держать гибкую домашнюю сеть: RV669, Rostelecom RT FL 1 | S1010 и ZTE 4G LTE.</p>
-            </div>
-          </div>
-        </div>
-      </section>
- 
-      <section class="mt-14 grid gap-6 lg:grid-cols-3">
-        <div class="glass glow rounded-[2rem] p-6">
-          <div class="text-sm text-slate-400">Профиль GitHub</div>
-          <div class="mt-2 text-2xl font-black text-white">github.com/kion85</div>
-          <a href="https://github.com/kion85" target="_blank" rel="noreferrer" class="mt-5 inline-flex rounded-2xl border border-blue-400/30 bg-blue-400/10 px-5 py-3 font-semibold text-blue-200 hover:bg-blue-400/15">Перейти</a>
-        </div>
-        <div class="glass glow rounded-[2rem] p-6">
-          <div class="text-sm text-slate-400">Профиль GitLab</div>
-          <div class="mt-2 text-2xl font-black text-white">gitlab.com/kion85</div>
-          <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="mt-5 inline-flex rounded-2xl border border-orange-400/30 bg-orange-400/10 px-5 py-3 font-semibold text-orange-200 hover:bg-orange-400/15">Перейти</a>
-        </div>
-        <div id="contacts" class="glass glow rounded-[2rem] p-6">
-          <div class="text-sm text-slate-400">Discord</div>
-          <div class="mt-2 break-all text-xl font-black text-white">1476465632190140427</div>
-          <div class="mt-5 flex flex-wrap gap-3">
-            <a href="https://discord.com/users/1476465632190140427" target="_blank" rel="noreferrer" class="inline-flex rounded-2xl border border-purple-400/30 bg-purple-400/10 px-5 py-3 font-semibold text-purple-200 hover:bg-purple-400/15">Открыть Discord</a>
-            <button id="copyDiscordBtn" class="inline-flex rounded-2xl border border-white/15 bg-white/5 px-5 py-3 font-semibold text-white hover:bg-white/10">Копировать ID</button>
-          </div>
-          <p id="copyStatus" class="mt-3 text-sm text-slate-400">Можно открыть профиль Discord или скопировать ID.</p>
-        </div>
-      </section>
- 
-      <section id="github-live" class="section-anchor mt-16">
-        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <div class="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/10 px-4 py-2 text-sm text-blue-300">
-              <span class="status-dot text-blue-400 bg-current"></span>
-              Живые данные GitHub API
-            </div>
-            <h2 class="mt-3 text-3xl font-black text-white">Репозитории и активность GitHub</h2>
-            <p class="mt-2 text-slate-400">Ниже загружаются реальные публичные репозитории и события профиля <span class="font-semibold text-white">kion85</span>.</p>
-          </div>
-          <div id="githubSummary" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">Загрузка данных GitHub...</div>
-        </div>
- 
-        <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-          <div class="glass glow rounded-[2rem] p-6 sm:p-8">
-            <div class="mb-4 flex items-center justify-between gap-3">
-              <h3 class="text-2xl font-bold text-white">Публичные репозитории GitHub</h3>
-              <a href="https://github.com/kion85?tab=repositories" target="_blank" rel="noreferrer" class="text-sm font-semibold text-blue-300 hover:text-blue-200">Открыть все</a>
-            </div>
-            <div id="githubReposLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка репозиториев GitHub...</p></div>
-            <div id="githubRepos" class="grid gap-4 md:grid-cols-2"></div>
-          </div>
- 
-          <div class="glass glow rounded-[2rem] p-6 sm:p-8">
-            <div class="mb-4 flex items-center justify-between gap-3">
-              <h3 class="text-2xl font-bold text-white">Последняя активность GitHub</h3>
-              <a href="https://github.com/kion85" target="_blank" rel="noreferrer" class="text-sm font-semibold text-blue-300 hover:text-blue-200">Профиль</a>
-            </div>
-            <div id="githubEventsLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка активности GitHub...</p></div>
-            <div id="githubEvents" class="space-y-4"></div>
-          </div>
-        </div>
-      </section>
- 
-      <section id="gitlab-live" class="section-anchor mt-16">
-        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <div class="inline-flex items-center gap-2 rounded-full border border-orange-400/20 bg-orange-400/10 px-4 py-2 text-sm text-orange-300">
-              <span class="status-dot text-orange-400 bg-current"></span>
-              Живые данные GitLab API
-            </div>
-            <h2 class="mt-3 text-3xl font-black text-white">Репозитории и активность GitLab</h2>
-            <p class="mt-2 text-slate-400">Ниже загружаются реальные проекты и события GitLab профиля <span class="font-semibold text-white">kion85</span>.</p>
-          </div>
-          <div id="gitlabSummary" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">Загрузка данных GitLab...</div>
-        </div>
- 
-        <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-          <div class="glass glow rounded-[2rem] p-6 sm:p-8">
-            <div class="mb-4 flex items-center justify-between gap-3">
-              <h3 class="text-2xl font-bold text-white">Публичные проекты GitLab</h3>
-              <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="text-sm font-semibold text-orange-300 hover:text-orange-200">Открыть профиль</a>
-            </div>
-            <div id="gitlabReposLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка проектов GitLab...</p></div>
-            <div id="gitlabRepos" class="grid gap-4 md:grid-cols-2"></div>
-          </div>
- 
-          <div class="glass glow rounded-[2rem] p-6 sm:p-8">
-            <div class="mb-4 flex items-center justify-between gap-3">
-              <h3 class="text-2xl font-bold text-white">Последняя активность GitLab</h3>
-              <a href="https://gitlab.com/kion85" target="_blank" rel="noreferrer" class="text-sm font-semibold text-orange-300 hover:text-orange-200">Профиль</a>
-            </div>
-            <div id="gitlabEventsLoader" class="py-10"><div class="loader"></div><p class="mt-4 text-center text-slate-400">Загрузка активности GitLab...</p></div>
-            <div id="gitlabEvents" class="space-y-4"></div>
-          </div>
-        </div>
-      </section>
- 
-      <section id="games" class="section-anchor mt-16">
-        <div class="mb-6">
-          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300">
-            <span class="status-dot text-emerald-400 bg-current"></span>
-            Просто для развлечения
-          </div>
-          <h2 class="mt-3 text-3xl font-black text-white">Простые игры</h2>
-          <p class="mt-2 text-slate-400">Три маленькие игры прямо на странице: полёт птички, проверка реакции и быстрая математика.</p>
-        </div>
- 
-        <div class="grid gap-6 lg:grid-cols-3">
-          <div class="game-card glass glow rounded-[2rem] p-6">
-            <h3 class="text-xl font-bold text-white">Флэппи Бёрд</h3>
-            <p class="mt-2 text-sm text-slate-300">Клик или пробел, чтобы взлетать. Не врезайся в трубы.</p>
-            <canvas id="flappyCanvas" width="320" height="360" class="mt-4 w-full rounded-2xl border border-white/10 bg-slate-950/70"></canvas>
-            <div class="mt-4 flex items-center justify-between text-sm text-slate-300">
-              <span>Счёт: <span id="flappyScore" class="font-bold text-white">0</span></span>
-              <button id="flappyRestart" class="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 font-semibold text-emerald-200 hover:bg-emerald-400/15">Заново</button>
-            </div>
-          </div>
- 
-          <div class="game-card glass glow rounded-[2rem] p-6">
-            <h3 class="text-xl font-bold text-white">Игра на реакцию</h3>
-            <p class="mt-2 text-sm text-slate-300">Жди зелёный цвет и жми как можно быстрее.</p>
-            <button id="reactionBox" class="mt-4 flex h-48 w-full items-center justify-center rounded-2xl border border-white/10 bg-red-500/20 text-center text-lg font-semibold text-white transition">
-              Нажми, чтобы начать
-            </button>
-            <div class="mt-4 flex items-center justify-between text-sm text-slate-300">
-              <span>Время: <span id="reactionTime" class="font-bold text-white">—</span> мс</span>
-              <span>Лучшее: <span id="reactionBest" class="font-bold text-white">—</span> мс</span>
-            </div>
-          </div>
- 
-          <div class="game-card glass glow rounded-[2rem] p-6">
-            <h3 class="text-xl font-bold text-white">Быстрая математика</h3>
-            <p class="mt-2 text-sm text-slate-300">Реши пример до конца таймера и набирай очки.</p>
-            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6 text-center">
-              <div id="mathQuestion" class="text-3xl font-black text-white">2 + 2</div>
-              <input id="mathInput" type="number" inputmode="numeric" placeholder="Ответ" class="mt-4 w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-3 text-center text-lg text-white outline-none focus:border-emerald-400/60" />
-            </div>
-            <div class="mt-4 flex items-center justify-between text-sm text-slate-300">
-              <span>Счёт: <span id="mathScore" class="font-bold text-white">0</span></span>
-              <span>Осталось: <span id="mathTimer" class="font-bold text-white">30</span> с</span>
-            </div>
-            <button id="mathRestart" class="mt-4 w-full rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 font-semibold text-emerald-200 hover:bg-emerald-400/15">Начать заново</button>
-          </div>
-        </div>
-      </section>
- 
-      <footer class="mt-16 border-t border-white/10 py-8 text-center text-sm text-slate-400">
-        <p>все в одном</p>
-        <p class="mt-2">данные зависят от доступности github api и gitlab api</p>
-      </footer>
-    </main>
-  </div>
- 
-  <script>
-    const githubUsername = 'kion85';
-    const gitlabUsername = 'kion85';
-    const discordId = '1476465632190140427';
- 
-    function escapeHtml(value = '') {
-      return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
- 
-    function formatDate(value) {
-      if (!value) return 'Дата неизвестна';
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return value;
-      return new Intl.DateTimeFormat('ru-RU', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }).format(date);
-    }
- 
-    function setSummary(id, text, type = 'default') {
-      const el = document.getElementById(id);
-      el.textContent = text;
-      el.className = 'rounded-2xl border px-4 py-3 text-sm';
-      if (type === 'error') {
-        el.classList.add('border-red-400/20', 'bg-red-400/10', 'text-red-200');
-      } else if (type === 'success') {
-        el.classList.add('border-emerald-400/20', 'bg-emerald-400/10', 'text-emerald-200');
-      } else {
-        el.classList.add('border-white/10', 'bg-white/5', 'text-slate-300');
-      }
-    }
- 
-    function repoLanguageBadge(language, accent) {
-      if (!language) return '';
-      const cls = accent === 'orange'
-        ? 'border-orange-400/20 bg-orange-400/10 text-orange-200'
-        : 'border-blue-400/20 bg-blue-400/10 text-blue-200';
-      return `<span class="rounded-full border ${cls} px-3 py-1 text-xs font-semibold">${escapeHtml(language)}</span>`;
-    }
- 
-    function makeGithubRepoCard(repo) {
-      const stars = repo.stargazers_count ?? 0;
-      const forks = repo.forks_count ?? 0;
-      const issues = repo.open_issues_count ?? 0;
-      return `
-        <article class="repo-card rounded-3xl border border-white/10 bg-slate-900/55 p-5">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <h4 class="text-lg font-bold text-white">${escapeHtml(repo.name)}</h4>
-              <p class="mt-2 text-sm text-slate-300">${escapeHtml(repo.description || 'Описание отсутствует')}</p>
-            </div>
-            <span class="rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-xs font-bold text-blue-200">GitHub</span>
-          </div>
-          <div class="mt-4 flex flex-wrap gap-2">
-            ${repoLanguageBadge(repo.language, 'blue')}
-            ${repo.private ? '<span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">Private</span>' : '<span class="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">Public</span>'}
-          </div>
-          <div class="mt-4 grid grid-cols-3 gap-3 text-sm text-slate-300">
-            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Stars</div><div class="mt-1 font-bold text-white">${stars}</div></div>
-            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Forks</div><div class="mt-1 font-bold text-white">${forks}</div></div>
-            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Issues</div><div class="mt-1 font-bold text-white">${issues}</div></div>
-          </div>
-          <div class="mt-4 flex items-center justify-between gap-3 text-xs text-slate-400">
-            <span>Обновлён: ${formatDate(repo.updated_at)}</span>
-            <a href="${repo.html_url}" target="_blank" rel="noreferrer" class="font-semibold text-blue-300 hover:text-blue-200">Открыть →</a>
-          </div>
-        </article>
-      `;
-    }
- 
-    function makeGitlabRepoCard(project) {
-      const stars = project.star_count ?? 0;
-      const forks = project.forks_count ?? 0;
-      return `
-        <article class="repo-card rounded-3xl border border-white/10 bg-slate-900/55 p-5">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <h4 class="text-lg font-bold text-white">${escapeHtml(project.name)}</h4>
-              <p class="mt-2 text-sm text-slate-300">${escapeHtml(project.description || 'Описание отсутствует')}</p>
-            </div>
-            <span class="rounded-full border border-orange-400/20 bg-orange-400/10 px-3 py-1 text-xs font-bold text-orange-200">GitLab</span>
-          </div>
-          <div class="mt-4 flex flex-wrap gap-2">
-            ${repoLanguageBadge(project.language, 'orange')}
-            <span class="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">${escapeHtml(project.visibility || 'public')}</span>
-          </div>
-          <div class="mt-4 grid grid-cols-3 gap-3 text-sm text-slate-300">
-            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Stars</div><div class="mt-1 font-bold text-white">${stars}</div></div>
-            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Forks</div><div class="mt-1 font-bold text-white">${forks}</div></div>
-            <div class="rounded-2xl bg-white/5 p-3"><div class="text-slate-400">Open issues</div><div class="mt-1 font-bold text-white">${project.open_issues_count ?? 0}</div></div>
-          </div>
-          <div class="mt-4 flex items-center justify-between gap-3 text-xs text-slate-400">
-            <span>Обновлён: ${formatDate(project.last_activity_at)}</span>
-            <a href="${project.web_url}" target="_blank" rel="noreferrer" class="font-semibold text-orange-300 hover:text-orange-200">Открыть →</a>
-          </div>
-        </article>
-      `;
-    }
- 
-    function makeEventCard(title, subtitle, link, accent = 'blue') {
-      const accentClasses = accent === 'orange'
-        ? 'border-orange-400/20 bg-orange-400/10 text-orange-200'
-        : 'border-blue-400/20 bg-blue-400/10 text-blue-200';
-      const linkClass = accent === 'orange' ? 'text-orange-300 hover:text-orange-200' : 'text-blue-300 hover:text-blue-200';
-      return `
-        <article class="event-card rounded-3xl border border-white/10 bg-slate-900/55 p-5">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <div class="text-base font-bold text-white">${escapeHtml(title)}</div>
-              <div class="mt-2 text-sm text-slate-300">${escapeHtml(subtitle)}</div>
-            </div>
-            <span class="rounded-full border px-3 py-1 text-xs font-bold ${accentClasses}">${accent === 'orange' ? 'GitLab' : 'GitHub'}</span>
-          </div>
-          ${link ? `<div class="mt-4"><a href="${link}" target="_blank" rel="noreferrer" class="text-sm font-semibold ${linkClass}">Открыть связанный объект →</a></div>` : ''}
-        </article>
-      `;
-    }
- 
-    function githubEventToText(event) {
-      const repoName = event.repo?.name || 'unknown repo';
-      switch (event.type) {
-        case 'PushEvent':
-          return {
-            title: `Push в ${repoName}`,
-            subtitle: `${event.payload?.commits?.length || 0} коммит(ов), ${formatDate(event.created_at)}`,
-            link: `https://github.com/${repoName}`
-          };
-        case 'CreateEvent':
-          return {
-            title: `Создан ${event.payload?.ref_type || 'объект'} в ${repoName}`,
-            subtitle: `${event.payload?.ref || 'без названия'}, ${formatDate(event.created_at)}`,
-            link: `https://github.com/${repoName}`
-          };
-        case 'WatchEvent':
-          return {
-            title: `Поставлена звезда ${repoName}`,
-            subtitle: `Событие WatchEvent, ${formatDate(event.created_at)}`,
-            link: `https://github.com/${repoName}`
-          };
-        case 'ForkEvent':
-          return {
-            title: `Форк репозитория ${repoName}`,
-            subtitle: `${formatDate(event.created_at)}`,
-            link: `https://github.com/${repoName}`
-          };
-        case 'IssuesEvent':
-          return {
-            title: `Работа с issue в ${repoName}`,
-            subtitle: `${event.payload?.action || 'изменение'} issue, ${formatDate(event.created_at)}`,
-            link: `https://github.com/${repoName}/issues`
-          };
-        case 'PullRequestEvent':
-          return {
-            title: `Pull Request в ${repoName}`,
-            subtitle: `${event.payload?.action || 'обновление'} PR, ${formatDate(event.created_at)}`,
-            link: `https://github.com/${repoName}/pulls`
-          };
-        default:
-          return {
-            title: `${event.type} в ${repoName}`,
-            subtitle: `${formatDate(event.created_at)}`,
-            link: `https://github.com/${repoName}`
-          };
-      }
-    }
- 
-    function gitlabEventToText(event) {
-      const targetTitle = event.target_title || event.push_data?.ref || event.project?.name || 'проект';
-      const projectUrl = event.project?.web_url || event.project?.homepage || event.target?.web_url || '';
-      const action = event.action_name || event.action || 'activity';
-      return {
-        title: `${action} ${targetTitle}`,
-        subtitle: `${event.project?.name ? 'Проект: ' + event.project.name + ', ' : ''}${formatDate(event.created_at)}`,
-        link: projectUrl
-      };
-    }
- 
-    async function fetchGitHubData() {
-      const reposContainer = document.getElementById('githubRepos');
-      const eventsContainer = document.getElementById('githubEvents');
-      const reposLoader = document.getElementById('githubReposLoader');
-      const eventsLoader = document.getElementById('githubEventsLoader');
- 
-      try {
-        const [profileRes, reposRes, eventsRes] = await Promise.all([
-          fetch(`https://api.github.com/users/${githubUsername}`),
-          fetch(`https://api.github.com/users/${githubUsername}/repos?per_page=12&sort=updated`),
-          fetch(`https://api.github.com/users/${githubUsername}/events/public?per_page=8`)
-        ]);
- 
-        if (!profileRes.ok || !reposRes.ok || !eventsRes.ok) {
-          throw new Error('Не удалось получить данные GitHub API');
-        }
- 
-        const profile = await profileRes.json();
-        const repos = await reposRes.json();
-        const events = await eventsRes.json();
- 
-        reposLoader.remove();
-        eventsLoader.remove();
- 
-        if (Array.isArray(repos) && repos.length) {
-          reposContainer.innerHTML = repos.map(makeGithubRepoCard).join('');
-        } else {
-          reposContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Публичные репозитории GitHub не найдены.</div>';
-        }
- 
-        if (Array.isArray(events) && events.length) {
-          eventsContainer.innerHTML = events.map((event) => {
-            const data = githubEventToText(event);
-            return makeEventCard(data.title, data.subtitle, data.link, 'blue');
-          }).join('');
-        } else {
-          eventsContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Нет доступной публичной активности GitHub.</div>';
-        }
- 
-        setSummary('githubSummary', `GitHub: ${profile.public_repos ?? repos.length} публичных репозиториев, ${profile.followers ?? 0} подписчиков`, 'success');
-      } catch (error) {
-        console.error(error);
-        if (reposLoader) reposLoader.innerHTML = '';
-        if (eventsLoader) eventsLoader.innerHTML = '';
-        reposContainer.innerHTML = '<div class="rounded-3xl border border-red-400/20 bg-red-400/10 p-5 text-red-200">Ошибка загрузки репозиториев GitHub. Возможно, сработал лимит API или сеть недоступна.</div>';
-        eventsContainer.innerHTML = '<div class="rounded-3xl border border-red-400/20 bg-red-400/10 p-5 text-red-200">Ошибка загрузки активности GitHub.</div>';
-        setSummary('githubSummary', 'GitHub API временно недоступен или достигнут лимит запросов.', 'error');
-      }
-    }
- 
-    async function fetchGitLabData() {
-      const reposContainer = document.getElementById('gitlabRepos');
-      const eventsContainer = document.getElementById('gitlabEvents');
-      const reposLoader = document.getElementById('gitlabReposLoader');
-      const eventsLoader = document.getElementById('gitlabEventsLoader');
- 
-      try {
-        const searchRes = await fetch(`https://gitlab.com/api/v4/users?username=${encodeURIComponent(gitlabUsername)}`);
-        if (!searchRes.ok) {
-          throw new Error('Не удалось найти пользователя GitLab');
-        }
- 
-        const users = await searchRes.json();
-        const user = Array.isArray(users) ? users[0] : null;
-        if (!user) {
-          throw new Error('Пользователь GitLab не найден');
-        }
- 
-        const [projectsRes, eventsRes] = await Promise.all([
-          fetch(`https://gitlab.com/api/v4/users/${user.id}/projects?per_page=12&order_by=last_activity_at&sort=desc`),
-          fetch(`https://gitlab.com/api/v4/users/${user.id}/events?per_page=8`)
-        ]);
- 
-        if (!projectsRes.ok || !eventsRes.ok) {
-          throw new Error('Не удалось получить проекты или события GitLab');
-        }
- 
-        const projects = await projectsRes.json();
-        const events = await eventsRes.json();
- 
-        reposLoader.remove();
-        eventsLoader.remove();
- 
-        if (Array.isArray(projects) && projects.length) {
-          reposContainer.innerHTML = projects.map(makeGitlabRepoCard).join('');
-        } else {
-          reposContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Публичные проекты GitLab не найдены.</div>';
-        }
- 
-        if (Array.isArray(events) && events.length) {
-          eventsContainer.innerHTML = events.map((event) => {
-            const data = gitlabEventToText(event);
-            return makeEventCard(data.title, data.subtitle, data.link, 'orange');
-          }).join('');
-        } else {
-          eventsContainer.innerHTML = '<div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-slate-300">Нет доступной публичной активности GitLab.</div>';
-        }
- 
-        setSummary('gitlabSummary', `GitLab: ${projects.length} загруженных проектов, профиль ${user.username}`, 'success');
-      } catch (error) {
-        console.error(error);
-        if (reposLoader) reposLoader.innerHTML = '';
-        if (eventsLoader) eventsLoader.innerHTML = '';
-        reposContainer.innerHTML = '<div class="rounded-3xl border border-red-400/20 bg-red-400/10 p-5 text-red-200">Ошибка загрузки проектов GitLab. Проверь доступность API или приватность профиля.</div>';
-        eventsContainer.innerHTML = '<div class="rounded-3xl border border-red-400/20 bg-red-400/10 p-5 text-red-200">Ошибка загрузки активности GitLab.</div>';
-        setSummary('gitlabSummary', 'GitLab API временно недоступен, профиль не найден или данные скрыты.', 'error');
-      }
-    }
- 
-    async function copyDiscordId() {
-      const status = document.getElementById('copyStatus');
-      try {
-        await navigator.clipboard.writeText(discordId);
-        status.textContent = `Discord ID ${discordId} скопирован.`;
-        status.className = 'mt-3 text-sm text-emerald-300';
-      } catch (error) {
-        status.textContent = `Не удалось скопировать автоматически. Discord ID: ${discordId}`;
-        status.className = 'mt-3 text-sm text-amber-300';
-      }
-    }
- 
-    document.getElementById('copyDiscordBtn').addEventListener('click', copyDiscordId);
- 
-    fetchGitHubData();
-    fetchGitLabData();
- 
-    // Flappy Bird
-    (function flappyGame() {
-      const canvas = document.getElementById('flappyCanvas');
-      const ctx = canvas.getContext('2d');
-      const scoreEl = document.getElementById('flappyScore');
-      const restartBtn = document.getElementById('flappyRestart');
-      const W = canvas.width;
-      const H = canvas.height;
- 
-      let bird, pipes, score, gravity, velocity, running, frame;
- 
-      function resetFlappy() {
-        bird = { x: 70, y: H / 2, r: 12 };
-        pipes = [];
-        score = 0;
-        gravity = 0.45;
-        velocity = 0;
-        running = true;
-        frame = 0;
-        scoreEl.textContent = '0';
-      }
- 
-      function spawnPipe() {
-        const gap = 120;
-        const top = 40 + Math.random() * (H - gap - 80);
-        pipes.push({ x: W, top, gap, w: 46, passed: false });
-      }
- 
-      function update() {
-        if (!running) return;
-        frame++;
-        velocity += gravity;
-        bird.y += velocity;
- 
-        if (frame % 90 === 0) spawnPipe();
- 
-        pipes.forEach((p) => { p.x -= 2.6; });
-        pipes = pipes.filter((p) => p.x + p.w > -10);
- 
-        pipes.forEach((p) => {
-          if (!p.passed && p.x + p.w < bird.x) {
-            p.passed = true;
-            score++;
-            scoreEl.textContent = String(score);
-          }
-          const withinX = bird.x + bird.r > p.x && bird.x - bird.r < p.x + p.w;
-          const hitTop = bird.y - bird.r < p.top;
-          const hitBottom = bird.y + bird.r > p.top + p.gap;
-          if (withinX && (hitTop || hitBottom)) {
-            running = false;
-          }
-        });
- 
-        if (bird.y + bird.r > H || bird.y - bird.r < 0) {
-          running = false;
-        }
-      }
- 
-      function draw() {
-        ctx.clearRect(0, 0, W, H);
-        ctx.fillStyle = 'rgba(15,23,42,0.9)';
-        ctx.fillRect(0, 0, W, H);
- 
-        ctx.fillStyle = '#34d399';
-        pipes.forEach((p) => {
-          ctx.fillRect(p.x, 0, p.w, p.top);
-          ctx.fillRect(p.x, p.top + p.gap, p.w, H - p.top - p.gap);
-        });
- 
-        ctx.beginPath();
-        ctx.arc(bird.x, bird.y, bird.r, 0, Math.PI * 2);
-        ctx.fillStyle = '#fbbf24';
-        ctx.fill();
- 
-        if (!running) {
-          ctx.fillStyle = 'rgba(2,6,23,0.6)';
-          ctx.fillRect(0, 0, W, H);
-          ctx.fillStyle = '#f8fafc';
-          ctx.font = 'bold 20px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('Конец игры', W / 2, H / 2 - 10);
-          ctx.font = '14px sans-serif';
-          ctx.fillText('Нажми Заново, чтобы попробовать снова', W / 2, H / 2 + 16);
-        }
-      }
- 
-      function loop() {
-        update();
-        draw();
-        requestAnimationFrame(loop);
-      }
- 
-      function flap() {
-        if (!running) return;
-        velocity = -7.6;
-      }
- 
-      canvas.addEventListener('pointerdown', flap);
-      document.addEventListener('keydown', (e) => {
-        if (e.code === 'Space') flap();
-      });
-      restartBtn.addEventListener('click', resetFlappy);
- 
-      resetFlappy();
-      loop();
-    })();
- 
-    // Reaction game
-    (function reactionGame() {
-      const box = document.getElementById('reactionBox');
-      const timeEl = document.getElementById('reactionTime');
-      const bestEl = document.getElementById('reactionBest');
-      let state = 'idle';
-      let timeoutId = null;
-      let startTime = 0;
-      let best = null;
- 
-      function setState(next, text, classes) {
-        state = next;
-        box.textContent = text;
-        box.className = 'mt-4 flex h-48 w-full items-center justify-center rounded-2xl border border-white/10 text-center text-lg font-semibold text-white transition ' + classes;
-      }
- 
-      function startRound() {
-        setState('waiting', 'Жди зелёный...', 'bg-red-500/20');
-        const delay = 800 + Math.random() * 2200;
-        timeoutId = setTimeout(() => {
-          startTime = performance.now();
-          setState('ready', 'Жми сейчас', 'bg-emerald-500/30');
-        }, delay);
-      }
- 
-      box.addEventListener('click', () => {
-        if (state === 'idle') {
-          startRound();
-          return;
-        }
-        if (state === 'waiting') {
-          clearTimeout(timeoutId);
-          setState('idle', 'Слишком рано, нажми чтобы начать', 'bg-amber-500/20');
-          return;
-        }
-        if (state === 'ready') {
-          const reaction = Math.round(performance.now() - startTime);
-          timeEl.textContent = String(reaction);
-          if (best === null || reaction < best) {
-            best = reaction;
-            bestEl.textContent = String(best);
-          }
-          setState('idle', 'Нажми, чтобы попробовать снова', 'bg-slate-500/20');
-        }
-      });
-    })();
- 
-    // Math game
-    (function mathGame() {
-      const questionEl = document.getElementById('mathQuestion');
-      const inputEl = document.getElementById('mathInput');
-      const scoreEl = document.getElementById('mathScore');
-      const timerEl = document.getElementById('mathTimer');
-      const restartBtn = document.getElementById('mathRestart');
- 
-      let score = 0;
-      let timeLeft = 30;
-      let answer = 0;
-      let timerId = null;
- 
-      function newQuestion() {
-        const a = Math.floor(Math.random() * 20) + 1;
-        const b = Math.floor(Math.random() * 20) + 1;
-        const ops = ['+', '−', '×'];
-        const op = ops[Math.floor(Math.random() * ops.length)];
-        if (op === '+') answer = a + b;
-        if (op === '−') answer = a - b;
-        if (op === '×') answer = a * b;
-        questionEl.textContent = `${a} ${op} ${b}`;
-        inputEl.value = '';
-      }
- 
-      function tick() {
-        timeLeft--;
-        timerEl.textContent = String(timeLeft);
-        if (timeLeft <= 0) {
-          clearInterval(timerId);
-          inputEl.disabled = true;
-          questionEl.textContent = `Готово, счёт ${score}`;
-        }
-      }
- 
-      function checkAnswer() {
-        if (Number(inputEl.value) === answer) {
-          score++;
-          scoreEl.textContent = String(score);
-          newQuestion();
-        }
-      }
- 
-      function startMath() {
-        score = 0;
-        timeLeft = 30;
-        scoreEl.textContent = '0';
-        timerEl.textContent = '30';
-        inputEl.disabled = false;
-        clearInterval(timerId);
-        timerId = setInterval(tick, 1000);
-        newQuestion();
-        inputEl.focus();
-      }
- 
-      inputEl.addEventListener('input', checkAnswer);
-      restartBtn.addEventListener('click', startMath);
- 
-      startMath();
-    })();
-  </script>
-</body>
-</html>
- 
-
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>k85 BIOS Setup — kion85</title>
+<style>
+:root{--bg:#0000a8;--fg:#c0c0c0;--ac:#ffff55;--hl:#00a8a8;--hf:#000;--fs:16px;--ff:'Courier New',monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:var(--fg);font:var(--fs)/1.4 var(--ff);min-height:100vh}
+#wall{position:fixed;inset:0;background:var(--bg) center/cover no-repeat}
+#wall::after{content:"";position:absolute;inset:0;background:#000;opacity:var(--dim,.35)}
+#app{position:relative;z-index:1;max-width:1100px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;border-left:2px solid var(--fg);border-right:2px solid var(--fg);background:color-mix(in srgb,var(--bg) 82%,transparent)}
+body.scan #app::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
+body.glow{text-shadow:0 0 6px currentColor}
+#ttl{text-align:center;padding:6px;border-bottom:2px solid var(--fg);color:var(--ac);font-weight:bold}
+#tabs{display:flex;flex-wrap:wrap;border-bottom:2px solid var(--fg)}
+#tabs button{border:0;background:none;color:var(--fg);font:inherit;padding:6px 14px;cursor:pointer}
+#tabs button.on{background:var(--hl);color:var(--hf)}
+main{flex:1;display:grid;grid-template-columns:1fr 250px}
+#pane{padding:12px 16px;border-right:2px solid var(--fg);min-width:0}
+#help{padding:12px;color:var(--ac);font-size:.9em}
+@media(max-width:760px){main{grid-template-columns:1fr}#pane{border-right:0}#help{border-top:2px solid var(--fg)}}
+h3{margin:14px 0 6px;color:var(--ac);font-size:1em;border-bottom:1px dashed var(--fg)}
+h3:first-child{margin-top:0}
+.r{display:flex;justify-content:space-between;gap:10px;padding:2px 4px;flex-wrap:wrap;align-items:center}
+.r:hover{background:color-mix(in srgb,var(--hl) 40%,transparent)}
+.r>span:last-child{color:var(--ac);text-align:right}
+button,input,select{font:inherit;color:var(--ac);background:transparent;border:1px solid var(--fg);padding:1px 6px;max-width:100%}
+input[type=color]{padding:0;height:24px;width:44px}
+input[type=range]{padding:0;accent-color:var(--ac)}
+button{cursor:pointer}
+button:focus,input:focus,select:focus,a:focus{outline:0;background:var(--hl);color:var(--hf)}
+select option{background:#000;color:#fff}
+a{color:var(--ac)}
+.li{display:flex;gap:8px;padding:2px 4px;align-items:center}
+.li.on{background:var(--hl);color:var(--hf)}.li.on button{color:var(--hf)}
+.li .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.wg div{border:1px solid var(--fg);padding:3px;text-align:center;font-size:.8em}
+.wg div.on{border-color:var(--ac);outline:2px solid var(--ac)}
+.wg img{width:100%;height:70px;object-fit:cover;display:block;cursor:pointer}
+canvas{border:1px solid var(--fg);max-width:100%;background:var(--bg);display:block;margin:6px 0}
+footer{border-top:2px solid var(--fg);padding:6px 12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.85em}
+footer .k{flex:1;min-width:200px}
+#nt{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ac)}
+#post{position:fixed;inset:0;z-index:9;background:#000;color:#ccc;padding:20px;white-space:pre-wrap;font:16px/1.4 'Courier New',monospace}
+#toast{position:fixed;right:14px;bottom:60px;z-index:8;background:var(--hl);color:var(--hf);padding:4px 12px;display:none}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head><body>
+<div id="wall"></div><div id="post"></div>
+<div id="app"><div id="ttl"></div><nav id="tabs"></nav>
+<main><section id="pane"></section><aside id="help"></aside></main>
+<footer><span class="k">←→ вкладки · ↑↓ пункты · Enter выбрать · F10 сохранить · Esc выход</span>
+<button id="p0" title="prev">⏮</button><button id="p1" title="play">▶</button><button id="p2" title="next">⏭</button>
+<span id="nt">— нет трека —</span><input type="range" id="sk" min="0" max="1000" value="0" style="width:110px"></footer></div>
+<div id="toast"></div>
+<script>
+const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TH={'AMI Classic':['#0000a8','#c0c0c0','#ffff55','#00a8a8','#000000'],'Award Amber':['#000000','#ffb000','#ffffff','#ffb000','#000000'],'Phoenix Slate':['#1c2b3a','#d0d8e0','#7fdbff','#7fdbff','#001018'],'Matrix':['#000a00','#00cc33','#aaffaa','#00cc33','#000000'],'GitHub Dark':['#0d1117','#c9d1d9','#58a6ff','#1f6feb','#ffffff'],'GitHub Light':['#ffffff','#24292f','#0969da','#0969da','#ffffff'],'Dracula':['#282a36','#f8f8f2','#bd93f9','#bd93f9','#282a36']};
+const FF={'Courier New':"'Courier New',monospace",'Consolas / Menlo':"Consolas,Menlo,'DejaVu Sans Mono',monospace",'Ubuntu Mono':"'Ubuntu Mono','Liberation Mono',monospace",'Sans-serif':"system-ui,sans-serif",'Serif':"Georgia,serif"};
+const DEF={theme:'AMI Classic',c:[...TH['AMI Classic']],fs:16,ff:FF['Courier New'],scan:1,glow:0,boot:1,dim:.35,slide:0,wall:null,title:'k85 BIOS Setup Utility',user:'kion85',vol:.7,shuf:0,rep:1};
+let S={...DEF};try{S={...DEF,...JSON.parse(localStorage.k85||'{}')}}catch{}
+const save=()=>localStorage.k85=JSON.stringify(S);
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',1800)}
+function theme(){const c=S.theme==='Custom'?S.c:TH[S.theme]||S.c,r=document.documentElement.style;
+['--bg','--fg','--ac','--hl','--hf'].forEach((k,i)=>r.setProperty(k,c[i]));r.setProperty('--fs',S.fs+'px');r.setProperty('--ff',S.ff);r.setProperty('--dim',S.dim);
+document.body.classList.toggle('scan',!!S.scan);document.body.classList.toggle('glow',!!S.glow);$('#ttl').textContent=S.title}
+/* storage: songs and wallpapers in IndexedDB */
+const idb=new Promise((r,j)=>{const q=indexedDB.open('k85bios',1);q.onupgradeneeded=()=>q.result.createObjectStore('f',{keyPath:'id',autoIncrement:true});q.onsuccess=()=>r(q.result);q.onerror=j});
+const tx=async(m,f)=>{const d=await idb;return new Promise((r,j)=>{const t=d.transaction('f',m),q=f(t.objectStore('f'));t.oncomplete=()=>r(q.result);t.onerror=j})};
+const dbAll=()=>tx('readonly',s=>s.getAll()),dbAdd=o=>tx('readwrite',s=>s.add(o)),dbDel=i=>tx('readwrite',s=>s.delete(i)),dbClr=()=>tx('readwrite',s=>s.clear());
+let pl=[],wl=[];
+async function refresh(){const a=await dbAll();pl=a.filter(x=>x.t==='s');wl=a.filter(x=>x.t==='w')}
+/* wallpaper */
+let wu,wt;
+function wall(){if(wu)URL.revokeObjectURL(wu);const f=wl.find(x=>x.id==S.wall);wu=f?URL.createObjectURL(f.blob):null;$('#wall').style.backgroundImage=wu?`url(${wu})`:'none';
+clearInterval(wt);if(S.slide>0&&wl.length>1)wt=setInterval(()=>{const i=wl.findIndex(x=>x.id==S.wall);S.wall=wl[(i+1)%wl.length].id;wall()},S.slide*1000)}
+/* player */
+const A=new Audio();let cur=-1,au;
+async function play(i){if(!pl.length)return;cur=(i+pl.length)%pl.length;if(au)URL.revokeObjectURL(au);au=URL.createObjectURL(pl[cur].blob);A.src=au;A.volume=S.vol;try{await A.play()}catch{}now()}
+function now(){$('#nt').textContent=cur>=0&&pl[cur]?pl[cur].name:'— нет трека —';$('#p1').textContent=A.paused?'▶':'⏸';if(tab==='Music')list()}
+A.onended=()=>{if(S.rep==2)play(cur);else if(S.shuf)play(Math.random()*pl.length|0);else if(cur<pl.length-1||S.rep==1)play(cur+1);else now()};
+A.onpause=A.onplay=now;A.ontimeupdate=()=>{if(A.duration)$('#sk').value=A.currentTime/A.duration*1000};
+$('#sk').oninput=e=>{if(A.duration)A.currentTime=e.target.value/1000*A.duration};
+$('#p0').onclick=()=>play(cur-1);$('#p2').onclick=()=>S.shuf?play(Math.random()*pl.length|0):play(cur+1);
+$('#p1').onclick=()=>{if(cur<0)play(0);else A.paused?A.play():A.pause()};
+/* tabs */
+const TABS=['Main','GitHub','Games','Customize','Wallpaper','Music','Exit'];let tab='Main',GH=null;
+function tabs(){$('#tabs').innerHTML=TABS.map(t=>`<button class="${t===tab?'on':''}" data-t="${t}">${t}</button>`).join('')}
+function go(t){stopG();tab=t;tabs();$('#pane').innerHTML=V[t]();B[t]&&B[t]();$('#help').textContent='Наведи или выбери пункт — здесь появится подсказка.'}
+$('#tabs').onclick=e=>{const t=e.target.dataset.t;t&&go(t)};
+const row=(l,c,h='')=>`<div class="r" data-h="${esc(h)}"><span>${l}</span><span>${c}</span></div>`;
+const opt=(o,v)=>o.map(x=>`<option ${x===v?'selected':''}>${esc(x)}</option>`).join('');
+const V={
+Main:()=>`<h3>System Information</h3>${row('BIOS','k85 Setup v1.0','BIOS-страница для твоего GitHub.')}${row('User',esc(S.user),'Ник на GitHub/GitLab.')}${row('System Time','<b id=clk></b>','Текущее время.')}${row('OS','Linux','Основная система.')}${row('Browser','Firefox','Браузер по умолчанию.')}
+<h3>Network</h3>${row('Primary router','RV669')}${row('Secondary router','Rostelecom RT FL 1 | S1010')}${row('Backup','ZTE 4G LTE')}
+<h3>Links</h3>${row('GitHub',`<a href="https://github.com/${esc(S.user)}" target="_blank" rel="noreferrer">github.com/${esc(S.user)}</a>`)}${row('GitLab',`<a href="https://gitlab.com/${esc(S.user)}" target="_blank" rel="noreferrer">gitlab.com/${esc(S.user)}</a>`)}
+<h3>Storage</h3>${row('Songs',pl.length,'Загружено треков.')}${row('Wallpapers',wl.length,'Загружено обоев.')}`,
+GitHub:()=>`<h3>GitHub Profile</h3><div id=ghp>Loading...</div><h3>Repositories</h3><div id=ghr></div><h3>Recent Activity</h3><div id=gha></div>`,
+Games:()=>`<h3>Flappy Bird <button id=fr>Reset</button> Score: <b id=fs>0</b></h3><canvas id=fc width=320 height=240></canvas>
+<h3>Reaction Test</h3><button id=rb style="width:100%;height:70px">Press to start</button><div class=r><span>Last: <b id=rl>—</b> ms</span><span>Best: <b id=rbst>—</b> ms</span></div>
+<h3>Quick Math <button id=mr>Restart</button></h3><div style="font-size:1.4em" id=mq></div><input id=mi type=number placeholder="answer"> Score <b id=ms>0</b> · Time <b id=mt>30</b>`,
+Customize:()=>{const cn=['Background','Text','Accent','Highlight','Highlight text'],c=S.theme==='Custom'?S.c:TH[S.theme]||S.c;return`<h3>Theme</h3>${row('Preset',`<select data-k=theme>${opt([...Object.keys(TH),'Custom'],S.theme)}</select>`,'Готовые темы. Любое изменение цвета переключает на Custom.')}
+${cn.map((n,i)=>row(n,`<input type=color data-c=${i} value="${c[i]}">`,'Свой цвет.')).join('')}
+<h3>Text</h3>${row('Font',`<select data-k=ff>${Object.entries(FF).map(([n,v])=>`<option value="${esc(v)}" ${v===S.ff?'selected':''}>${n}</option>`).join('')}</select>`)}${row('Font size '+S.fs,`<input type=range data-k=fs min=11 max=26 value=${S.fs}>`)}${row('Title',`<input data-k=title value="${esc(S.title)}">`,'Заголовок вверху.')}${row('GitHub user',`<input data-k=user value="${esc(S.user)}">`,'Ник, для которого грузятся репозитории.')}
+<h3>Effects</h3>${row('CRT scanlines',`<input type=checkbox data-k=scan ${S.scan?'checked':''}>`)}${row('Text glow',`<input type=checkbox data-k=glow ${S.glow?'checked':''}>`)}${row('POST boot screen',`<input type=checkbox data-k=boot ${S.boot?'checked':''}>`,'Экран загрузки при открытии.')}${row('Wallpaper dim '+S.dim,`<input type=range data-k=dim min=0 max=.9 step=.05 value=${S.dim}>`,'Затемнение обоев.')}
+<h3>Profile file</h3>${row('Settings',`<button id=ex>Export</button> <label><button onclick="this.nextElementSibling.click()">Import</button><input type=file id=im accept=.json hidden></label>`,'Сохранить настройки в файл или загрузить обратно.')}`},
+Wallpaper:()=>`<h3>Wallpapers</h3>${row('Add images',`<button onclick="$('#wf').click()">Add...</button><input type=file id=wf accept="image/*" multiple hidden>`,'PNG, JPG, GIF, WebP. Хранятся в браузере.')}${row('Slideshow '+(S.slide?S.slide+'s':'off'),`<input type=range data-k=slide min=0 max=120 step=5 value=${S.slide}>`,'0 — без смены. Иначе меняет обои по таймеру.')}${row('Default',`<button id=w0>No wallpaper</button>`)}<div class=wg id=wg></div>`,
+Music:()=>`<h3>Playlist</h3>${row('Add songs',`<button onclick="$('#sf').click()">Add...</button><input type=file id=sf accept="audio/*" multiple hidden>`,'MP3, OGG, WAV, FLAC и др. Хранятся в браузере.')}${row('Volume',`<input type=range data-k=vol min=0 max=1 step=.05 value=${S.vol}>`)}${row('Shuffle',`<input type=checkbox data-k=shuf ${S.shuf?'checked':''}>`)}${row('Repeat',`<select data-k=rep>${['Off','All','One'].map((o,i)=>`<option value=${i} ${i==S.rep?'selected':''}>${o}</option>`).join('')}</select>`)}<div id=pl></div>`,
+Exit:()=>`<h3>Exit</h3>${row('Save Changes',`<button id=xs>Save</button>`,'Настройки сохраняются автоматически, F10 — подтверждение.')}${row('Load Setup Defaults',`<button id=xd>Defaults</button>`,'Сброс настроек (песни и обои остаются).')}${row('Erase songs & wallpapers',`<button id=xe>Erase</button>`,'Удалить все загруженные файлы.')}${row('Reboot',`<button id=xr>Reboot</button>`,'Перезагрузить страницу.')}`};
+/* bindings */
+function list(){const e=$('#pl');if(!e)return;e.innerHTML=pl.length?pl.map((s,i)=>`<div class="li ${i===cur?'on':''}"><button data-p=${i}>${i===cur&&!A.paused?'⏸':'▶'}</button><span class=n>${i+1}. ${esc(s.name)}</span><span>${(s.blob.size/1048576).toFixed(1)}MB</span><button data-d=${s.id}>✕</button></div>`).join(''):'<div class=r>Playlist is empty — add songs.</div>'}
+function wgrid(){const g=$('#wg');if(!g)return;g.innerHTML=wl.map(w=>`<div class="${w.id==S.wall?'on':''}"><img data-w=${w.id} src="${w.u||(w.u=URL.createObjectURL(w.blob))}" alt=""><span class=n>${esc(w.name)}</span><br><button data-x=${w.id}>✕</button></div>`).join('')||'<div class=r>No wallpapers yet.</div>'}
+const B={
+Main(){const c=()=>{const e=$('#clk');if(e)e.textContent=new Date().toLocaleString('ru-RU')};c();clearInterval(B.t);B.t=setInterval(c,1000)},
+GitHub(){if(GH&&GH.u===S.user)return gh(GH);const u=S.user,g=x=>fetch('https://api.github.com/'+x).then(r=>{if(!r.ok)throw 0;return r.json()});
+Promise.all([g('users/'+u),g(`users/${u}/repos?per_page=30&sort=updated`),g(`users/${u}/events/public?per_page=10`)]).then(([p,r,e])=>{GH={u,p,r,e};if(tab==='GitHub')gh(GH)}).catch(()=>{$('#ghp').textContent='GitHub API error: нет сети, лимит запросов или неверный ник.';$('#ghr').textContent=$('#gha').textContent=''})},
+Games(){gameInit()},
+Customize(){$$('#pane [data-c]').forEach(i=>i.oninput=()=>{if(S.theme!=='Custom'){S.c=[...TH[S.theme]];S.theme='Custom';$('[data-k=theme]').value='Custom'}S.c[+i.dataset.c]=i.value;theme();save()});
+$$('#pane [data-k]').forEach(i=>i.onchange=i.oninput=()=>{const k=i.dataset.k;let v=i.type==='checkbox'?+i.checked:i.type==='range'||k==='rep'?+i.value:i.value;S[k]=v;
+if(k==='theme'&&v!=='Custom'){S.c=[...TH[v]];save();theme();return go('Customize')}theme();save();if(k==='vol')A.volume=v;if(k==='slide')wall();if(k==='fs'||k==='dim')i.closest('.r').firstChild.textContent=(k==='fs'?'Font size ':'Wallpaper dim ')+v});
+$('#ex').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));a.download='k85-bios.json';a.click()};
+$('#im').onchange=async e=>{try{S={...DEF,...JSON.parse(await e.target.files[0].text())};save();theme();go('Customize');toast('Imported')}catch{toast('Bad file')}}},
+Wallpaper(){wgrid();$('#wf').onchange=async e=>{for(const f of e.target.files)await dbAdd({t:'w',name:f.name,blob:f});await refresh();if(!S.wall&&wl.length)S.wall=wl[0].id;save();wall();wgrid()};
+$('#w0').onclick=()=>{S.wall=null;save();wall();wgrid()};
+$('#wg').onclick=async e=>{const d=e.target.dataset;if(d.w){S.wall=+d.w;save();wall();wgrid()}if(d.x){await dbDel(+d.x);if(S.wall==d.x)S.wall=null;await refresh();save();wall();wgrid()}}},
+Music(){list();$('#sf').onchange=async e=>{for(const f of e.target.files)await dbAdd({t:'s',name:f.name.replace(/\.[^.]+$/,''),blob:f});const id=pl[cur]?.id;await refresh();cur=pl.findIndex(x=>x.id===id);list()};
+$('#pl').onclick=async e=>{const d=e.target.dataset;if(d.p!==undefined)(+d.p===cur&&!A.paused)?A.pause():(+d.p===cur?A.play():play(+d.p));if(d.d){const id=pl[cur]?.id;if(id==d.d){A.pause();A.removeAttribute('src');cur=-1}await dbDel(+d.d);await refresh();if(cur>=0)cur=pl.findIndex(x=>x.id===id);now();list()}}},
+Exit(){$('#xs').onclick=()=>{save();toast('Saved')};$('#xd').onclick=()=>{S={...DEF};save();theme();wall();toast('Defaults loaded')};
+$('#xe').onclick=async()=>{if(confirm('Delete all songs and wallpapers?')){A.pause();cur=-1;await dbClr();await refresh();S.wall=null;save();wall();now();toast('Erased')}};$('#xr').onclick=()=>location.reload()}};
+function gh({p,r,e}){$('#ghp').innerHTML=`${row('Name',esc(p.name||p.login))}${row('Public repos',p.public_repos)}${row('Followers',p.followers)}${row('Bio',esc(p.bio||'—'))}`;
+$('#ghr').innerHTML=r.map(x=>`<div class=li><a class=n href="${esc(x.html_url)}" target=_blank rel=noreferrer title="${esc(x.description||'')}">${esc(x.name)}</a><span>${esc(x.language||'')}</span><span>★${x.stargazers_count}</span></div>`).join('')||'No public repositories.';
+$('#gha').innerHTML=e.map(x=>`<div class=li><span class=n>${esc(x.type.replace('Event',''))} → ${esc(x.repo.name)}</span><span>${new Date(x.created_at).toLocaleDateString('ru-RU')}</span></div>`).join('')||'No recent activity.'}
+document.addEventListener('mouseover',e=>{const r=e.target.closest('[data-h]');if(r)$('#help').textContent=r.dataset.h});
+document.addEventListener('focusin',e=>{const r=e.target.closest('[data-h]');if(r)$('#help').textContent=r.dataset.h});
+/* games */
+let graf=0,gk=null,mt;
+function stopG(){cancelAnimationFrame(graf);gk=null;clearInterval(mt)}
+function gameInit(){const cs=getComputedStyle(document.documentElement),col=v=>cs.getPropertyValue(v),c=$('#fc'),x=c.getContext('2d'),W=320,H=240;let b,v,p,s,run,f;
+const rs=()=>{b=H/2;v=0;p=[];s=0;run=1;f=0;$('#fs').textContent=0},fl=()=>{run?v=-6:rs()};rs();
+c.onpointerdown=fl;$('#fr').onclick=rs;gk=e=>{if(e.code==='Space'){e.preventDefault();fl()}};
+const loop=()=>{if(run){f++;v+=.36;b+=v;if(f%80==0)p.push({x:W,t:30+Math.random()*(H-180),s:0});p.forEach(o=>o.x-=2.3);p=p.filter(o=>o.x>-50);
+p.forEach(o=>{if(!o.s&&o.x+40<50){o.s=1;$('#fs').textContent=++s}if(60>o.x&&40<o.x+40&&(b-10<o.t||b+10>o.t+110))run=0});if(b>H||b<0)run=0}
+x.fillStyle=col('--bg');x.fillRect(0,0,W,H);x.fillStyle=col('--ac');p.forEach(o=>{x.fillRect(o.x,0,40,o.t);x.fillRect(o.x,o.t+110,40,H)});x.fillStyle=col('--fg');x.fillRect(40,b-10,20,20);
+if(!run){x.font='16px monospace';x.fillText('GAME OVER — click / Space',60,H/2)}graf=requestAnimationFrame(loop)};loop();
+let st='i',to,t0,best=null;const rb=$('#rb');rb.onclick=()=>{if(st==='i'){st='w';rb.textContent='Wait...';to=setTimeout(()=>{st='g';t0=performance.now();rb.textContent='NOW!';rb.style.background='#0a0'},800+Math.random()*2200)}
+else if(st==='w'){clearTimeout(to);st='i';rb.textContent='Too early! Press to retry'}else{const r=Math.round(performance.now()-t0);$('#rl').textContent=r;if(best===null||r<best)$('#rbst').textContent=best=r;st='i';rb.style.background='';rb.textContent='Press to retry'}};
+let ms,ma,tl;const q=()=>{const a=1+Math.random()*19|0,b=1+Math.random()*19|0,o='+-*'[Math.random()*3|0];ma=o=='+'?a+b:o=='-'?a-b:a*b;$('#mq').textContent=`${a} ${o=='*'?'×':o} ${b} = ?`;$('#mi').value=''},
+st2=()=>{ms=0;tl=30;$('#ms').textContent=0;$('#mt').textContent=30;$('#mi').disabled=false;clearInterval(mt);mt=setInterval(()=>{$('#mt').textContent=--tl;if(tl<=0){clearInterval(mt);$('#mi').disabled=true;$('#mq').textContent='Done: '+ms}},1000);q();$('#mi').focus()};
+$('#mi').oninput=e=>{if(+e.target.value===ma&&e.target.value!==''){$('#ms').textContent=++ms;q()}};$('#mr').onclick=st2;st2()}
+/* keys */
+document.addEventListener('keydown',e=>{const t=e.target.tagName;if(gk&&e.code==='Space'&&t!=='INPUT'){gk(e);return}
+if(e.key==='F10'){e.preventDefault();save();return toast('Saved')}if(e.key==='Escape')return go('Exit');
+if(['INPUT','SELECT','TEXTAREA'].includes(t)&&e.key!=='ArrowUp'&&e.key!=='ArrowDown')return;
+if(e.key==='ArrowRight'||e.key==='ArrowLeft'){if(t==='INPUT')return;go(TABS[(TABS.indexOf(tab)+(e.key==='ArrowRight'?1:TABS.length-1))%TABS.length])}
+if(e.key==='ArrowDown'||e.key==='ArrowUp'){const f=$$('#pane button,#pane input:not([hidden]),#pane select,#pane a'),i=f.indexOf(document.activeElement);if(t==='SELECT'||(t==='INPUT'&&document.activeElement.type==='range'&&0))return;e.preventDefault();f[(i+(e.key==='ArrowDown'?1:f.length-1)+(i<0?1:0))%f.length]?.focus()}});
+/* boot */
+async function init(){await refresh();theme();wall();tabs();go('Main');A.volume=S.vol;
+const P=$('#post'),L=['k85 BIOS v1.0  (C) kion85','',`CPU: Linux user @ ${esc(S.user)}`,'Memory Test: 640K OK',`Detecting GitHub... ${esc(S.user)}`,`Songs: ${pl.length}   Wallpapers: ${wl.length}`,'','Press ANY KEY or DEL to enter SETUP'];
+if(!S.boot)return P.remove();let i=0;const t=setInterval(()=>{P.textContent=L.slice(0,++i).join('\n');if(i>=L.length){clearInterval(t);setTimeout(end,500)}},170);
+function end(){P.remove();removeEventListener('keydown',end);removeEventListener('pointerdown',end)}addEventListener('keydown',end);addEventListener('pointerdown',end)}
+init();
+</script></body></html>
