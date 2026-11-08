@@ -1,241 +1,618 @@
 <!DOCTYPE html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>k85 UEFI — kion85</title>
-<style>
-:root{--bg:#0c0c10;--fg:#d8d8e0;--ac:#ff2d4a;--hl:#ff2d4a;--hf:#fff;--fs:15px;--ff:system-ui,'Segoe UI',Roboto,sans-serif;--r:6px;--po:.88;--dim:.35;
---ln:color-mix(in srgb,var(--bg) 70%,var(--fg));--p:color-mix(in srgb,color-mix(in srgb,var(--bg) 92%,var(--fg)) calc(var(--po)*100%),transparent);--mu:color-mix(in srgb,var(--fg) 60%,var(--bg))}
-*{box-sizing:border-box;margin:0}
-body{background:var(--bg);color:var(--fg);font:var(--fs)/1.4 var(--ff);min-height:100vh}
-#wall{position:fixed;inset:0;background:var(--bg) center/cover no-repeat}
-#wall::after{content:"";position:absolute;inset:0;background:#000;opacity:var(--dim)}
-#app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
-body.scan #app::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px);z-index:4}
-body.glow{text-shadow:0 0 6px color-mix(in srgb,var(--ac) 60%,transparent)}
-header{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 16px;background:var(--p);border-bottom:2px solid var(--ac);backdrop-filter:blur(8px)}
-header b{letter-spacing:.05em}header .sp{flex:1}
-.tg2{border:1px solid var(--ln);border-radius:var(--r);padding:1px 8px;color:var(--mu);font-size:.85em}
-.wrap{flex:1;display:grid;grid-template-columns:170px 1fr 270px;gap:12px;padding:12px 16px;max-width:1400px;width:100%;margin:0 auto}
-@media(max-width:940px){.wrap{grid-template-columns:1fr}}
-nav{display:flex;flex-direction:column;gap:3px}
-@media(max-width:940px){nav{flex-direction:row;flex-wrap:wrap}}
-.nv{background:var(--p);border:1px solid var(--ln);color:var(--fg);text-align:left;padding:7px 10px;border-radius:var(--r);cursor:pointer;font:inherit}
-.nv.on{background:var(--hl);color:var(--hf);border-color:var(--hl)}
-#pane,#side>div{background:var(--p);border:1px solid var(--ln);border-radius:var(--r);padding:14px;min-width:0;backdrop-filter:blur(8px)}
-#side{display:flex;flex-direction:column;gap:12px}
-#help{color:var(--ac);font-size:.9em;min-height:70px}
-h3{margin:14px 0 6px;color:var(--ac);font-size:.8em;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--ln);padding-bottom:3px}h3:first-child{margin-top:0}
-h4{font-size:.75em;letter-spacing:.1em;color:var(--ac);margin-bottom:6px}
-.r{display:flex;justify-content:space-between;gap:10px;padding:4px 6px;flex-wrap:wrap;align-items:center;border-radius:4px}
-.r:hover{background:color-mix(in srgb,var(--ac) 14%,transparent)}
-.r>span:first-child{color:var(--mu)}.r>span:last-child{text-align:right;overflow-wrap:anywhere}
-button,input,select{font:inherit;color:var(--fg);background:color-mix(in srgb,var(--bg) 80%,var(--fg));border:1px solid var(--ln);border-radius:var(--r);padding:2px 9px;max-width:100%}
-button{cursor:pointer}button.on{border-color:var(--ac);color:var(--ac)}
-input[type=color]{padding:0;height:26px;width:46px}input[type=range]{padding:0;accent-color:var(--ac)}
-button:focus,input:focus,select:focus,a:focus,.nv:focus{outline:2px solid var(--ac);outline-offset:1px}
-select option{background:#111;color:#eee}a{color:var(--ac)}
-.li{display:flex;gap:8px;padding:4px 6px;align-items:center;border-radius:4px}.li:hover{background:color-mix(in srgb,var(--ac) 14%,transparent)}
-.li.on{background:var(--hl);color:var(--hf)}.li.on button{color:var(--hf)}
-.n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-small{color:var(--mu)}
-.wg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
-.wg div{border:1px solid var(--ln);border-radius:var(--r);padding:3px;text-align:center;font-size:.8em}.wg div.on{outline:2px solid var(--ac)}
-.wg img{width:100%;height:70px;object-fit:cover;display:block;cursor:pointer;border-radius:4px}
-.fl{display:flex;flex-wrap:wrap;gap:6px 8px}.fl a{display:flex;align-items:center;gap:5px;border:1px solid var(--ln);border-radius:var(--r);padding:2px 8px;text-decoration:none}.fl img{width:20px;height:20px;border-radius:50%}
-.lb,.mb{display:grid;grid-template-columns:90px 1fr 56px;gap:8px;align-items:center;font-size:.85em;margin:3px 0}
-.lb i,.mb i{height:8px;background:color-mix(in srgb,var(--bg) 70%,var(--fg));border-radius:4px;overflow:hidden}.lb b,.mb b{display:block;height:100%;background:var(--ac)}.lb em,.mb em{font-style:normal;text-align:right;color:var(--mu)}
-canvas{border:1px solid var(--ln);border-radius:var(--r);max-width:100%;background:color-mix(in srgb,var(--bg) 90%,#000);display:block;margin:6px 0}
-footer{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:8px 16px;background:var(--p);border-top:1px solid var(--ln);font-size:.82em;backdrop-filter:blur(8px)}
-footer .k{flex:1;min-width:220px;color:var(--mu)}#nt{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ac)}
-#post{position:fixed;inset:0;z-index:60;background:#000;color:#ddd;display:grid;place-items:center;text-align:center;font:16px system-ui,sans-serif}
-#post b{font-size:2em;letter-spacing:.15em;color:#fff}.pb{width:260px;height:6px;background:#222;margin:18px auto 14px;border-radius:3px;overflow:hidden}.pb i{display:block;height:100%;width:0;background:#e33;transition:width 1.6s ease-out}
-#toast{position:fixed;left:50%;bottom:64px;transform:translateX(-50%);background:var(--hl);color:var(--hf);padding:5px 16px;border-radius:var(--r);display:none;z-index:70;font-weight:600}
-#bri,#night{position:fixed;inset:0;pointer-events:none;z-index:80}#bri{background:#000}#night{background:#ff8a1e;mix-blend-mode:multiply}
-</style></head><body>
-<div id="wall"></div><div id="post"></div>
-<div id="app">
-<header><b id="logo">k85 UEFI</b><span class="tg2" id="ttl"></span><span class="sp"></span>
-<button id="hv0" title="Volume −">VOL −</button><button id="hv1" title="Volume +">VOL +</button><button id="hm" title="Mute (M)">MUTE</button>
-<button id="hb0" title="Dim ([)">BRT −</button><button id="hb1" title="Brighten (])">BRT +</button><span class="tg2" id="clk"></span></header>
-<div class="wrap"><nav id="nav"></nav><section id="pane"></section>
-<aside id="side"><div id="help"></div><div><h4>HARDWARE MONITOR</h4>
-<div class="mb"><span>Volume</span><i><b id="mv"></b></i><em id="mvt"></em></div>
-<div class="mb"><span>Brightness</span><i><b id="mb"></b></i><em id="mbt"></em></div>
-<div class="mb"><span>Night light</span><i><b id="mn"></b></i><em id="mnt"></em></div>
-<div class="mb"><span>Wall dim</span><i><b id="md"></b></i><em id="mdt"></em></div></div></aside></div>
-<footer><span class="k">←→ разделы · ↑↓ пункты · +/− громкость · [ ] яркость · M mute · F10 сохранить · Esc выход</span>
-<button id="p0">⏮</button><button id="p1">▶</button><button id="p2">⏭</button><span id="nt">— нет трека —</span><input type="range" id="sk" min="0" max="1000" value="0" style="width:110px"></footer></div>
-<div id="toast"></div><div id="bri"></div><div id="night"></div>
-<script>
-const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const TH={'ROG Red':['#0c0c10','#d8d8e0','#ff2d4a','#ff2d4a','#ffffff'],'MSI Blue':['#0a1020','#d6e0f5','#2f9bff','#2f9bff','#ffffff'],'Gigabyte Orange':['#101010','#e6e6e6','#ff8a00','#ff8a00','#000000'],'AMI Classic':['#0000a8','#c0c0c0','#ffff55','#00a8a8','#000000'],'Matrix':['#000a00','#00cc33','#aaffaa','#00cc33','#000000'],'GitHub Dark':['#0d1117','#c9d1d9','#58a6ff','#1f6feb','#ffffff'],'GitHub Light':['#ffffff','#24292f','#0969da','#0969da','#ffffff'],'Dracula':['#282a36','#f8f8f2','#bd93f9','#bd93f9','#282a36']};
-const FF={'System UI':"system-ui,'Segoe UI',Roboto,sans-serif",'Mono':"ui-monospace,Consolas,'DejaVu Sans Mono',monospace",'Courier':"'Courier New',monospace",'Serif':"Georgia,serif"};
-const DEF={theme:'ROG Red',c:[...TH['ROG Red']],fs:15,ff:FF['System UI'],scan:0,glow:0,boot:1,pbeep:1,dim:.35,po:.88,rad:6,slide:0,wall:null,fit:'cover',title:'k85 UEFI BIOS Utility',btxt:'k85 UEFI',user:'kion85',vol:.7,mute:0,fade:1,bass:0,treb:0,shuf:0,rep:1,ui:1,uv:.6,br:1,nl:0};
-let S={...DEF};try{S={...DEF,...JSON.parse(localStorage.k85||'{}')}}catch{}
-const S0=JSON.stringify(S),save=()=>localStorage.k85=JSON.stringify(S),cl=(v,a,b)=>Math.min(b,Math.max(a,v));
-function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',1600)}
-/* UI sound (WebAudio) */
-let AC;const ctx=()=>AC||(AC=new(window.AudioContext||webkitAudioContext)());
-function beep(f=800,d=.05,ty='square'){if(!S.ui||S.mute)return;try{const c=ctx();c.resume();const o=c.createOscillator(),g=c.createGain();o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(.07*S.uv*Math.max(S.vol,.15),c.currentTime);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch{}}
-const chord=()=>[660,880,1100].forEach((f,i)=>setTimeout(()=>beep(f,.09,'triangle'),i*90));
-/* theme */
-const FM={vol:v=>Math.round(v*100)+'%',br:v=>Math.round(v*100)+'%',nl:v=>Math.round(v*100)+'%',dim:v=>Math.round(v*100)+'%',po:v=>Math.round(v*100)+'%',uv:v=>Math.round(v*100)+'%',fade:v=>v+'s',bass:v=>v+' dB',treb:v=>v+' dB',fs:v=>v+'px',rad:v=>v+'px',slide:v=>v?v+'s':'off'};
-function theme(){const c=S.theme==='Custom'?S.c:TH[S.theme]||S.c,r=document.documentElement.style;['--bg','--fg','--ac','--hl','--hf'].forEach((k,i)=>r.setProperty(k,c[i]));
-r.setProperty('--fs',S.fs+'px');r.setProperty('--ff',S.ff);r.setProperty('--dim',S.dim);r.setProperty('--po',S.po);r.setProperty('--r',S.rad+'px');
-document.body.classList.toggle('scan',!!S.scan);document.body.classList.toggle('glow',!!S.glow);$('#ttl').textContent=S.title;$('#logo').textContent=S.btxt;
-$('#bri').style.opacity=1-S.br;$('#night').style.opacity=S.nl*.6;$('#wall').style.backgroundSize=S.fit;$('#hm').classList.toggle('on',!!S.mute);mon()}
-function mon(){const b=(i,v,t)=>{$('#'+i).style.width=v*100+'%';$('#'+i+'t').textContent=t};b('mv',S.mute?0:S.vol,S.mute?'MUTE':FM.vol(S.vol));b('mb',S.br,FM.br(S.br));b('mn',S.nl,FM.nl(S.nl));b('md',S.dim,FM.dim(S.dim))}
-/* db */
-const idb=new Promise((r,j)=>{const q=indexedDB.open('k85bios',1);q.onupgradeneeded=()=>q.result.createObjectStore('f',{keyPath:'id',autoIncrement:true});q.onsuccess=()=>r(q.result);q.onerror=j});
-const tx=async(m,f)=>{const d=await idb;return new Promise((r,j)=>{const t=d.transaction('f',m),q=f(t.objectStore('f'));t.oncomplete=()=>r(q.result);t.onerror=j})};
-const dbAll=()=>tx('readonly',s=>s.getAll()),dbAdd=o=>tx('readwrite',s=>s.add(o)),dbDel=i=>tx('readwrite',s=>s.delete(i)),dbClr=()=>tx('readwrite',s=>s.clear());
-let pl=[],wl=[];const refresh=async()=>{const a=await dbAll();pl=a.filter(x=>x.t==='s');wl=a.filter(x=>x.t==='w')};
-let wu,wt;function wall(){if(wu)URL.revokeObjectURL(wu);const f=wl.find(x=>x.id==S.wall);wu=f?URL.createObjectURL(f.blob):null;$('#wall').style.backgroundImage=wu?`url(${wu})`:'none';
-clearInterval(wt);if(S.slide>0&&wl.length>1)wt=setInterval(()=>{const i=wl.findIndex(x=>x.id==S.wall);S.wall=wl[(i+1)%wl.length].id;wall()},S.slide*1000)}
-/* volume / brightness */
-const syncR=k=>{const e=$(`#pane [data-k=${k}]`);if(e){e.value=S[k];e.closest('.r').firstChild.textContent=e.dataset.l+' '+(FM[k]?FM[k](S[k]):S[k])}};
-function setVol(v){S.vol=Math.round(cl(v,0,1)*20)/20;if(v>0)S.mute=0;A.muted=!!S.mute;clearInterval(ft);A.volume=S.vol;save();theme();syncR('vol');toast('Volume '+FM.vol(S.vol));beep(500+S.vol*900,.05)}
-function setBr(v){S.br=Math.round(cl(v,.2,1)*20)/20;save();theme();syncR('br');toast('Brightness '+FM.br(S.br));beep(400+S.br*600,.05)}
-function setMute(){S.mute=+!S.mute;A.muted=!!S.mute;save();theme();toast(S.mute?'Muted':'Unmuted');if(!S.mute)beep(900,.05)}
-/* player */
-const A=new Audio();let cur=-1,au,ft,G;
-function graph(){if(G)return;const c=ctx(),s=c.createMediaElementSource(A),b=c.createBiquadFilter(),t=c.createBiquadFilter(),an=c.createAnalyser();b.type='lowshelf';b.frequency.value=200;t.type='highshelf';t.frequency.value=3000;an.fftSize=64;s.connect(b);b.connect(t);t.connect(an);an.connect(c.destination);G={b,t,an};eq()}
-const eq=()=>{if(G){G.b.gain.value=S.bass;G.t.gain.value=S.treb}};
-function fade(to,sec,done){clearInterval(ft);if(!sec){A.volume=to;done&&done();return}const f=A.volume,t0=performance.now();ft=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/(sec*1000));A.volume=f+(to-f)*k;if(k>=1){clearInterval(ft);done&&done()}},40)}
-async function play(i){if(!pl.length)return;cur=(i+pl.length)%pl.length;if(au)URL.revokeObjectURL(au);au=URL.createObjectURL(pl[cur].blob);A.src=au;try{graph();await ctx().resume()}catch{}A.muted=!!S.mute;A.volume=S.fade?0:S.vol;try{await A.play()}catch{}fade(S.vol,S.fade);now()}
-function pp(){if(cur<0)return play(0);if(A.paused){A.play();fade(S.vol,S.fade)}else fade(0,S.fade,()=>{A.pause();A.volume=S.vol})}
-function now(){$('#nt').textContent=cur>=0&&pl[cur]?pl[cur].name:'— нет трека —';$('#p1').textContent=A.paused?'▶':'⏸';if(tab==='Audio')list()}
-A.onended=()=>{if(S.rep==2)play(cur);else if(S.shuf)play(Math.random()*pl.length|0);else if(cur<pl.length-1||S.rep==1)play(cur+1);else now()};
-A.onpause=A.onplay=now;A.ontimeupdate=()=>{if(A.duration)$('#sk').value=A.currentTime/A.duration*1000};
-$('#sk').oninput=e=>{if(A.duration)A.currentTime=e.target.value/1000*A.duration};
-$('#p0').onclick=()=>play(cur-1);$('#p2').onclick=()=>S.shuf?play(Math.random()*pl.length|0):play(cur+1);$('#p1').onclick=pp;
-$('#hv0').onclick=()=>setVol(S.vol-.05);$('#hv1').onclick=()=>setVol(S.vol+.05);$('#hm').onclick=setMute;$('#hb0').onclick=()=>setBr(S.br-.05);$('#hb1').onclick=()=>setBr(S.br+.05);
-/* GitHub data */
-let GH;
-function ghLoad(force){if(GH&&GH.u===S.user&&!force)return Promise.resolve(GH);
-if(!force)try{const c=JSON.parse(localStorage.k85gh);if(c.u===S.user&&Date.now()-c.t<6e5)return Promise.resolve(GH=c)}catch{}
-const u=S.user,g=p=>fetch('https://api.github.com/'+p).then(r=>r.ok?r.json():null).catch(()=>null);
-return Promise.all([g('users/'+u),g(`users/${u}/repos?per_page=100&sort=updated`),g(`users/${u}/events/public?per_page=30`),g(`users/${u}/starred?per_page=30`),g(`users/${u}/orgs`),g(`users/${u}/gists?per_page=20`),g(`users/${u}/followers?per_page=40`),g(`users/${u}/following?per_page=40`),g('rate_limit')]).then(([p,r,e,st,o,gi,fo,fg,rl])=>{GH={u,t:Date.now(),p,r,e,st,o,gi,fo,fg,rl};if(p)try{localStorage.k85gh=JSON.stringify(GH)}catch{}return GH})}
-const dt=s=>s?new Date(s).toLocaleDateString('ru-RU'):'—',ok=(d,id)=>$('#'+id)&&d;
-const row=(l,c,h='')=>`<div class="r" data-h="${esc(h)}"><span>${l}</span><span>${c}</span></div>`;
-const opt=(o,v)=>o.map(x=>`<option ${x==v?'selected':''}>${esc(x)}</option>`).join('');
-const rg=(l,k,a,b,s,h)=>row(l+' '+(FM[k]?FM[k](S[k]):S[k]),`<input type=range data-k=${k} data-l="${l}" min=${a} max=${b} step=${s} value=${S[k]}>`,h);
-const cb=(l,k,h)=>row(l,`<button data-k=${k} data-b class="${S[k]?'on':''}">${S[k]?'Enabled':'Disabled'}</button>`,h);
-const sel=(l,k,o,h)=>row(l,`<select data-k=${k}>${o.map(x=>Array.isArray(x)?`<option value="${esc(x[0])}" ${x[0]==S[k]?'selected':''}>${x[1]}</option>`:`<option ${x==S[k]?'selected':''}>${esc(x)}</option>`).join('')}</select>`,h);
-const lnk=u=>`<a href="${esc(u)}" target="_blank" rel="noreferrer">${esc(u.replace('https://',''))}</a>`;
-const NAV=[['Main','⌂'],['GitHub','◉'],['Repos','▤'],['Activity','⚡'],['Starred','★'],['Social','☍'],['Games','▶'],['Customize','⚙'],['Wallpaper','▣'],['Audio','♫'],['Monitor','◈'],['Boot','↻'],['Exit','⏻']];
-let tab='Main',vr,gk,gi,graf,snd;
-const V={
-Main:()=>`<h3>System</h3>${row('Firmware','k85 UEFI v2.0')}${row('User',esc(S.user),'Ник на GitHub/GitLab (меняется в Customize).')}${row('Local time','<b id=ck2></b>')}${row('OS','Linux')}${row('Browser','Firefox')}
-<h3>Network</h3>${row('Primary router','RV669')}${row('Secondary router','Rostelecom RT FL 1 | S1010')}${row('Backup','ZTE 4G LTE')}
-<h3>GitHub snapshot</h3><div id=ms>Loading…</div>
-<h3>Links</h3>${row('GitHub',lnk('https://github.com/'+S.user))}${row('GitLab',lnk('https://gitlab.com/'+S.user))}
-<h3>Storage</h3>${row('Songs',pl.length)}${row('Wallpapers',wl.length)}`,
-GitHub:()=>`<h3>Profile</h3><div id=g1>Loading…</div><h3>Totals</h3><div id=g2></div><h3>Languages</h3><div id=g3></div><h3>API</h3><div id=g4></div>`,
-Repos:()=>`<h3>Repositories</h3>${row('Search','<input id=rq placeholder="name…">')}${row('Sort',`<select id=rs>${opt(['updated','stars','forks','name','size'],'updated')}</select>`)}${row('Language','<select id=rl><option>All</option></select>')}${row('Hide forks','<button id=rf>Disabled</button>')}<div id=rl2 style="margin-top:8px">Loading…</div>`,
-Activity:()=>`<h3>Recent public activity</h3><div id=ac>Loading…</div>`,
-Starred:()=>`<h3>Starred repositories</h3><div id=st>Loading…</div>`,
-Social:()=>`<h3>Followers</h3><div id=so1 class=fl>Loading…</div><h3>Following</h3><div id=so2 class=fl></div><h3>Organizations</h3><div id=so3 class=fl></div><h3>Gists</h3><div id=so4></div>`,
-Games:()=>`<h3>Flappy Bird <button id=fr>Reset</button> Score <b id=fs>0</b></h3><canvas id=fc width=320 height=240></canvas>
-<h3>Snake <button id=sr>Reset</button> Score <b id=ss>0</b></h3><canvas id=sn width=224 height=224 tabindex=0></canvas><div><button data-d="0,-1">▲</button><button data-d="-1,0">◀</button><button data-d="0,1">▼</button><button data-d="1,0">▶</button></div>
-<h3>Reaction Test</h3><button id=rb style="width:100%;height:64px">Press to start</button>${row('Last <b id=rl3>—</b> ms','Best <b id=rbs>—</b> ms')}
-<h3>Quick Math <button id=mr>Restart</button></h3><div style="font-size:1.4em" id=mq></div><input id=mi type=number placeholder=answer> Score <b id=ms2>0</b> · Time <b id=mt>30</b>`,
-Customize:()=>{const cn=['Background','Text','Accent','Highlight','Highlight text'],c=S.theme==='Custom'?S.c:TH[S.theme]||S.c;return`<h3>Theme</h3>${sel('Preset','theme',[...Object.keys(TH),'Custom'],'Любое изменение цвета переключает на Custom.')}${cn.map((n,i)=>row(n,`<input type=color data-c=${i} value="${c[i]}">`)).join('')}
-<h3>Text &amp; layout</h3>${sel('Font','ff',Object.entries(FF).map(([n,v])=>[v,n]))}${rg('Font size','fs',11,24,1)}${rg('Corner radius','rad',0,18,1)}${rg('Panel opacity','po',.3,1,.02,'Прозрачность панелей поверх обоев.')}${row('Title',`<input data-k=title value="${esc(S.title)}">`)}${row('Boot logo text',`<input data-k=btxt value="${esc(S.btxt)}">`)}${row('GitHub user',`<input data-k=user value="${esc(S.user)}">`,'Ник, для которого грузятся данные.')}
-<h3>Screen</h3>${rg('Brightness','br',.2,1,.05,'Затемнение всего экрана. Горячие клавиши [ и ].')}${rg('Night light','nl',0,1,.05,'Тёплый фильтр для вечера.')}${rg('Wallpaper dim','dim',0,.9,.05)}${cb('CRT scanlines','scan')}${cb('Text glow','glow')}`},
-Wallpaper:()=>`<h3>Wallpapers</h3>${row('Add images',`<button onclick="$('#wf').click()">Add…</button><input type=file id=wf accept="image/*" multiple hidden>`,'PNG, JPG, GIF, WebP. Хранятся в браузере.')}${sel('Fit','fit',['cover','contain','100% 100%'])}${rg('Slideshow','slide',0,120,5,'0 — без смены.')}${rg('Wallpaper dim','dim',0,.9,.05)}${row('Default',`<button id=w0>No wallpaper</button>`)}<div class=wg id=wg style="margin-top:8px"></div>`,
-Audio:()=>`<h3>Volume</h3>${row('Master '+FM.vol(S.vol),`<button id=av0>−</button><input type=range data-k=vol data-l="Master" min=0 max=1 step=.05 value=${S.vol}><button id=av1>+</button>`,'Общая громкость. Клавиши + и −.').replace(/Master \d+%/,'Master '+FM.vol(S.vol))}${cb('Mute','mute')}${rg('Fade in/out','fade',0,5,.5,'Плавное нарастание и затухание звука при play/pause.')}
-<h3>Equalizer</h3>${rg('Bass','bass',-12,12,1)}${rg('Treble','treb',-12,12,1)}<canvas id=vz width=480 height=70></canvas>
-<h3>UI sounds</h3>${cb('Interface sounds','ui','Звуки кнопок и меню.')}${rg('UI volume','uv',0,1,.05)}${row('Test',`<button id=tb>Beep</button>`)}
-<h3>Playlist</h3>${row('Add songs',`<button onclick="$('#sf').click()">Add…</button><input type=file id=sf accept="audio/*" multiple hidden>`,'MP3, OGG, WAV, FLAC…')}${cb('Shuffle','shuf')}${sel('Repeat','rep',[[0,'Off'],[1,'All'],[2,'One']])}<div id=pl></div>`,
-Monitor:()=>`<h3>Device</h3><div id=mi></div>${row('Battery','<span id=mbat>—</span>')}${row('Storage used','<span id=mst>—</span>')}${row('FPS','<span id=mfps>—</span>')}`,
-Boot:()=>`<h3>Boot options</h3>${cb('POST boot screen','boot','Экран загрузки при открытии.')}${cb('POST beep','pbeep','Сигнал после загрузки.')}<h3>Boot priority</h3>${row('#1 Home',lnk('/').replace(/>\/?</,'>/<'))}${row('#2 GitHub',lnk('https://github.com/'+S.user))}${row('#3 GitLab',lnk('https://gitlab.com/'+S.user))}${row('#4 Discord',lnk('https://discord.com/users/1476465632190140427'))}`,
-Exit:()=>`<h3>Exit</h3>${row('Save &amp; Exit',`<button id=xs>Save</button>`,'Настройки и так сохраняются автоматически.')}${row('Discard changes',`<button id=xc>Discard</button>`,'Вернуть настройки, какими они были при открытии.')}${row('Load optimized defaults',`<button id=xd>Defaults</button>`,'Сброс настроек (песни и обои остаются).')}${row('Erase songs &amp; wallpapers',`<button id=xe>Erase</button>`)}${row('Settings file',`<button id=ex>Export</button> <button onclick="$('#im').click()">Import</button><input type=file id=im accept=.json hidden>`)}${row('Reboot',`<button id=xr>Reboot</button>`)}`};
-/* generic binding */
-function apply(k){theme();save();if(k==='vol'){A.muted=!!S.mute;A.volume=S.vol}if(k==='mute')A.muted=!!S.mute;if(k==='bass'||k==='treb')eq();if(k==='slide'||k==='fit')wall();if(k==='user')GH=null}
-function bindK(){$$('#pane [data-c]').forEach(i=>i.oninput=()=>{if(S.theme!=='Custom'){S.c=[...TH[S.theme]];S.theme='Custom';const s=$('[data-k=theme]');if(s)s.value='Custom'}S.c[+i.dataset.c]=i.value;theme();save()});
-$$('#pane [data-b]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;S[k]=+!S[k];b.textContent=S[k]?'Enabled':'Disabled';b.classList.toggle('on',!!S[k]);apply(k)});
-$$('#pane [data-k]:not([data-b])').forEach(i=>i.onchange=i.oninput=()=>{const k=i.dataset.k;S[k]=typeof DEF[k]==='number'?+i.value:i.value;
-if(k==='theme'&&S.theme!=='Custom'){S.c=[...TH[S.theme]];apply(k);return go(tab)}apply(k);if(i.dataset.l)i.closest('.r').firstChild.textContent=i.dataset.l+' '+(FM[k]?FM[k](S[k]):S[k])})}
-const B={
-Main(){const c=()=>{const e=$('#ck2');if(e)e.textContent=new Date().toLocaleString('ru-RU')};c();clearInterval(B.t);B.t=setInterval(c,1000);
-ghLoad().then(d=>{const e=$('#ms');if(!e)return;e.innerHTML=d.p?row('Public repos',d.p.public_repos)+row('Followers',d.p.followers)+row('Stars total',(d.r||[]).reduce((a,x)=>a+x.stargazers_count,0)):'GitHub API недоступен.'})},
-GitHub(){ghLoad().then(d=>{if(!$('#g1'))return;const p=d.p,r=d.r||[];if(!p){$('#g1').textContent='GitHub API error: сеть, лимит запросов или неверный ник.';return}
-$('#g1').innerHTML=`<div class=li><img src="${esc(p.avatar_url)}" width=64 height=64 style="border-radius:var(--r)" alt=""><div>${esc(p.name||p.login)}<br><small>${esc(p.bio||'')}</small></div></div>${row('Login','@'+esc(p.login))}${row('Company',esc(p.company||'—'))}${row('Location',esc(p.location||'—'))}${row('Blog',p.blog?esc(p.blog):'—')}${row('Joined',dt(p.created_at))}${row('Followers / Following',p.followers+' / '+p.following)}${row('Repos / Gists',p.public_repos+' / '+p.public_gists)}${row('Profile',lnk(p.html_url))}`;
-const sum=k=>r.reduce((a,x)=>a+(x[k]||0),0),top=[...r].sort((a,b)=>b.stargazers_count-a.stargazers_count)[0];
-$('#g2').innerHTML=row('Stars',sum('stargazers_count'))+row('Forks',sum('forks_count'))+row('Open issues',sum('open_issues_count'))+row('Own repos (non-fork)',r.filter(x=>!x.fork).length)+row('Total size',(sum('size')/1024).toFixed(1)+' MB')+row('Top repo',top?esc(top.name)+' ★'+top.stargazers_count:'—')+row('Last push',dt(r[0]?.pushed_at));
-const L={};r.forEach(x=>x.language&&(L[x.language]=(L[x.language]||0)+1));const t=Object.values(L).reduce((a,b)=>a+b,0)||1;
-$('#g3').innerHTML=Object.entries(L).sort((a,b)=>b[1]-a[1]).map(([n,c])=>`<div class=lb><span>${esc(n)}</span><i><b style="width:${c/t*100}%"></b></i><em>${Math.round(c/t*100)}%</em></div>`).join('')||'No language data.';
-const rl=d.rl?.rate;$('#g4').innerHTML=(rl?row('Rate limit',`${rl.remaining} / ${rl.limit}`)+row('Resets',new Date(rl.reset*1000).toLocaleTimeString('ru-RU')):'')+row('Data cached',new Date(d.t).toLocaleTimeString('ru-RU'),'Данные кэшируются на 10 минут, чтобы не тратить лимит API.')+row('Refresh','<button id=gr>Reload from API</button>');
-$('#gr').onclick=()=>{localStorage.removeItem('k85gh');GH=null;go('GitHub')}})},
-Repos(){ghLoad().then(d=>{if(!$('#rl2'))return;const r=d.r||[];const ls=[...new Set(r.map(x=>x.language).filter(Boolean))];$('#rl').innerHTML='<option>All</option>'+ls.map(l=>`<option>${esc(l)}</option>`).join('');let nf=0;
-const dr=()=>{const q=$('#rq').value.toLowerCase(),l=$('#rl').value,s=$('#rs').value;let a=r.filter(x=>x.name.toLowerCase().includes(q)&&(l==='All'||x.language===l)&&!(nf&&x.fork));
-a.sort((x,y)=>s==='stars'?y.stargazers_count-x.stargazers_count:s==='forks'?y.forks_count-x.forks_count:s==='size'?y.size-x.size:s==='name'?x.name.localeCompare(y.name):new Date(y.pushed_at)-new Date(x.pushed_at));
-$('#rl2').innerHTML=a.map(x=>`<div class=li><div class=n><a href="${esc(x.html_url)}" target=_blank rel=noreferrer>${esc(x.name)}</a>${x.fork?' <small>fork</small>':''}<br><small>${esc(x.description||'')}</small></div><span>${esc(x.language||'')}</span><span>★${x.stargazers_count} ⑂${x.forks_count}</span><small>${dt(x.pushed_at)}</small></div>`).join('')||'Nothing found.'};
-['#rq','#rl','#rs'].forEach(s=>$(s).oninput=dr);$('#rf').onclick=e=>{nf=+!nf;e.target.textContent=nf?'Enabled':'Disabled';e.target.className=nf?'on':'';dr()};dr()})},
-Activity(){ghLoad().then(d=>{if(!$('#ac'))return;$('#ac').innerHTML=(d.e||[]).map(x=>{const m=x.payload?.commits?.[0]?.message;return`<div class=li><div class=n>${esc(x.type.replace('Event',''))} → <a href="https://github.com/${esc(x.repo.name)}" target=_blank rel=noreferrer>${esc(x.repo.name)}</a>${m?`<br><small>${esc(m.split('\n')[0])}</small>`:''}</div><small>${dt(x.created_at)}</small></div>`}).join('')||'No recent public activity.'})},
-Starred(){ghLoad().then(d=>{if(!$('#st'))return;$('#st').innerHTML=(d.st||[]).map(x=>`<div class=li><div class=n><a href="${esc(x.html_url)}" target=_blank rel=noreferrer>${esc(x.full_name)}</a><br><small>${esc(x.description||'')}</small></div><span>${esc(x.language||'')}</span><span>★${x.stargazers_count}</span></div>`).join('')||'No starred repositories.'})},
-Social(){ghLoad().then(d=>{if(!$('#so1'))return;const f=a=>(a||[]).map(x=>`<a href="${esc(x.html_url)}" target=_blank rel=noreferrer><img src="${esc(x.avatar_url)}" alt="">${esc(x.login)}</a>`).join('')||'—';
-$('#so1').innerHTML=f(d.fo);$('#so2').innerHTML=f(d.fg);$('#so3').innerHTML=f(d.o);$('#so4').innerHTML=(d.gi||[]).map(x=>`<div class=li><a class=n href="${esc(x.html_url)}" target=_blank rel=noreferrer>${esc(x.description||Object.keys(x.files)[0]||x.id)}</a><small>${Object.keys(x.files).length} files</small></div>`).join('')||'No gists.'})},
-Games(){gameInit()},
-Wallpaper(){wgrid();$('#wf').onchange=async e=>{for(const f of e.target.files)await dbAdd({t:'w',name:f.name,blob:f});await refresh();if(!S.wall&&wl.length)S.wall=wl[0].id;save();wall();wgrid()};
-$('#w0').onclick=()=>{S.wall=null;save();wall();wgrid()};$('#wg').onclick=async e=>{const d=e.target.dataset;if(d.w){S.wall=+d.w;save();wall();wgrid()}if(d.x){await dbDel(+d.x);if(S.wall==d.x)S.wall=null;await refresh();save();wall();wgrid()}}},
-Audio(){list();$('#av0').onclick=()=>setVol(S.vol-.05);$('#av1').onclick=()=>setVol(S.vol+.05);$('#tb').onclick=chord;
-$('#sf').onchange=async e=>{for(const f of e.target.files)await dbAdd({t:'s',name:f.name.replace(/\.[^.]+$/,''),blob:f});const id=pl[cur]?.id;await refresh();cur=pl.findIndex(x=>x.id===id);list()};
-$('#pl').onclick=async e=>{const d=e.target.dataset;if(d.p!==undefined){+d.p===cur?pp():play(+d.p)}if(d.d){const id=pl[cur]?.id;if(id==d.d){A.pause();A.removeAttribute('src');cur=-1}await dbDel(+d.d);await refresh();if(cur>=0)cur=pl.findIndex(x=>x.id===id);now();list()}};
-const c=$('#vz'),col=getComputedStyle(document.documentElement).getPropertyValue('--ac');cancelAnimationFrame(vr);(function v(){if(!$('#vz'))return;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);if(G){const a=new Uint8Array(G.an.frequencyBinCount);G.an.getByteFrequencyData(a);x.fillStyle=col;const w=c.width/a.length;a.forEach((q,i)=>x.fillRect(i*w+1,c.height-q/255*c.height,w-2,q/255*c.height))}vr=requestAnimationFrame(v)})()},
-Monitor(){const n=navigator,cn=n.connection||{},R=[['Platform',n.platform],['Language',n.language],['CPU threads',n.hardwareConcurrency||'?'],['Memory',(n.deviceMemory||'?')+' GB'],['Screen',`${screen.width}×${screen.height} @${devicePixelRatio}x`],['Viewport',innerWidth+'×'+innerHeight],['Network',cn.effectiveType||'?'],['Downlink',(cn.downlink||'?')+' Mbps'],['Online',n.onLine?'yes':'no'],['Timezone',Intl.DateTimeFormat().resolvedOptions().timeZone]];
-$('#mi').innerHTML=R.map(([a,b])=>row(a,esc(b))).join('');n.getBattery&&n.getBattery().then(b=>$('#mbat')&&($('#mbat').textContent=Math.round(b.level*100)+'%'+(b.charging?' ⚡':''))).catch(()=>{});
-n.storage?.estimate&&n.storage.estimate().then(e=>$('#mst')&&($('#mst').textContent=(e.usage/1048576).toFixed(1)+' MB / '+(e.quota/1073741824).toFixed(1)+' GB'));
-let f=0,t=performance.now();cancelAnimationFrame(vr);(function l(){f++;const n=performance.now();if(n-t>=1000){const e=$('#mfps');if(!e)return;e.textContent=f;f=0;t=n}vr=requestAnimationFrame(l)})()},
-Exit(){$('#xs').onclick=()=>{save();chord();toast('Saved')};$('#xc').onclick=()=>{S={...DEF,...JSON.parse(S0)};save();theme();wall();toast('Changes discarded')};
-$('#xd').onclick=()=>{S={...DEF};save();theme();wall();A.volume=S.vol;toast('Defaults loaded')};
-$('#xe').onclick=async()=>{if(confirm('Delete all songs and wallpapers?')){A.pause();cur=-1;await dbClr();await refresh();S.wall=null;save();wall();now();toast('Erased')}};$('#xr').onclick=()=>location.reload();
-$('#ex').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));a.download='k85-uefi.json';a.click()};
-$('#im').onchange=async e=>{try{S={...DEF,...JSON.parse(await e.target.files[0].text())};save();theme();go('Exit');toast('Imported')}catch{toast('Bad file')}}}};
-function list(){const e=$('#pl');if(!e)return;e.innerHTML=pl.length?pl.map((s,i)=>`<div class="li ${i===cur?'on':''}"><button data-p=${i}>${i===cur&&!A.paused?'⏸':'▶'}</button><span class=n>${i+1}. ${esc(s.name)}</span><small>${(s.blob.size/1048576).toFixed(1)} MB</small><button data-d=${s.id}>✕</button></div>`).join(''):'<div class=r>Playlist is empty — add songs.</div>'}
-function wgrid(){const g=$('#wg');if(!g)return;g.innerHTML=wl.map(w=>`<div class="${w.id==S.wall?'on':''}"><img data-w=${w.id} src="${w.u||(w.u=URL.createObjectURL(w.blob))}" alt=""><span class=n>${esc(w.name)}</span><br><button data-x=${w.id}>✕</button></div>`).join('')||'<div class=r>No wallpapers yet.</div>'}
-/* games */
-function stopG(){cancelAnimationFrame(graf);cancelAnimationFrame(vr);clearInterval(gi);clearInterval(stopG.m);gk=snd=null}
-function gameInit(){const cs=getComputedStyle(document.documentElement),col=v=>cs.getPropertyValue(v),c=$('#fc'),x=c.getContext('2d'),W=320,H=240;let b,v,p,s,run,f;
-const rs=()=>{b=H/2;v=0;p=[];s=0;run=1;f=0;$('#fs').textContent=0},fl=()=>{if(run){v=-6;beep(900,.03)}else rs()};rs();c.onpointerdown=fl;$('#fr').onclick=rs;gk=e=>{if(e.code==='Space'){e.preventDefault();fl();return 1}};
-(function loop(){if(run){f++;v+=.36;b+=v;if(f%80==0)p.push({x:W,t:30+Math.random()*(H-180),s:0});p.forEach(o=>o.x-=2.3);p=p.filter(o=>o.x>-50);
-p.forEach(o=>{if(!o.s&&o.x+40<50){o.s=1;$('#fs').textContent=++s;beep(1200,.05)}if(60>o.x&&40<o.x+40&&(b-10<o.t||b+10>o.t+110)){run=0;beep(160,.3,'sawtooth')}});if(b>H||b<0){if(run)beep(160,.3,'sawtooth');run=0}}
-x.fillStyle=col('--bg');x.fillRect(0,0,W,H);x.fillStyle=col('--ac');p.forEach(o=>{x.fillRect(o.x,0,40,o.t);x.fillRect(o.x,o.t+110,40,H)});x.fillStyle=col('--fg');x.fillRect(40,b-10,20,20);if(!run){x.font='16px monospace';x.fillText('GAME OVER — click / Space',50,H/2)}graf=requestAnimationFrame(loop)})();
-/* snake */
-const sc=$('#sn'),sx=sc.getContext('2d'),N=16,Z=14;let sn,d,q,fd,ssc,sr;const sres=()=>{sn=[[8,8]];d=q=[1,0];fd=[4,4];ssc=0;sr=1;$('#ss').textContent=0};sres();
-snd=(a,b)=>{if(a!==-d[0]||b!==-d[1])q=[a,b]};$('#sr').onclick=()=>{sres();sc.focus()};$$('[data-d]').forEach(bt=>bt.onclick=()=>snd(...bt.dataset.d.split(',').map(Number)));
-gi=setInterval(()=>{if(sr){d=q;const h=[(sn[0][0]+d[0]+N)%N,(sn[0][1]+d[1]+N)%N];if(sn.some(z=>z[0]==h[0]&&z[1]==h[1])){sr=0;beep(150,.3,'sawtooth')}else{sn.unshift(h);if(h[0]==fd[0]&&h[1]==fd[1]){$('#ss').textContent=++ssc;beep(1200,.05);fd=[Math.random()*N|0,Math.random()*N|0]}else sn.pop()}}
-sx.fillStyle=col('--bg');sx.fillRect(0,0,224,224);sx.fillStyle=col('--ac');sx.fillRect(fd[0]*Z,fd[1]*Z,Z-1,Z-1);sx.fillStyle=col('--fg');sn.forEach(z=>sx.fillRect(z[0]*Z,z[1]*Z,Z-1,Z-1));if(!sr){sx.font='16px monospace';sx.fillText('GAME OVER',70,112)}},120);
-/* reaction */
-let st='i',to,t0,best=null;const rb=$('#rb');rb.onclick=()=>{if(st==='i'){st='w';rb.textContent='Wait…';to=setTimeout(()=>{st='g';t0=performance.now();rb.textContent='NOW!';rb.style.background='#0a0';beep(1000,.08)},800+Math.random()*2200)}else if(st==='w'){clearTimeout(to);st='i';rb.textContent='Too early! Press to retry';beep(160,.2,'sawtooth')}else{const r=Math.round(performance.now()-t0);$('#rl3').textContent=r;if(best===null||r<best)$('#rbs').textContent=best=r;st='i';rb.style.background='';rb.textContent='Press to retry';beep(700,.06)}};
-/* math */
-let ms,ma,tl;const mq=()=>{const a=1+Math.random()*19|0,b=1+Math.random()*19|0,o='+-*'[Math.random()*3|0];ma=o=='+'?a+b:o=='-'?a-b:a*b;$('#mq').textContent=`${a} ${o=='*'?'×':o} ${b} = ?`;$('#mi').value=''},
-m0=()=>{ms=0;tl=30;$('#ms2').textContent=0;$('#mt').textContent=30;$('#mi').disabled=false;clearInterval(stopG.m);stopG.m=setInterval(()=>{$('#mt').textContent=--tl;if(tl<=0){clearInterval(stopG.m);$('#mi').disabled=true;$('#mq').textContent='Done: '+ms;chord()}},1000);mq()};
-$('#mi').oninput=e=>{if(+e.target.value===ma&&e.target.value!==''){$('#ms2').textContent=++ms;beep(1000,.04);mq()}};$('#mr').onclick=m0;m0()}
-/* nav */
-function drawNav(){$('#nav').innerHTML=NAV.map(([n,i])=>`<button class="nv ${n===tab?'on':''}" data-t="${n}">${i} ${n}</button>`).join('')}
-function go(t){stopG();tab=t;drawNav();$('#pane').innerHTML=V[t]();bindK();B[t]&&B[t]();$('#help').textContent='Выбери пункт — здесь появится подсказка.'}
-$('#nav').onclick=e=>{const t=e.target.dataset.t;t&&go(t)};
-document.addEventListener('mouseover',e=>{const r=e.target.closest('[data-h]');if(r&&r.dataset.h)$('#help').textContent=r.dataset.h});
-document.addEventListener('focusin',e=>{const r=e.target.closest('[data-h]');if(r&&r.dataset.h)$('#help').textContent=r.dataset.h});
-/* sounds */
-document.addEventListener('click',e=>{if(e.target.closest('button,.nv,a,label'))beep(720,.035)},true);
-document.addEventListener('change',e=>{if(e.target.matches('select'))beep(900,.05)});
-let lt=0;document.addEventListener('input',e=>{const t=e.target;if(t.type==='range'&&Date.now()-lt>70){lt=Date.now();beep(500+(t.value-t.min)/(t.max-t.min)*900,.02)}});
-/* keys */
-document.addEventListener('keydown',e=>{const el=document.activeElement,t=el.tagName,typing=t==='SELECT'||(t==='INPUT'&&el.type!=='range'&&el.type!=='checkbox');
-if(el.id==='sn'&&snd){const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]}[e.key];if(m){e.preventDefault();return snd(...m)}}
-if(gk&&el.tagName!=='INPUT'&&gk(e))return;
-if(e.key==='F10'){e.preventDefault();save();chord();return toast('Saved')}if(e.key==='F1'){e.preventDefault();return toast('F10 save · +/− volume · [ ] brightness · M mute')}
-if(e.key==='F5'&&e.shiftKey){return}if(e.key==='Escape')return go('Exit');if(typing)return;
-if(e.key==='+'||e.key==='=')return setVol(S.vol+.05);if(e.key==='-')return setVol(S.vol-.05);if(e.key==='['||e.key===']')return setBr(S.br+(e.key===']'?.05:-.05));if(e.key==='m'||e.key==='M')return setMute();
-if(e.key==='ArrowRight'||e.key==='ArrowLeft'){if(t==='INPUT'&&el.type==='range')return;e.preventDefault();beep(1100,.02);go(NAV[(NAV.findIndex(n=>n[0]===tab)+(e.key==='ArrowRight'?1:NAV.length-1))%NAV.length][0])}
-if(e.key==='ArrowDown'||e.key==='ArrowUp'){const f=$$('#pane button,#pane input:not([hidden]),#pane select,#pane a'),i=f.indexOf(el);e.preventDefault();beep(1000,.015);f[(i+(e.key==='ArrowDown'?1:f.length-1)+(i<0?1:0))%f.length]?.focus()}});
-setInterval(()=>$('#clk').textContent=new Date().toLocaleString('ru-RU'),1000);$('#clk').textContent=new Date().toLocaleString('ru-RU');
-/* boot */
-async function init(){await refresh();theme();wall();A.volume=S.vol;A.muted=!!S.mute;go('Main');const P=$('#post');if(!S.boot)return P.remove();
-P.innerHTML=`<div><b>${esc(S.btxt)}</b><div class=pb><i></i></div><small>Press any key to continue</small></div>`;setTimeout(()=>$('.pb i').style.width='100%',50);
-const end=()=>{if(!P.isConnected)return;P.remove();if(S.pbeep)beep(1000,.15)};setTimeout(end,1900);addEventListener('keydown',end,{once:true});addEventListener('pointerdown',end,{once:true})}
-init();
-</script></body></html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>k85OS — Прошивальщик и Монитор</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-2: #2563eb;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --border: #1f2937;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, #1e293b 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 24px 18px 60px; }
+
+    /* ===== БАННЕР ===== */
+    .banner-container { width: 100%; display: flex; justify-content: center; margin-bottom: 24px; }
+    .banner-img { max-width: 100%; height: auto; max-height: 350px; object-fit: contain; border-radius: var(--radius); box-shadow: var(--shadow); }
+
+    /* ===== ВКЛАДКИ ===== */
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .tab-btn { background: transparent; border: none; color: var(--muted); font-size: 1rem; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: 0.2s; }
+    .tab-btn:hover { color: var(--text); background: var(--panel-2); }
+    .tab-btn.active { color: var(--accent); background: rgba(59, 130, 246, 0.1); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ===== КАРТОЧКИ ===== */
+    .hero { background: linear-gradient(160deg, #111827, #0f172a); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    .grid { display: grid; gap: 18px; }
+    @media (min-width: 760px) { .grid.two { grid-template-columns: 1fr 1fr; } }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+    .card h3 { margin: 0 0 14px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+
+    /* ===== ВИДЕО ===== */
+    .video-hero { padding: 0; overflow: hidden; margin-bottom: 18px; }
+    .video-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius) var(--radius) 0 0; overflow: hidden; }
+    .demo-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+    .video-caption { padding: 14px 22px 18px; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--border); background: var(--panel); }
+    .video-caption strong { font-size: .95rem; }
+    .video-caption span { color: var(--muted); font-size: .85rem; }
+
+    /* ===== ЭЛЕМЕНТЫ УПРАВЛЕНИЯ ===== */
+    .btn { appearance: none; border: none; cursor: pointer; padding: 12px 18px; border-radius: 10px; font-weight: 600; font-size: .92rem; transition: .18s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-2); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover:not(:disabled) { background: #1a2233; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover:not(:disabled) { background: #dc2626; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover:not(:disabled) { background: #059669; }
+    .btn-full { width: 100%; }
+    
+    select, input[type="file"], input[type="text"] { width: 100%; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); font-size: .92rem; outline: none; }
+    select:focus, input:focus { border-color: var(--accent); }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: .82rem; color: var(--muted); margin-bottom: 6px; }
+
+    /* ===== КРУГОВОЙ ПРОГРЕСС ===== */
+    .progress-circle-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+      position: relative;
+    }
+    .progress-circle {
+      width: 180px;
+      height: 180px;
+      transform: rotate(-90deg);
+    }
+    .progress-circle-bg { fill: none; stroke: var(--panel-2); stroke-width: 10; }
+    .progress-circle-bar { fill: none; stroke: var(--accent); stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
+    .progress-text-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .progress-addr { font-family: ui-monospace, monospace; font-size: 1.1rem; font-weight: 700; color: #60a5fa; }
+    .progress-mb { font-family: ui-monospace, monospace; font-size: 0.85rem; color: var(--text); }
+    .progress-pct { font-size: 1.4rem; font-weight: 700; color: var(--success); margin-top: 4px; }
+    
+    .log { margin-top: 14px; background: #05070c; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-family: ui-monospace, monospace; font-size: .78rem; color: #a7f3d0; height: 120px; overflow: auto; white-space: pre-wrap; }
+    
+    /* ===== МОНИТОР ===== */
+    .monitor-terminal { background: #000; border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-family: ui-monospace, monospace; font-size: 0.85rem; color: #38bdf8; height: 350px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; margin-bottom: 12px; }
+    .monitor-controls { display: flex; gap: 10px; }
+    .monitor-controls input { flex: 1; }
+    
+    .status { display: flex; align-items: center; gap: 8px; font-size: .85rem; margin: 10px 0; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+    .dot.ok { background: var(--success); }
+    .dot.err { background: var(--danger); }
+    .dot.busy { background: var(--warning); animation: pulse 1.1s infinite; }
+    @keyframes pulse { 50% { opacity: .35; } }
+
+    .warn { color: var(--warning); font-size: .82rem; }
+    .err-text { color: #fca5a5; font-size: .85rem; }
+    .muted { color: var(--muted); font-size: .85rem; }
+    code { background: #1f2937; padding: 1px 5px; border-radius: 4px; font-size: .82rem; }
+    
+    .danger-zone { margin-top: 18px; padding-top: 16px; border-top: 1px dashed #374151; }
+    .danger-zone h4 { margin: 0 0 8px; font-size: .88rem; color: #fca5a5; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+
+    .part-info { background: #1a2233; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 0.8rem; color: var(--muted); margin-bottom: 14px; line-height: 1.4; }
+    .part-info strong { color: var(--text); display: block; margin-bottom: 4px; }
+    .part-info code { color: #60a5fa; }
+
+    /* ===== МОДАЛЬНОЕ ОКНО ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+    .modal-img {
+      max-width: 100%;
+      max-height: 50vh;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 0;
+    }
+    .modal-msg {
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.95rem;
+      margin: 0;
+      max-width: 400px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    
+    <!-- БАННЕР -->
+    <div class="banner-container">
+      <img src="banner.png" alt="K85 OS Banner" class="banner-img">
+    </div>
+
+    <!-- СТАТУС И ПОДКЛЮЧЕНИЕ -->
+    <div class="hero" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+      <div>
+        <h2 style="margin: 0 0 5px; font-size: 1.2rem;">Управление устройством</h2>
+        <div class="status" style="margin: 0;">
+          <span class="dot" id="statusDot"></span>
+          <span id="statusText">Устройство не подключено</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost" id="connectBtn">🔌 Подключить устройство</button>
+    </div>
+
+    <!-- ВКЛАДКИ -->
+    <div class="tabs">
+      <button class="tab-btn active" data-target="tab-flash">⚡ Прошивка</button>
+      <button class="tab-btn" data-target="tab-monitor">🖥️ Монитор (Serial)</button>
+    </div>
+
+    <!-- ВКЛАДКА: ПРОШИВКА -->
+    <div id="tab-flash" class="tab-content active">
+      
+      <!-- ВИДЕО-ИНСТРУКЦИЯ -->
+      <section class="hero video-hero">
+        <div class="video-embed">
+          <video class="demo-video" src="https://github.com/kion85/k85OS/releases/download/video1/VID_20261108_181318.mp4" controls playsinline preload="metadata" muted loop>
+            Ваш браузер не поддерживает встроенное видео.
+          </video>
+        </div>
+        <div class="video-caption">
+          <strong>🎬 Как перевести M5Stack в режим прошивки</strong>
+          <span>Нажмите и удерживайте кнопку Reset/G0, пока зелёный светодиод не замигает.</span>
+        </div>
+      </section>
+
+      <div class="grid two">
+        <div class="card">
+          <h3>📋 Инструкция</h3>
+          <p class="muted">1. Подключите устройство USB-кабелем.</p>
+          <p class="muted">2. Зажмите <strong>Reset/G0</strong> до мигания светодиода.</p>
+          <p class="muted">3. Нажмите «Подключить устройство» сверху.</p>
+          <p class="muted">4. Выберите прошивку и нажмите «Прошить».</p>
+        </div>
+
+        <div class="card">
+          <h3>⚡ Прошивка</h3>
+          
+          <div class="part-info">
+            <strong>Разметка (Partition Table):</strong>
+            OTA 0: <code>0x20000</code> (2.5 МБ)<br>
+            OTA 1: <code>0x2A0000</code> (2.5 МБ)<br>
+            LittleFS: <code>0x520000</code> (2.875 МБ)<br>
+          </div>
+
+          <div class="field">
+            <label for="firmwareSelect">Релизы с GitHub</label>
+            <select id="firmwareSelect">
+              <option value="">Загрузка списка релизов…</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="localFile">…или файл вручную (.bin)</label>
+            <input type="file" id="localFile" accept=".bin,application/octet-stream">
+          </div>
+          
+          <button class="btn btn-primary btn-full" id="flashBtn" disabled>
+            ⬆️ Прошить (образ на 0x0)
+          </button>
+
+          <!-- КРУГОВОЙ ПРОГРЕСС -->
+          <div class="progress-circle-wrap">
+            <svg class="progress-circle" viewBox="0 0 100 100">
+              <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
+              <circle class="progress-circle-bar" id="progressCircleBar" cx="50" cy="50" r="45" stroke-dasharray="282.74" stroke-dashoffset="282.74"></circle>
+            </svg>
+            <div class="progress-text-overlay">
+              <div class="progress-addr" id="progressAddr">0x00000000</div>
+              <div class="progress-mb" id="progressMb">0.00 / 0.00 МБ</div>
+              <div class="progress-pct" id="progressPct">0%</div>
+            </div>
+          </div>
+
+          <div class="log" id="flashLog">Готов к работе.</div>
+          
+          <!-- ОПАСНАЯ ЗОНА -->
+          <div class="danger-zone">
+            <h4>⚠️ Сброс выбора загрузки</h4>
+            <p class="muted" style="margin:0 0 10px;">
+              1. Попробуйте <strong>зажать кнопку A (или A+B)</strong> при включении/сбросе.<br>
+              2. Если не помогает — сотрите регион <code>0x10000</code>.
+            </p>
+            <button class="btn btn-danger btn-full" id="eraseBtn" disabled>
+              🗑️ Стереть регион 0x10000 / 0x2000
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВКЛАДКА: МОНИТОР -->
+    <div id="tab-monitor" class="tab-content">
+      <div class="card">
+        <h3>🖥️ Монитор последовательного порта</h3>
+        <p class="muted" style="margin-top:0;">Аналог <code>idf.py monitor</code>.</p>
+        
+        <div class="monitor-terminal" id="monitorOutput">Ожидание подключения...</div>
+        
+        <div class="monitor-controls">
+          <input type="text" id="monitorInput" placeholder="Введите команду и нажмите Enter..." disabled>
+          <button class="btn btn-primary" id="monitorSendBtn" disabled>Отправить</button>
+          <button class="btn btn-ghost" id="monitorClearBtn">Очистить</button>
+          <button class="btn btn-success" id="monitorStartBtn" disabled>Старт</button>
+          <button class="btn btn-danger" id="monitorStopBtn" disabled>Стоп</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО (КАПИБАРЫ) -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <img src="" alt="Status" class="modal-img" id="modalImg">
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <p class="modal-msg" id="modalMsg"></p>
+      <div class="modal-actions" id="modalActions">
+        <!-- Кнопки будут добавлены через JS -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { ESPLoader, Transport } from "https://cdn.jsdelivr.net/npm/esptool-js@0.5.4/bundle.js";
+
+    const GITHUB_REPO = "kion85/k85OS";
+    const RELEASES_API = `https://api.github.com/repos/${GITHUB_REPO}/releases`;
+    const OTA_SLOT_SIZE = 0x280000; // 2.5 MB
+    const BOOT_REGION_OFFSET = 0x10000;
+    const BOOT_REGION_SIZE   = 0x2000;
+    const FLASH_ADDRESS = 0x0;
+    const CIRCUMFERENCE = 282.74; // 2 * pi * 45
+
+    // DOM
+    const $ = (id) => document.getElementById(id);
+    const statusDot = $("statusDot"), statusText = $("statusText"), connectBtn = $("connectBtn");
+    const flashBtn = $("flashBtn"), eraseBtn = $("eraseBtn"), firmwareSelect = $("firmwareSelect"), localFileInput = $("localFile");
+    const flashLog = $("flashLog");
+    const progressCircleBar = $("progressCircleBar"), progressAddr = $("progressAddr"), progressMb = $("progressMb"), progressPct = $("progressPct");
+    const monitorOutput = $("monitorOutput"), monitorInput = $("monitorInput"), monitorSendBtn = $("monitorSendBtn"), monitorStartBtn = $("monitorStartBtn"), monitorStopBtn = $("monitorStopBtn"), monitorClearBtn = $("monitorClearBtn");
+    
+    // Modal DOM
+    const modalOverlay = $("modalOverlay"), modalImg = $("modalImg"), modalTitle = $("modalTitle"), modalMsg = $("modalMsg"), modalActions = $("modalActions");
+
+    let port = null, transport = null, loader = null, connected = false, releaseAssets = [];
+    let monitorReader = null, monitorWriter = null, isMonitoring = false;
+
+    // --- УТИЛИТЫ ---
+    function logFlash(msg, cls = "") {
+      const line = document.createElement("div"); line.textContent = msg; if (cls) line.className = cls;
+      flashLog.appendChild(line); flashLog.scrollTop = flashLog.scrollHeight;
+    }
+
+    function logMonitor(msg) {
+      monitorOutput.textContent += msg; monitorOutput.scrollTop = monitorOutput.scrollHeight;
+    }
+
+    function setStatus(text, state = "") {
+      statusText.textContent = text;
+      statusDot.className = "dot" + (state ? " " + state : "");
+      if (state === "ok") {
+        monitorStartBtn.disabled = false; monitorInput.disabled = false; monitorSendBtn.disabled = false;
+      } else {
+        monitorStartBtn.disabled = true; monitorInput.disabled = true; monitorSendBtn.disabled = true;
+      }
+    }
+
+    // --- МОДАЛЬНОЕ ОКНО ---
+    function showModal(type, title, msg) {
+      return new Promise((resolve) => {
+        let imgSrc = "";
+        if (type === 'success') imgSrc = 'logo1.jpg';
+        else if (type === 'error') imgSrc = 'logo2.jpg';
+        else if (type === 'warning') imgSrc = 'logo3.jpg';
+
+        modalImg.src = imgSrc;
+        modalTitle.textContent = title;
+        modalMsg.textContent = msg;
+        modalActions.innerHTML = "";
+
+        if (type === 'warning') {
+          const btnNo = document.createElement("button");
+          btnNo.className = "btn btn-ghost"; btnNo.textContent = "Отмена";
+          btnNo.onclick = () => { modalOverlay.classList.remove('active'); resolve(false); };
+
+          const btnYes = document.createElement("button");
+          btnYes.className = "btn btn-danger"; btnYes.textContent = "Продолжить";
+          btnYes.onclick = () => { modalOverlay.classList.remove('active'); resolve(true); };
+
+          modalActions.appendChild(btnNo); modalActions.appendChild(btnYes);
+        } else {
+          const btnOk = document.createElement("button");
+          btnOk.className = "btn btn-primary"; btnOk.textContent = "ОК";
+          btnOk.onclick = () => { modalOverlay.classList.remove('active'); resolve(true); };
+          modalActions.appendChild(btnOk);
+        }
+
+        modalOverlay.classList.add('active');
+      });
+    }
+
+    // --- ВКЛАДКИ ---
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active'); $(btn.dataset.target).classList.add('active');
+      });
+    });
+
+    // --- ЗАГРУЗКА РЕЛИЗОВ ---
+    async function loadReleases() {
+      try {
+        const res = await fetch(RELEASES_API, { headers: { Accept: "application/vnd.github+json" } });
+        const releases = await res.json();
+        releaseAssets = []; firmwareSelect.innerHTML = "";
+        
+        for (const rel of releases) {
+          const bins = (rel.assets || []).filter(a => a.name.toLowerCase().endsWith(".bin"));
+          for (const asset of bins) {
+            releaseAssets.push({ label: `${rel.tag_name || rel.name} — ${asset.name}`, url: asset.browser_download_url, size: asset.size });
+          }
+        }
+        if (!releaseAssets.length) { firmwareSelect.innerHTML = `<option value="">Нет .bin-файлов</option>`; return; }
+        releaseAssets.forEach((a, i) => {
+          const opt = document.createElement("option"); opt.value = String(i);
+          opt.textContent = `[${(a.size/1024/1024).toFixed(2)} МБ] ${a.label}`;
+          firmwareSelect.appendChild(opt);
+        });
+        updateFlashButton();
+      } catch (e) { firmwareSelect.innerHTML = `<option value="">Ошибка загрузки</option>`; logFlash(`Ошибка GitHub: ${e.message}`, "err-text"); }
+    }
+
+    // --- ПОДКЛЮЧЕНИЕ ---
+    async function connectDevice() {
+      if (!("serial" in navigator)) return logFlash("Web Serial не поддерживается.", "err-text");
+      try {
+        setStatus("Запрос порта…", "busy");
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 115200 }); 
+
+        transport = new Transport(port, true);
+        loader = new ESPLoader({ transport, baudrate: 115200, terminal: { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) } });
+
+        setStatus("Определение чипа…", "busy");
+        const chip = await loader.main();
+        connected = true;
+        setStatus(`Подключено: ${chip}`, "ok");
+        connectBtn.textContent = "❌ Отключить"; updateFlashButton(); eraseBtn.disabled = false; monitorStartBtn.disabled = false;
+      } catch (e) { logFlash(`Ошибка подключения: ${e.message}`, "err-text"); setStatus("Ошибка подключения", "err"); connected = false; }
+    }
+
+    connectBtn.addEventListener("click", async () => {
+      if (connected) {
+        if (isMonitoring) stopMonitor();
+        try { await transport.disconnect(); } catch {}
+        try { await port.close(); } catch {}
+        connected = false; setStatus("Устройство не подключено", ""); connectBtn.textContent = "🔌 Подключить устройство"; flashBtn.disabled = true; eraseBtn.disabled = true;
+      } else { connectDevice(); }
+    });
+
+    // --- ПРОГРЕСС ---
+    function updateProgress(written, total) {
+      const p = total ? (written / total) : 0;
+      const pct = Math.round(p * 100);
+      const currentAddr = FLASH_ADDRESS + written;
+      
+      // Форматируем адрес (например, 0x0002A400)
+      const addrStr = `0x${currentAddr.toString(16).toUpperCase().padStart(8, '0')}`;
+      progressAddr.textContent = addrStr;
+      
+      // МБ
+      const mbWritten = (written / 1024 / 1024).toFixed(2);
+      const mbTotal = (total / 1024 / 1024).toFixed(2);
+      progressMb.textContent = `${mbWritten} / ${mbTotal} МБ`;
+      
+      // Проценты и круг
+      progressPct.textContent = `${pct}%`;
+      progressCircleBar.style.strokeDashoffset = CIRCUMFERENCE - (p * CIRCUMFERENCE);
+    }
+
+    // --- ПРОШИВКА ---
+    async function flashFirmware() {
+      if (!connected || !loader) return logFlash("Сначала подключите устройство.", "err-text");
+      
+      let firmwareData = null;
+      const manualFile = localFileInput.files?.[0];
+      
+      try {
+        if (manualFile) { firmwareData = new Uint8Array(await manualFile.arrayBuffer()); }
+        else {
+          const idx = firmwareSelect.value;
+          if (idx === "") return logFlash("Выберите прошивку.", "err-text");
+          logFlash("Скачивание...");
+          const resp = await fetch(releaseAssets[Number(idx)].url);
+          firmwareData = new Uint8Array(await resp.arrayBuffer());
+        }
+      } catch (e) { return logFlash(`Ошибка чтения файла: ${e.message}`, "err-text"); }
+
+      // Проверка размера (Капибара 3)
+      if (firmwareData.length > OTA_SLOT_SIZE) {
+        const sizeMb = (firmwareData.length / 1024 / 1024).toFixed(2);
+        const proceed = await showModal('warning', 'Прошивка слишком большая', `Размер образа (${sizeMb} МБ) превышает OTA-слот (2.5 МБ). Это может повредить файловую систему. Вы уверены?`);
+        if (!proceed) return logFlash("Прошивка отменена.", "muted");
+      }
+
+      flashBtn.disabled = true; connectBtn.disabled = true; eraseBtn.disabled = true;
+      logFlash(`Запись на 0x0 (${(firmwareData.length/1024/1024).toFixed(2)} МБ)...`);
+      updateProgress(0, firmwareData.length);
+
+      try {
+        await loader.writeFlash({
+          fileArray: [{ data: firmwareData, address: FLASH_ADDRESS }],
+          flashSize: "keep", flashMode: "keep", flashFreq: "keep", eraseAll: false, compress: true,
+          reportProgress: (i, written, total) => updateProgress(written, total),
+        });
+        logFlash("✅ Успешно прошито!", "muted");
+        await showModal('success', 'Прошивка успешна!', 'Устройство готово к работе. Нажмите Reset для загрузки.');
+      } catch (e) {
+        logFlash(`❌ Ошибка: ${e.message}`, "err-text");
+        await showModal('error', 'Ошибка прошивки', e.message);
+      } finally {
+        flashBtn.disabled = false; connectBtn.disabled = false; eraseBtn.disabled = false;
+        updateFlashButton();
+      }
+    }
+
+    flashBtn.addEventListener("click", flashFirmware);
+
+    // --- СТИРАНИЕ РЕГИОНА ---
+    eraseBtn.addEventListener("click", async () => {
+      if (!connected || !loader) return;
+      const ok = await showModal('warning', 'Сброс загрузки', 'Стереть регион 0x10000 / 0x2000? Устройство вернётся в k85OS.');
+      if (!ok) return;
+
+      eraseBtn.disabled = true; connectBtn.disabled = true; flashBtn.disabled = true;
+      logFlash("Стирание...");
+      updateProgress(0, BOOT_REGION_SIZE);
+
+      try {
+        await loader.eraseRegion(BOOT_REGION_OFFSET, BOOT_REGION_SIZE);
+        updateProgress(BOOT_REGION_SIZE, BOOT_REGION_SIZE);
+        logFlash("✅ Регион стёрт. Нажмите Reset.", "muted");
+        await showModal('success', 'Регион стёрт!', 'Выбор загрузки сброшен. Нажмите Reset на устройстве.');
+      } catch (e) {
+        logFlash(`❌ Ошибка: ${e.message}`, "err-text");
+        await showModal('error', 'Ошибка стирания', e.message);
+      } finally {
+        eraseBtn.disabled = false; connectBtn.disabled = false; updateFlashButton();
+      }
+    });
+
+    function updateFlashButton() {
+      const hasManual = !!localFileInput.files?.length;
+      const hasRelease = firmwareSelect.value !== "";
+      flashBtn.disabled = !(connected && (hasManual || hasRelease));
+    }
+    firmwareSelect.addEventListener("change", updateFlashButton);
+    localFileInput.addEventListener("change", () => { updateFlashButton(); });
+
+    // --- МОНИТОР (Без изменений) ---
+    monitorStartBtn.addEventListener("click", async () => {
+      if (!port || isMonitoring) return;
+      if (transport) await transport.disconnect().catch(()=>{});
+      try {
+        await port.close(); await port.open({ baudRate: 115200 });
+        monitorReader = port.readable.getReader(); monitorWriter = port.writable.getWriter();
+        isMonitoring = true; monitorStartBtn.disabled = true; monitorStopBtn.disabled = false;
+        monitorOutput.textContent = "--- Монитор запущен. Нажмите Reset на устройстве ---\n";
+        while (isMonitoring) {
+          const { value, done } = await monitorReader.read();
+          if (done) break;
+          if (value) logMonitor(new TextDecoder().decode(value));
+        }
+      } catch (e) { logMonitor(`\n[Ошибка: ${e.message}]`); isMonitoring = false; monitorStartBtn.disabled = false; monitorStopBtn.disabled = true; }
+    });
+
+    async function stopMonitor() {
+      isMonitoring = false;
+      if (monitorReader) { await monitorReader.cancel().catch(()=>{}); monitorReader.releaseLock(); monitorReader = null; }
+      if (monitorWriter) { monitorWriter.releaseLock(); monitorWriter = null; }
+      if (port) {
+          await port.close().catch(()=>{}); await port.open({ baudRate: 921600 }).catch(()=>{});
+          transport = new Transport(port, true);
+          loader = new ESPLoader({ transport, baudrate: 921600, terminal: { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) } });
+          await loader.main().catch(()=>{});
+      }
+      monitorStartBtn.disabled = false; monitorStopBtn.disabled = true; logMonitor("\n--- Монитор остановлен ---\n");
+    }
+
+    monitorStopBtn.addEventListener("click", stopMonitor);
+    monitorClearBtn.addEventListener("click", () => monitorOutput.textContent = "");
+    monitorSendBtn.addEventListener("click", async () => {
+      if (!monitorWriter) return;
+      const text = monitorInput.value; if (!text) return;
+      try { await monitorWriter.write(new TextEncoder().encode(text + "\n")); logMonitor(`\n>> ${text}\n`); monitorInput.value = ""; } 
+      catch (e) { logMonitor(`\n[Ошибка отправки: ${e.message}]\n`); }
+    });
+    monitorInput.addEventListener("keypress", (e) => { if (e.key === "Enter") monitorSendBtn.click(); });
+
+    // Init
+    loadReleases();
+    updateProgress(0, 1); // Сброс круга
+  </script>
+</body>
+</html>
