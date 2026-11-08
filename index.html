@@ -137,7 +137,21 @@
           <span id="statusText">Устройство не подключено</span>
         </div>
       </div>
-      <button class="btn btn-ghost" id="connectBtn">🔌 Подключить устройство</button>
+      <div style="display:flex; gap:14px; align-items:center; flex-wrap: wrap;">
+        <div style="min-width:170px;">
+          <label for="baudSelect" style="display:block; font-size:0.8rem; color:var(--muted); margin-bottom:4px;">Скорость (ESP32-S3)</label>
+          <select id="baudSelect">
+            <option value="115200" selected>115200</option>
+            <option value="230400">230400</option>
+            <option value="460800">460800</option>
+            <option value="921600">921600</option>
+            <option value="1500000">1500000</option>
+            <option value="2000000">2000000</option>
+            <option value="3000000">3000000</option>
+          </select>
+        </div>
+        <button class="btn btn-ghost" id="connectBtn">🔌 Подключить устройство</button>
+      </div>
     </div>
 
     <!-- ВКЛАДКИ -->
@@ -166,8 +180,9 @@
           <h3>📋 Инструкция</h3>
           <p class="muted">1. Подключите устройство USB-кабелем.</p>
           <p class="muted">2. Зажмите <strong>Reset/G0</strong> до мигания светодиода.</p>
-          <p class="muted">3. Нажмите «Подключить устройство» сверху.</p>
+          <p class="muted">3. Выберите скорость (по умолчанию 115200) и нажмите «Подключить устройство».</p>
           <p class="muted">4. Выберите прошивку и нажмите «Прошить».</p>
+          <p class="warn">Если на высоких скоростях подключение нестабильно (кабель длинный/без экранирования) — вернитесь на 115200.</p>
         </div>
 
         <div class="card">
@@ -227,7 +242,7 @@
     <div id="tab-monitor" class="tab-content">
       <div class="card">
         <h3>🖥️ Монитор последовательного порта</h3>
-        <p class="muted" style="margin-top:0;">Аналог <code>idf.py monitor</code>. Показывает логи устройства.</p>
+        <p class="muted" style="margin-top:0;">Аналог <code>idf.py monitor</code>. Скорость берётся из селекта сверху (изменение применяется после переподключения).</p>
 
         <div class="monitor-terminal" id="monitorOutput">Ожидание подключения...</div>
 
@@ -263,10 +278,10 @@
     const BOOT_REGION_SIZE   = 0x2000;
     const FLASH_ADDRESS = 0x0;
     const CIRCUMFERENCE = 282.74;
-    const BAUD = 115200;
 
     const $ = (id) => document.getElementById(id);
     const statusDot = $("statusDot"), statusText = $("statusText"), connectBtn = $("connectBtn");
+    const baudSelect = $("baudSelect");
     const flashBtn = $("flashBtn"), eraseBtn = $("eraseBtn"), firmwareSelect = $("firmwareSelect"), localFileInput = $("localFile");
     const flashLog = $("flashLog");
     const progressCircleBar = $("progressCircleBar"), progressAddr = $("progressAddr"), progressMb = $("progressMb"), progressPct = $("progressPct");
@@ -276,6 +291,7 @@
     let port = null, transport = null, loader = null, connected = false, releaseAssets = [];
     let monitorReader = null, monitorWriter = null, isMonitoring = false;
 
+    function getBaud() { return Number(baudSelect.value) || 115200; }
     const terminal = { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) };
 
     // --- УТИЛИТЫ ---
@@ -318,23 +334,26 @@
       progressCircleBar.style.strokeDashoffset = CIRCUMFERENCE - (p * CIRCUMFERENCE);
     }
 
-    // --- БЕЗОПАСНОЕ ЗАКРЫТИЕ СЫРОГО ПОРТА ---
-    async function closeRawPort(p) {
-      if (!p) return;
-      try {
-        if (p.readable) {
-          const r = p.readable.getReader();
-          try { await r.cancel(); } catch {}
-          try { r.releaseLock(); } catch {}
+    // --- ЗАКРЫТИЕ ПОРТА ---
+    // Закрывать порт может только тот, кто держит блокировку потоков:
+    // esptool-транспорт закрывает transport.disconnect(), монитор — свои reader/writer.
+    async function safeCloseRawPort() {
+      if (!port) return;
+      if (transport) {
+        try { await transport.disconnect(); } catch (e) { logFlash(`transport.disconnect: ${e.message}`, "err-text"); }
+        transport = null; loader = null;
+      }
+      if (!port.readable && !port.writable) return;
+      if (port.readable?.locked || port.writable?.locked) {
+        if (monitorReader) {
+          try { await monitorReader.cancel(); } catch {}
+          try { monitorReader.releaseLock(); } catch {}
+          monitorReader = null;
         }
-      } catch {}
-      try {
-        if (p.writable) {
-          const w = p.writable.getWriter();
-          try { w.releaseLock(); } catch {}
-        }
-      } catch {}
-      try { if (p.readable || p.writable) await p.close(); } catch {}
+        if (monitorWriter) { try { monitorWriter.releaseLock(); } catch {} monitorWriter = null; }
+      }
+      try { await port.close(); logFlash("Порт закрыт."); }
+      catch (e) { logFlash(`port.close: ${e.message}`, "err-text"); }
     }
 
     // --- МОДАЛЬНОЕ ОКНО ---
@@ -385,34 +404,38 @@
       } catch (e) { firmwareSelect.innerHTML = `<option value="">Ошибка загрузки</option>`; }
     }
 
-    // --- ПОДКЛЮЧЕНИЕ (handshake через ESPLoader) ---
-    // ВАЖНО: НЕ вызываем port.open() вручную!
-    // loader.main() сам вызывает transport.connect(baud) -> device.open().
+    // --- ПОДКЛЮЧЕНИЕ ---
+    // ВАЖНО: НЕ вызываем port.open() вручную перед esptool —
+    // loader.main() сам открывает порт через transport.connect(baud).
     async function connectDevice() {
       if (!("serial" in navigator)) return logFlash("Web Serial не поддерживается.", "err-text");
 
+      const baud = getBaud();
+
       try {
-        setStatus("Запрос порта…", "busy");
+        logFlash(`[1/5] Очистка предыдущего состояния (скорость: ${baud})…`);
+        await safeCloseRawPort();
 
-        // Если порт уже был выбран и открыт в прошлой сессии — закрываем
-        if (transport) { try { await transport.disconnect(); } catch {} transport = null; }
-        await closeRawPort(port);
-
+        logFlash("[2/5] Запрос порта у браузера…");
         port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a }] });
 
+        logFlash("[3/5] Создание Transport…");
         transport = new Transport(port, true);
-        loader = new ESPLoader({ transport, baudrate: BAUD, terminal });
+        loader = new ESPLoader({ transport, baudrate: baud, terminal });
 
-        setStatus("Определение чипа…", "busy");
+        logFlash(`[4/5] Handshake на ${baud} бод (устройство должно быть в bootloader-режиме — Reset/G0 до мигания LED!)…`);
         const chip = await loader.main();
 
+        logFlash(`[5/5] Готово. Чип: ${chip}, скорость: ${baud}`);
         connected = true;
-        setStatus(`Подключено: ${chip}`, "ok");
+        setStatus(`Подключено: ${chip} @ ${baud}`, "ok");
         setMonitorControls(true);
         connectBtn.textContent = "❌ Отключить";
         updateFlashButton(); eraseBtn.disabled = false;
       } catch (e) {
-        logFlash(`Ошибка подключения: ${e.message}`, "err-text");
+        logFlash(`ОШИБКА: [${e.name}] ${e.message}`, "err-text");
+        console.error(e);
+        try { if (transport) { await transport.disconnect(); } } catch {}
         transport = null; loader = null;
         setStatus("Ошибка подключения", "err");
         setMonitorControls(false);
@@ -431,8 +454,7 @@
     connectBtn.addEventListener("click", async () => {
       if (connected) {
         if (isMonitoring) await stopMonitor();
-        if (transport) { try { await transport.disconnect(); } catch {} }
-        await closeRawPort(port);
+        await safeCloseRawPort();
         setDisconnectedUI();
       } else { connectDevice(); }
     });
@@ -514,26 +536,26 @@
       flashBtn.disabled = !(connected && (hasManual || hasRelease));
     }
     firmwareSelect.addEventListener("change", updateFlashButton);
-    localFileInput.addEventListener("change", () => { updateFlashButton(); });
+    localFileInput.addEventListener("change", updateFlashButton);
 
     // --- МОНИТОР ---
-    // Монитор работает с "сырым" портом: сначала закрываем esptool-транспорт,
-    // затем port.open() вручную — здесь это допустимо, т.к. порт закрыт.
     monitorStartBtn.addEventListener("click", async () => {
       if (!port || isMonitoring) return;
+      const baud = getBaud();
 
       try {
-        if (transport) { try { await transport.disconnect(); } catch {} } // закрывает порт
-        await closeRawPort(port);
-        transport = null; loader = null;
+        logMonitor(`--- Переключение порта в режим монитора (${baud} бод)… ---\n`);
+        // esptool держит порт открытым — закрываем ЭТОТ транспорт (он же снимет блокировку)
+        if (transport) { try { await transport.disconnect(); } catch {} transport = null; loader = null; }
+        if (port.readable || port.writable) { try { await port.close(); } catch {} }
 
-        await port.open({ baudRate: BAUD });
+        await port.open({ baudRate: baud });
         monitorReader = port.readable.getReader();
         monitorWriter = port.writable.getWriter();
 
         isMonitoring = true;
         monitorStartBtn.disabled = true; monitorStopBtn.disabled = false;
-        monitorOutput.textContent = "--- Монитор запущен. Нажмите Reset на устройстве ---\n";
+        monitorOutput.textContent = `--- Монитор запущен @ ${baud}. Нажмите Reset на устройстве ---\n`;
 
         while (isMonitoring) {
           const { value, done } = await monitorReader.read();
@@ -541,7 +563,7 @@
           if (value) logMonitor(new TextDecoder().decode(value));
         }
       } catch (e) {
-        logMonitor(`\n[Ошибка: ${e.message}]`);
+        logMonitor(`\n[Ошибка монитора: ${e.name} ${e.message}]`);
         isMonitoring = false;
         monitorStartBtn.disabled = false; monitorStopBtn.disabled = true;
       }
@@ -559,22 +581,18 @@
       monitorStartBtn.disabled = true; monitorStopBtn.disabled = true;
       logMonitor("\n--- Монитор остановлен ---\n");
 
-      // Закрываем сырой порт и восстанавливаем esptool-сессию
+      // Закрываем сырой порт и пытаемся восстановить esptool-сессию
       try {
-        await closeRawPort(port);
-        await port.open({ baudRate: BAUD });
+        if (port.readable || port.writable) await port.close();
         transport = new Transport(port, true);
-        loader = new ESPLoader({ transport, baudrate: BAUD, terminal });
+        loader = new ESPLoader({ transport, baudrate: getBaud(), terminal });
         await loader.main();
         monitorStartBtn.disabled = false; monitorInput.disabled = false; monitorSendBtn.disabled = false;
         setStatus("Подключено (сессия восстановлена)", "ok");
       } catch (e) {
         console.warn("Restore error:", e);
-        // Если восстановить не удалось (устройство уже запустило прошивку и не в bootloader) —
-        // предлагаем просто переподключиться кнопкой «Подключить устройство»
         setMonitorControls(false);
-        setStatus("Переподключите устройство", "err");
-        logFlash("Не удалось восстановить esptool-сессию. Нажмите Reset на устройстве и подключитесь заново.", "err-text");
+        logFlash(`Не удалось восстановить esptool-сессию (${e.message}). Нажмите Reset на устройстве (до мигания LED) и подключитесь заново.`, "err-text");
         setDisconnectedUI();
       }
     }
@@ -590,16 +608,15 @@
     });
     monitorInput.addEventListener("keypress", (e) => { if (e.key === "Enter") monitorSendBtn.click(); });
 
-    // Обработка физического отключения USB
+    // Отключение USB
     navigator.serial?.addEventListener("disconnect", (e) => {
       if (e.target === port) {
-        if (isMonitoring) { isMonitoring = false; monitorReader = null; monitorWriter = null; }
+        isMonitoring = false; monitorReader = null; monitorWriter = null;
         setDisconnectedUI();
         logFlash("Устройство отключено от USB.", "err-text");
       }
     });
 
-    // Init
     loadReleases();
     resetProgress();
   </script>
