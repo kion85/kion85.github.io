@@ -1,126 +1,139 @@
 <!DOCTYPE html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>404 — Boot device not found | kion85 UEFI</title>
-<style>
-:root{--bg:#0b0e14;--p:#131823;--p2:#1a2130;--ln:#2a3447;--tx:#cfd6e4;--dim:#7d8aa3;--red:#ff3b4e;--cy:#2bd4ff;--gr:#3ddc84;--am:#ffb020}
-*{box-sizing:border-box;margin:0}
-body{background:radial-gradient(1200px 600px at 80% -10%,#1b2540 0,transparent 60%),var(--bg);color:var(--tx);font:15px/1.45 system-ui,'Segoe UI',Roboto,sans-serif;min-height:100vh;display:flex;flex-direction:column}
-.mono{font-family:ui-monospace,Consolas,'DejaVu Sans Mono',monospace}
-header{display:flex;align-items:center;gap:16px;padding:10px 20px;background:var(--p);border-bottom:2px solid var(--red)}
-header b{font-size:1.15em;letter-spacing:.04em}header .sp{flex:1}
-.tag{border:1px solid var(--ln);border-radius:4px;padding:2px 10px;color:var(--dim);font-size:.85em}
-.tag.err{color:var(--red);border-color:var(--red)}
-main{flex:1;display:grid;grid-template-columns:280px 1fr 300px;gap:14px;padding:14px 20px;max-width:1280px;width:100%;margin:0 auto}
-@media(max-width:980px){main{grid-template-columns:1fr}}
-.card{background:var(--p);border:1px solid var(--ln);border-radius:6px;padding:14px;min-width:0}
-.card h2{font-size:.8em;font-weight:600;letter-spacing:.1em;color:var(--cy);margin-bottom:10px}
-.kv{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid #1f2838;font-size:.9em}
-.kv span:first-child{color:var(--dim)}.kv span:last-child{text-align:right;overflow-wrap:anywhere}
-/* cube */
-.sc{perspective:700px;height:170px;display:grid;place-items:center}
-.cube{width:90px;height:90px;position:relative;transform-style:preserve-3d;animation:rot 16s linear infinite}
-.cube div{position:absolute;inset:0;display:grid;place-items:center;border:1px solid var(--cy);background:rgba(43,212,255,.06);font:700 13px ui-monospace,Consolas,monospace;color:var(--cy);text-align:center}
-.cube div:nth-child(1){transform:translateZ(45px)}.cube div:nth-child(2){transform:rotateY(90deg) translateZ(45px)}.cube div:nth-child(3){transform:rotateY(180deg) translateZ(45px)}
-.cube div:nth-child(4){transform:rotateY(-90deg) translateZ(45px)}.cube div:nth-child(5){transform:rotateX(90deg) translateZ(45px);border-style:dashed;color:var(--red);border-color:var(--red)}.cube div:nth-child(6){transform:rotateX(-90deg) translateZ(45px);border-style:dashed}
-@keyframes rot{from{transform:rotateX(-20deg) rotateY(0)}to{transform:rotateX(-20deg) rotateY(360deg)}}
-/* error */
-.big{font-size:clamp(70px,13vw,130px);font-weight:800;line-height:1;color:var(--red);letter-spacing:-.02em;position:relative;display:inline-block}
-.big::after{content:"404";position:absolute;left:3px;top:0;color:var(--cy);mix-blend-mode:screen;opacity:.5;animation:gl 3s steps(1) infinite}
-@keyframes gl{0%,92%{transform:none;opacity:0}93%{transform:translate(-4px,2px);opacity:.6}96%{transform:translate(4px,-2px);opacity:.6}100%{opacity:0}}
-.err h1{font-size:1.3em;margin:8px 0 4px}.err p{color:var(--dim)}
-.path{display:block;margin:10px 0;padding:8px 10px;background:#0a0d13;border:1px solid var(--ln);border-left:3px solid var(--red);color:var(--am);overflow-wrap:anywhere}
-#log{height:190px;overflow:auto;background:#080b10;border:1px solid var(--ln);padding:8px 10px;font-size:.85em;color:#9fb0cc;margin-top:12px}
-#log .ok{color:var(--gr)}#log .bad{color:var(--red)}#log .w{color:var(--am)}
-.bar{height:8px;background:#0a0d13;border:1px solid var(--ln);margin-top:8px}.bar i{display:block;height:100%;width:0;background:var(--cy)}
-/* boot menu */
-.bm{list-style:none;padding:0}
-.bm li{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid transparent;border-radius:4px;cursor:pointer;margin-bottom:4px}
-.bm li .n{width:20px;color:var(--dim)}.bm li small{display:block;color:var(--dim)}
-.bm li.on,.bm li:hover{background:var(--p2);border-color:var(--cy)}
-.bm li:focus{outline:0}
-.sw{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:.9em}
-.sw button{background:var(--p2);color:var(--tx);border:1px solid var(--ln);border-radius:4px;padding:3px 12px;cursor:pointer;font:inherit}
-.sw button.on{border-color:var(--gr);color:var(--gr)}
-footer{display:flex;flex-wrap:wrap;gap:8px 18px;padding:8px 20px;background:var(--p);border-top:1px solid var(--ln);font-size:.85em;color:var(--dim)}
-footer b{color:var(--cy);font-weight:600;cursor:pointer}
-#toast{position:fixed;left:50%;bottom:52px;transform:translateX(-50%);background:var(--cy);color:#001018;padding:6px 16px;border-radius:4px;display:none;font-weight:600;z-index:5;max-width:90vw}
-#crash{position:fixed;inset:0;background:#0000aa;color:#fff;display:none;place-items:center;text-align:center;z-index:9;padding:20px;font-family:ui-monospace,Consolas,monospace}
-@media(prefers-reduced-motion:reduce){.cube,.big::after{animation:none}}
-</style></head><body>
-<header><b>k85 UEFI</b><span class="tag mono">Setup Utility · v4.04</span><span class="tag err mono">BOOT ERROR 0x194</span><span class="sp"></span><span class="tag mono" id="clk"></span></header>
-<main>
-<aside class="card"><h2>MISSING PAGE MODULE</h2>
-<div class="sc"><div class="cube"><div>NOT<br>FOUND</div><div>/dev/<br>null</div><div>¯\_(ツ)_/¯</div><div>git<br>blame</div><div>404</div><div>???</div></div></div>
-<h2 style="margin-top:6px">SYSTEM INFORMATION</h2>
-<div class="kv"><span>Board</span><span>kion85-404-PRO</span></div>
-<div class="kv"><span>Requested</span><span class="mono" id="rq">/</span></div>
-<div class="kv"><span>Page memory</span><span class="bad" style="color:var(--red)">0 KB (lost)</span></div>
-<div class="kv"><span>GitHub drive</span><span id="gh">…</span></div>
-<div class="kv"><span>GitLab drive</span><span id="gl">…</span></div>
-<div class="kv"><span>OS</span><span>Linux (btw)</span></div>
-<div class="kv"><span>Humor module</span><span>Loaded (404 jokes)</span></div></aside>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Страница не найдена | k85OS</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-2: #2563eb;
+      --border: #1f2937;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, #1e293b 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      line-height: 1.5;
+    }
 
-<section class="card err"><div class="big mono">404</div>
-<h1>No bootable page found</h1>
-<p>Нет такой страницы. Проверили кэш, ОЗУ, SSD и твою надежду - везде пусто.</p>
-<code class="path mono" id="path">/</code>
-<div class="bar"><i id="pb"></i></div>
-<div id="log" class="mono" aria-live="polite"></div></section>
+    .error-container {
+      max-width: 500px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.6s ease-out;
+    }
 
-<aside class="card"><h2>BOOT PRIORITY</h2>
-<ul class="bm" id="bm" role="listbox" aria-label="Boot menu"></ul>
-<h2 style="margin-top:12px">ADVANCED</h2>
-<div class="sw"><span>Блеск CRT-свечения</span><button id="b1" class="on">ON</button></div>
-<div class="sw"><span>Секретный режим</span><button id="b2">OFF</button></div>
-<div class="sw"><span>Вернуть страницу</span><button id="b3">Try</button></div></aside>
-</main>
-<footer><span><b data-k="F1">F1</b> Help</span><span><b data-k="F5">F5</b> Retry scan</span><span><b data-k="F9">F9</b> Defaults</span><span><b data-k="F10">F10</b> Save &amp; exit (home)</span><span><b data-k="Escape">Esc</b> Back</span><span>↑↓ Enter — boot menu</span></footer>
-<div id="toast"></div>
-<div id="crash"><div>:(<h1 style="margin:10px 0">Your page ran into a problem</h1><p>Stop code: PAGE_NOT_FOUND_BUT_YOU_ARE_FINE</p><p style="margin-top:14px">Шутка. Нажми любую клавишу.</p></div></div>
-<script>
-const $=s=>document.querySelector(s),P=location.pathname+location.search;
-$('#path').textContent=$('#rq').textContent=P;
-setInterval(()=>$('#clk').textContent=new Date().toLocaleString('ru-RU'),1000);$('#clk').textContent=new Date().toLocaleString('ru-RU');
-function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2400)}
-const log=(t,c='')=>{const l=$('#log');l.insertAdjacentHTML('beforeend',`<div class="${c}">${t}</div>`);l.scrollTop=l.scrollHeight};
-const wait=ms=>new Promise(r=>setTimeout(r,ms));
-/* boot menu */
-const BM=[['UEFI: kion85 Home','/ — вернуться на главную','/'],['UEFI: GitHub','github.com/kion85','https://github.com/kion85'],['UEFI: GitLab','gitlab.com/kion85','https://gitlab.com/kion85'],['UEFI: Discord','Написать, что страница пропала','https://discord.com/users/1476465632190140427'],['Retry network boot (PXE)','Искать страницу ещё раз',null]];
-let sel=0;const bm=$('#bm');
-function drawBM(){bm.innerHTML=BM.map((b,i)=>`<li role=option tabindex=-1 data-i=${i} class="${i===sel?'on':''}"><span class="n mono">${i+1}</span><span>${b[0]}<small>${b[1]}</small></span></li>`).join('')}
-function act(i){const b=BM[i];if(!b[2])return scan();b[2][0]==='/'?location.href=b[2]:window.open(b[2],'_blank','noopener')}
-bm.onclick=e=>{const li=e.target.closest('li');if(li){sel=+li.dataset.i;drawBM();act(sel)}};drawBM();
-/* scan */
-let busy=0;
-async function scan(){if(busy)return;busy=1;$('#log').innerHTML='';const pb=$('#pb');pb.style.width='0';pb.style.background='var(--cy)';
-const L=[['Initializing page scanner...',''],[`Locating ${P} in L1 cache... MISS`,'w'],['Checking L2 cache... MISS','w'],['Checking RAM... only 3 browser tabs, no page','w'],['Searching /dev/null... found, but it is empty','w'],['Asking git blame... blamed the intern','w'],['Checking recycle bin... nothing but old node_modules','w'],['Trying sudo... page still does not exist','w'],['Reading mind of the developer... INCONCLUSIVE','w']];
-for(let i=0;i<L.length;i++){log('> '+L[i][0],L[i][1]);pb.style.width=Math.round((i+1)/L.length*99)+'%';await wait(420)}
-await wait(900);log('Progress stuck at 99%... as always','w');await wait(900);pb.style.background='var(--red)';pb.style.width='100%';
-log('RESULT: 404 — page not found (stable, reproducible)','bad');log('Tip: try the boot menu on the right.','ok');busy=0}
-/* intro log */
-(async()=>{const I=[['k85 UEFI POST... OK','ok'],['CPU: Linux user detected','ok'],['Memory test: 640K ought to be enough','ok'],[`Booting from ${P}...`,'w'],['ERROR: no such page, no such luck','bad'],['Press F5 to retry, or accept your fate','']];for(const [t,c] of I){log('> '+t,c);await wait(260)}})();
-/* repos */
-fetch('https://api.github.com/users/kion85').then(r=>r.json()).then(d=>$('#gh').textContent=d.public_repos+' repos').catch(()=>$('#gh').textContent='offline');
-fetch('https://gitlab.com/api/v4/users?username=kion85').then(r=>r.json()).then(u=>fetch(`https://gitlab.com/api/v4/users/${u[0].id}/projects`)).then(r=>r.json()).then(p=>$('#gl').textContent=p.length+' projects').catch(()=>$('#gl').textContent='offline');
-/* advanced */
-let glow=1;$('#b1').onclick=e=>{glow=!glow;e.target.textContent=glow?'ON':'OFF';e.target.className=glow?'on':'';document.querySelector('.big').style.textShadow=glow?'0 0 40px rgba(255,59,78,.5)':'none'};
-document.querySelector('.big').style.textShadow='0 0 40px rgba(255,59,78,.5)';
-const SEC=['Секретный режим включён. Ничего не изменилось. Это тоже 404.','Секрет: страницы тут и не было.','Режим «Бог» не найден. Он на другой странице.'];let si=0;
-$('#b2').onclick=e=>{const on=e.target.textContent==='OFF';e.target.textContent=on?'ON':'OFF';e.target.className=on?'on':'';toast(SEC[si++%SEC.length]);if(on)document.body.style.filter='hue-rotate(120deg)';else document.body.style.filter=''};
-const TRY=['Страница восстановлена... шучу.','Пробуем: Ctrl+Z. Не помогло.','Страницы нет. Но ты есть. Это уже что-то.','Файл найден! Это пустой файл.'];let ti=0;
-$('#b3').onclick=()=>toast(TRY[ti++%TRY.length]);
-/* keys */
-function key(k){if(k==='F1')toast('Help: страница не найдена. Это вся справка.');
-else if(k==='F5')scan();else if(k==='F9'){toast('Optimized defaults loaded. Страница всё ещё 404.')}
-else if(k==='F10')location.href='/';else if(k==='Escape')history.length>1?history.back():location.href='/'}
-document.addEventListener('keydown',e=>{if($('#crash').style.display==='grid'){$('#crash').style.display='none';return}
-if(['F1','F5','F9','F10','Escape'].includes(e.key)){e.preventDefault();return key(e.key)}
-if(e.key==='ArrowDown'){e.preventDefault();sel=(sel+1)%BM.length;drawBM()}else if(e.key==='ArrowUp'){e.preventDefault();sel=(sel+BM.length-1)%BM.length;drawBM()}
-else if(e.key==='Enter'&&!/BUTTON/.test(e.target.tagName))act(sel);else if(/^[1-5]$/.test(e.key)){sel=e.key-1;drawBM();act(sel)}
-buf=(buf+e.key).slice(-4);if(buf==='4040'||buf==='sudo'.slice(-4)&&0){}});
-let buf='';
-document.querySelectorAll('footer b').forEach(b=>b.onclick=()=>key(b.dataset.k));
-/* easter egg: type "bsod" */
-let t='';document.addEventListener('keypress',e=>{t=(t+e.key).slice(-4);if(t==='bsod')$('#crash').style.display='grid'});
-$('#crash').onclick=()=>$('#crash').style.display='none';
-</script></body></html>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .error-code {
+      font-size: 6rem;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1;
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -2px;
+    }
+
+    .error-title {
+      font-size: 1.5rem;
+      margin: 10px 0;
+      font-weight: 600;
+    }
+
+    .error-text {
+      color: var(--muted);
+      margin: 0 0 30px;
+      font-size: 1rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      appearance: none; 
+      border: none; 
+      cursor: pointer;
+      padding: 12px 24px; 
+      border-radius: 10px; 
+      font-weight: 600; 
+      font-size: 0.95rem;
+      transition: .18s; 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn:active { transform: translateY(1px); }
+    
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-2); }
+    
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--panel); }
+
+    /* Изображение */
+    .capybara-img {
+      width: 100%;
+      max-width: 351px; /* Ваш оригинальный размер */
+      height: auto;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0,0,0,.5);
+      border: 1px solid var(--border);
+      margin-top: 10px;
+    }
+
+    /* Анимация легкого покачивания для капибары */
+    .capybara-img:hover {
+      transform: scale(1.02) rotate(1deg);
+      transition: transform 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="error-container">
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">Страница не найдена</h2>
+    <p class="error-text">Похоже, вы забрели не туда. Такой страницы не существует или она была перемещена.</p>
+    
+    <div class="btn-group">
+      <a href="https://kion85.github.io/" class="btn btn-primary">🏠 На главную</a>
+      <a href="https://github.com/kion85/k85OS" target="_blank" class="btn btn-ghost">🐙 GitHub</a>
+    </div>
+
+    <!-- Ваша капибара -->
+    <img src="logo3.jpg" alt="Капибара 404" class="capybara-img">
+  </div>
+
+</body>
+</html>
