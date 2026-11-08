@@ -123,12 +123,10 @@
 <body>
   <div class="wrap">
 
-    <!-- БАННЕР -->
     <div class="banner-container">
       <img src="banner.png" alt="K85 OS Banner" class="banner-img">
     </div>
 
-    <!-- СТАТУС И ПОДКЛЮЧЕНИЕ -->
     <div class="hero" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
       <div>
         <h2 style="margin: 0 0 6px; font-size: 1.3rem;">Управление устройством</h2>
@@ -154,13 +152,11 @@
       </div>
     </div>
 
-    <!-- ВКЛАДКИ -->
     <div class="tabs">
       <button class="tab-btn active" data-target="tab-flash">⚡ Прошивка</button>
       <button class="tab-btn" data-target="tab-monitor">🖥️ Монитор (Serial)</button>
     </div>
 
-    <!-- ВКЛАДКА: ПРОШИВКА -->
     <div id="tab-flash" class="tab-content active">
 
       <section class="hero video-hero">
@@ -182,7 +178,7 @@
           <p class="muted">2. Зажмите <strong>Reset/G0</strong> до мигания светодиода.</p>
           <p class="muted">3. Выберите скорость (по умолчанию 115200) и нажмите «Подключить устройство».</p>
           <p class="muted">4. Выберите прошивку и нажмите «Прошить».</p>
-          <p class="warn">Если на высоких скоростях подключение нестабильно (кабель длинный/без экранирования) — вернитесь на 115200.</p>
+          <p class="warn">Если на высоких скоростях подключение нестабильно — вернитесь на 115200.</p>
         </div>
 
         <div class="card">
@@ -238,11 +234,10 @@
       </div>
     </div>
 
-    <!-- ВКЛАДКА: МОНИТОР -->
     <div id="tab-monitor" class="tab-content">
       <div class="card">
         <h3>🖥️ Монитор последовательного порта</h3>
-        <p class="muted" style="margin-top:0;">Аналог <code>idf.py monitor</code>. Скорость берётся из селекта сверху (изменение применяется после переподключения).</p>
+        <p class="muted" style="margin-top:0;">Аналог <code>idf.py monitor</code>. Скорость берётся из селекта сверху.</p>
 
         <div class="monitor-terminal" id="monitorOutput">Ожидание подключения...</div>
 
@@ -258,7 +253,6 @@
 
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal-content">
       <img src="" alt="Status" class="modal-img" id="modalImg">
@@ -334,9 +328,17 @@
       progressCircleBar.style.strokeDashoffset = CIRCUMFERENCE - (p * CIRCUMFERENCE);
     }
 
+    // --- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК (это и чинит кнопку «Монитор») ---
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
+        $(btn.dataset.target).classList.add("active");
+      });
+    });
+
     // --- ЗАКРЫТИЕ ПОРТА ---
-    // Закрывать порт может только тот, кто держит блокировку потоков:
-    // esptool-транспорт закрывает transport.disconnect(), монитор — свои reader/writer.
     async function safeCloseRawPort() {
       if (!port) return;
       if (transport) {
@@ -391,7 +393,13 @@
         for (const rel of releases) {
           const bins = (rel.assets || []).filter(a => a.name.toLowerCase().endsWith(".bin"));
           for (const asset of bins) {
-            releaseAssets.push({ label: `${rel.tag_name || rel.name} — ${asset.name}`, url: asset.browser_download_url, size: asset.size });
+            // Сохраняем и прямой URL, и asset id (для скачивания через API)
+            releaseAssets.push({
+              label: `${rel.tag_name || rel.name} — ${asset.name}`,
+              url: asset.browser_download_url,
+              assetId: asset.id,
+              size: asset.size
+            });
           }
         }
         if (!releaseAssets.length) { firmwareSelect.innerHTML = `<option value="">Нет .bin-файлов</option>`; return; }
@@ -401,12 +409,53 @@
           firmwareSelect.appendChild(opt);
         });
         updateFlashButton();
-      } catch (e) { firmwareSelect.innerHTML = `<option value="">Ошибка загрузки</option>`; }
+      } catch (e) {
+        console.error(e);
+        firmwareSelect.innerHTML = `<option value="">Ошибка загрузки релизов: ${e.message}</option>`;
+      }
+    }
+
+    // --- СКАЧИВАНИЕ ПРОШИВКИ (3 способа, каскад против Failed to fetch) ---
+    async function downloadFirmware(asset) {
+      // Способ 1: прямой URL релиза
+      try {
+        logFlash("Скачивание: прямой URL…");
+        const resp = await fetch(asset.url);
+        if (resp.ok) {
+          const buf = await resp.arrayBuffer();
+          if (buf.byteLength > 0) return new Uint8Array(buf);
+        }
+        logFlash(`Прямой URL не сработал (HTTP ${resp.status}), пробуем API…`, "warn");
+      } catch (e) { logFlash(`Прямой URL не сработал (${e.message}), пробуем API…`, "warn"); }
+
+      // Способ 2: GitHub API, asset по id (Accept: application/octet-stream)
+      try {
+        logFlash("Скачивание: через api.github.com…");
+        const resp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/assets/${asset.assetId}`, {
+          headers: { Accept: "application/octet-stream" },
+          redirect: "follow"
+        });
+        if (resp.ok) {
+          const buf = await resp.arrayBuffer();
+          if (buf.byteLength > 0) return new Uint8Array(buf);
+        }
+        logFlash(`API не сработал (HTTP ${resp.status}), пробуем прокси…`, "warn");
+      } catch (e) { logFlash(`API не сработал (${e.message}), пробуем прокси…`, "warn"); }
+
+      // Способ 3: публичный CORS-прокси
+      try {
+        logFlash("Скачивание: через CORS-прокси…");
+        const resp = await fetch(`https://corsproxy.io/?url=${encodeURIComponent(asset.url)}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const buf = await resp.arrayBuffer();
+        if (buf.byteLength > 0) return new Uint8Array(buf);
+        throw new Error("пустой ответ");
+      } catch (e) {
+        throw new Error(`Все способы скачивания не сработали (последняя ошибка: ${e.message}). Скачайте .bin вручную со страницы релизов и выберите файл вручную.`);
+      }
     }
 
     // --- ПОДКЛЮЧЕНИЕ ---
-    // ВАЖНО: НЕ вызываем port.open() вручную перед esptool —
-    // loader.main() сам открывает порт через transport.connect(baud).
     async function connectDevice() {
       if (!("serial" in navigator)) return logFlash("Web Serial не поддерживается.", "err-text");
 
@@ -467,13 +516,13 @@
       const manualFile = localFileInput.files?.[0];
 
       try {
-        if (manualFile) { firmwareData = new Uint8Array(await manualFile.arrayBuffer()); }
-        else {
+        if (manualFile) {
+          firmwareData = new Uint8Array(await manualFile.arrayBuffer());
+        } else {
           const idx = firmwareSelect.value;
           if (idx === "") return logFlash("Выберите прошивку.", "err-text");
-          logFlash("Скачивание...");
-          const resp = await fetch(releaseAssets[Number(idx)].url);
-          firmwareData = new Uint8Array(await resp.arrayBuffer());
+          firmwareData = await downloadFirmware(releaseAssets[Number(idx)]);
+          logFlash(`Скачано: ${(firmwareData.length / 1024 / 1024).toFixed(2)} МБ`);
         }
       } catch (e) { return logFlash(`Ошибка чтения файла: ${e.message}`, "err-text"); }
 
@@ -545,7 +594,6 @@
 
       try {
         logMonitor(`--- Переключение порта в режим монитора (${baud} бод)… ---\n`);
-        // esptool держит порт открытым — закрываем ЭТОТ транспорт (он же снимет блокировку)
         if (transport) { try { await transport.disconnect(); } catch {} transport = null; loader = null; }
         if (port.readable || port.writable) { try { await port.close(); } catch {} }
 
@@ -581,7 +629,6 @@
       monitorStartBtn.disabled = true; monitorStopBtn.disabled = true;
       logMonitor("\n--- Монитор остановлен ---\n");
 
-      // Закрываем сырой порт и пытаемся восстановить esptool-сессию
       try {
         if (port.readable || port.writable) await port.close();
         transport = new Transport(port, true);
@@ -608,7 +655,6 @@
     });
     monitorInput.addEventListener("keypress", (e) => { if (e.key === "Enter") monitorSendBtn.click(); });
 
-    // Отключение USB
     navigator.serial?.addEventListener("disconnect", (e) => {
       if (e.target === port) {
         isMonitoring = false; monitorReader = null; monitorWriter = null;
