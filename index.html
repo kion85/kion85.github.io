@@ -178,7 +178,7 @@
           <p class="muted">2. Зажмите <strong>Reset/G0</strong> до мигания светодиода.</p>
           <p class="muted">3. Выберите скорость (по умолчанию 115200) и нажмите «Подключить устройство».</p>
           <p class="muted">4. Выберите прошивку и нажмите «Прошить».</p>
-          <p class="warn">Если скачивание с GitHub не удаётся (сетевой фильтр) — нажмите кнопку «⬇️ Скачать .bin браузером» и затем выберите скачанный файл в поле «файл вручную».</p>
+          <p class="warn">Если скачивание с GitHub не удаётся (сетевой фильтр) — нажмите «⬇️ Скачать .bin браузером» и выберите файл в поле «файл вручную».</p>
         </div>
 
         <div class="card">
@@ -212,7 +212,6 @@
 
           <div class="progress-circle-wrap">
             <svg class="progress-circle" viewBox="0 0 100 100">
-              <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
               <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
               <circle class="progress-circle-bar" id="progressCircleBar" cx="50" cy="50" r="45" stroke-dasharray="282.74" stroke-dashoffset="282.74"></circle>
             </svg>
@@ -293,6 +292,17 @@
 
     function getBaud() { return Number(baudSelect.value) || 115200; }
     const terminal = { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) };
+
+    // ВАЖНО: esptool-js ожидает данные прошивки как БИНАРНУЮ СТРОКУ (1 символ = 1 байт).
+    // Uint8Array вызывает "A.charCodeAt is not a function".
+    function u8ToBinaryString(u8) {
+      const CHUNK = 0x8000;
+      let out = "";
+      for (let i = 0; i < u8.length; i += CHUNK) {
+        out += String.fromCharCode.apply(null, u8.subarray(i, i + CHUNK));
+      }
+      return out;
+    }
 
     // --- УТИЛИТЫ ---
     function logFlash(msg, cls = "") {
@@ -452,7 +462,7 @@
       throw new Error(`Все способы не сработали (последняя: ${lastErr}). Нажмите «⬇️ Скачать .bin браузером» и выберите файл в поле «файл вручную».`);
     }
 
-    // Кнопка «Скачать .bin браузером» — обычная ссылка download, работает всегда
+    // Кнопка «Скачать .bin браузером» — обычная ссылка download
     directDownloadBtn.addEventListener("click", () => {
       const idx = firmwareSelect.value;
       if (idx === "") { alert("Сначала выберите прошивку в списке."); return; }
@@ -546,13 +556,16 @@
         if (!proceed) return logFlash("Прошивка отменена.", "muted");
       }
 
+      // ФИКС: конвертируем байты в бинарную строку для esptool-js
+      const binaryString = u8ToBinaryString(firmwareData);
+
       flashBtn.disabled = true; connectBtn.disabled = true; eraseBtn.disabled = true;
       logFlash(`Запись на 0x0 (${(firmwareData.length/1024/1024).toFixed(2)} МБ)...`);
       resetProgress(); updateProgress(0, firmwareData.length);
 
       try {
         await loader.writeFlash({
-          fileArray: [{ data: firmwareData, address: FLASH_ADDRESS }],
+          fileArray: [{ data: binaryString, address: FLASH_ADDRESS }],
           flashSize: "keep", flashMode: "keep", flashFreq: "keep", eraseAll: false, compress: true,
           reportProgress: (i, written, total) => updateProgress(written, total),
         });
@@ -560,6 +573,7 @@
         await showModal('success', 'Прошивка успешна!', 'Устройство готово к работе. Нажмите Reset для загрузки.');
       } catch (e) {
         logFlash(`❌ Ошибка: ${e.message}`, "err-text");
+        console.error(e);
         await showModal('error', 'Ошибка прошивки', e.message);
       } finally {
         flashBtn.disabled = false; connectBtn.disabled = false; eraseBtn.disabled = false;
