@@ -178,7 +178,7 @@
           <p class="muted">2. Зажмите <strong>Reset/G0</strong> до мигания светодиода.</p>
           <p class="muted">3. Выберите скорость (по умолчанию 115200) и нажмите «Подключить устройство».</p>
           <p class="muted">4. Выберите прошивку и нажмите «Прошить».</p>
-          <p class="warn">Если на высоких скоростях подключение нестабильно — вернитесь на 115200.</p>
+          <p class="warn">Если скачивание с GitHub не удаётся (сетевой фильтр) — нажмите кнопку «⬇️ Скачать .bin браузером» и затем выберите скачанный файл в поле «файл вручную».</p>
         </div>
 
         <div class="card">
@@ -202,12 +202,17 @@
             <input type="file" id="localFile" accept=".bin,application/octet-stream">
           </div>
 
+          <button class="btn btn-ghost btn-full" id="directDownloadBtn" style="margin-bottom: 12px;">
+            ⬇️ Скачать .bin браузером (запасной вариант)
+          </button>
+
           <button class="btn btn-primary btn-full" id="flashBtn" disabled>
             ⬆️ Прошить (образ на 0x0)
           </button>
 
           <div class="progress-circle-wrap">
             <svg class="progress-circle" viewBox="0 0 100 100">
+              <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
               <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
               <circle class="progress-circle-bar" id="progressCircleBar" cx="50" cy="50" r="45" stroke-dasharray="282.74" stroke-dashoffset="282.74"></circle>
             </svg>
@@ -277,6 +282,7 @@
     const statusDot = $("statusDot"), statusText = $("statusText"), connectBtn = $("connectBtn");
     const baudSelect = $("baudSelect");
     const flashBtn = $("flashBtn"), eraseBtn = $("eraseBtn"), firmwareSelect = $("firmwareSelect"), localFileInput = $("localFile");
+    const directDownloadBtn = $("directDownloadBtn");
     const flashLog = $("flashLog");
     const progressCircleBar = $("progressCircleBar"), progressAddr = $("progressAddr"), progressMb = $("progressMb"), progressPct = $("progressPct");
     const monitorOutput = $("monitorOutput"), monitorInput = $("monitorInput"), monitorSendBtn = $("monitorSendBtn"), monitorStartBtn = $("monitorStartBtn"), monitorStopBtn = $("monitorStopBtn"), monitorClearBtn = $("monitorClearBtn");
@@ -328,7 +334,7 @@
       progressCircleBar.style.strokeDashoffset = CIRCUMFERENCE - (p * CIRCUMFERENCE);
     }
 
-    // --- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК (это и чинит кнопку «Монитор») ---
+    // --- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ---
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -383,7 +389,7 @@
       });
     }
 
-    // --- ЗАГРУЗКА РЕЛИЗОВ ---
+    // --- ЗАГРУЗКА СПИСКА РЕЛИЗОВ ---
     async function loadReleases() {
       try {
         const res = await fetch(RELEASES_API, { headers: { Accept: "application/vnd.github+json" } });
@@ -393,7 +399,6 @@
         for (const rel of releases) {
           const bins = (rel.assets || []).filter(a => a.name.toLowerCase().endsWith(".bin"));
           for (const asset of bins) {
-            // Сохраняем и прямой URL, и asset id (для скачивания через API)
             releaseAssets.push({
               label: `${rel.tag_name || rel.name} — ${asset.name}`,
               url: asset.browser_download_url,
@@ -402,58 +407,67 @@
             });
           }
         }
-        if (!releaseAssets.length) { firmwareSelect.innerHTML = `<option value="">Нет .bin-файлов</option>`; return; }
+        if (!releaseAssets.length) { firmwareSelect.innerHTML = `<option value="">Нет .bin-файлов</option>`; directDownloadBtn.disabled = true; return; }
         releaseAssets.forEach((a, i) => {
           const opt = document.createElement("option"); opt.value = String(i);
           opt.textContent = `[${(a.size/1024/1024).toFixed(2)} МБ] ${a.label}`;
           firmwareSelect.appendChild(opt);
         });
+        directDownloadBtn.disabled = false;
         updateFlashButton();
       } catch (e) {
         console.error(e);
         firmwareSelect.innerHTML = `<option value="">Ошибка загрузки релизов: ${e.message}</option>`;
+        directDownloadBtn.disabled = true;
       }
     }
 
-    // --- СКАЧИВАНИЕ ПРОШИВКИ (3 способа, каскад против Failed to fetch) ---
+    // --- СКАЧИВАНИЕ ПРОШИВКИ: каскад из 7 способов ---
     async function downloadFirmware(asset) {
-      // Способ 1: прямой URL релиза
-      try {
-        logFlash("Скачивание: прямой URL…");
-        const resp = await fetch(asset.url);
-        if (resp.ok) {
-          const buf = await resp.arrayBuffer();
-          if (buf.byteLength > 0) return new Uint8Array(buf);
-        }
-        logFlash(`Прямой URL не сработал (HTTP ${resp.status}), пробуем API…`, "warn");
-      } catch (e) { logFlash(`Прямой URL не сработал (${e.message}), пробуем API…`, "warn"); }
+      const attempts = [
+        { name: "прямой URL",     url: asset.url },
+        { name: "api.github.com", url: `https://api.github.com/repos/${GITHUB_REPO}/releases/assets/${asset.assetId}`, headers: { Accept: "application/octet-stream" } },
+        { name: "allorigins",     url: `https://api.allorigins.win/raw?url=${encodeURIComponent(asset.url)}` },
+        { name: "codetabs",       url: `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(asset.url)}` },
+        { name: "corsproxy",      url: `https://corsproxy.io/?url=${encodeURIComponent(asset.url)}` },
+        { name: "isomorphic",     url: `https://cors.isomorphic-git.org/${asset.url.replace(/^https:\/\//, "")}` },
+        { name: "corsproxy-alt",  url: `https://test.cors.workers.dev/?${asset.url}` },
+      ];
 
-      // Способ 2: GitHub API, asset по id (Accept: application/octet-stream)
-      try {
-        logFlash("Скачивание: через api.github.com…");
-        const resp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/assets/${asset.assetId}`, {
-          headers: { Accept: "application/octet-stream" },
-          redirect: "follow"
-        });
-        if (resp.ok) {
+      let lastErr = "";
+      for (const att of attempts) {
+        try {
+          logFlash(`Скачивание: ${att.name}…`);
+          const resp = await fetch(att.url, { headers: att.headers || {}, redirect: "follow" });
+          if (!resp.ok) { lastErr = `${att.name}: HTTP ${resp.status}`; logFlash(`${att.name} не сработал (HTTP ${resp.status})`, "warn"); continue; }
           const buf = await resp.arrayBuffer();
-          if (buf.byteLength > 0) return new Uint8Array(buf);
+          if (buf.byteLength === 0) { lastErr = `${att.name}: пустой ответ`; logFlash(`${att.name}: пустой ответ`, "warn"); continue; }
+          logFlash(`✅ Скачано через ${att.name}: ${(buf.byteLength / 1024 / 1024).toFixed(2)} МБ`);
+          return new Uint8Array(buf);
+        } catch (e) {
+          lastErr = `${att.name}: ${e.message}`;
+          logFlash(`${att.name} не сработал (${e.message})`, "warn");
         }
-        logFlash(`API не сработал (HTTP ${resp.status}), пробуем прокси…`, "warn");
-      } catch (e) { logFlash(`API не сработал (${e.message}), пробуем прокси…`, "warn"); }
-
-      // Способ 3: публичный CORS-прокси
-      try {
-        logFlash("Скачивание: через CORS-прокси…");
-        const resp = await fetch(`https://corsproxy.io/?url=${encodeURIComponent(asset.url)}`);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const buf = await resp.arrayBuffer();
-        if (buf.byteLength > 0) return new Uint8Array(buf);
-        throw new Error("пустой ответ");
-      } catch (e) {
-        throw new Error(`Все способы скачивания не сработали (последняя ошибка: ${e.message}). Скачайте .bin вручную со страницы релизов и выберите файл вручную.`);
       }
+      throw new Error(`Все способы не сработали (последняя: ${lastErr}). Нажмите «⬇️ Скачать .bin браузером» и выберите файл в поле «файл вручную».`);
     }
+
+    // Кнопка «Скачать .bin браузером» — обычная ссылка download, работает всегда
+    directDownloadBtn.addEventListener("click", () => {
+      const idx = firmwareSelect.value;
+      if (idx === "") { alert("Сначала выберите прошивку в списке."); return; }
+      const asset = releaseAssets[Number(idx)];
+      const a = document.createElement("a");
+      a.href = asset.url;
+      a.download = asset.label.split("—")[1]?.trim() || "firmware.bin";
+      a.target = "_blank";
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      logFlash(`Файл отправлен на скачивание браузером: ${asset.url}`, "warn");
+      logFlash("После загрузки выберите его в поле «файл вручную» и нажмите «Прошить».", "muted");
+    });
 
     // --- ПОДКЛЮЧЕНИЕ ---
     async function connectDevice() {
@@ -518,11 +532,11 @@
       try {
         if (manualFile) {
           firmwareData = new Uint8Array(await manualFile.arrayBuffer());
+          logFlash(`Файл вручную: ${(firmwareData.length / 1024 / 1024).toFixed(2)} МБ`);
         } else {
           const idx = firmwareSelect.value;
           if (idx === "") return logFlash("Выберите прошивку.", "err-text");
           firmwareData = await downloadFirmware(releaseAssets[Number(idx)]);
-          logFlash(`Скачано: ${(firmwareData.length / 1024 / 1024).toFixed(2)} МБ`);
         }
       } catch (e) { return logFlash(`Ошибка чтения файла: ${e.message}`, "err-text"); }
 
