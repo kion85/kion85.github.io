@@ -29,14 +29,11 @@
       min-height: 100vh;
       line-height: 1.6;
     }
-    /* Увеличен контейнер, чтобы не было сжатия */
     .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
 
-    /* ===== БАННЕР ===== */
     .banner-container { width: 100%; display: flex; justify-content: center; margin-bottom: 32px; }
     .banner-img { max-width: 100%; height: auto; max-height: 350px; object-fit: contain; border-radius: var(--radius); box-shadow: var(--shadow); }
 
-    /* ===== ВКЛАДКИ ===== */
     .tabs { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
     .tab-btn { background: transparent; border: none; color: var(--muted); font-size: 1.05rem; font-weight: 600; cursor: pointer; padding: 10px 20px; border-radius: 8px; transition: 0.2s; }
     .tab-btn:hover { color: var(--text); background: var(--panel-2); }
@@ -46,16 +43,14 @@
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ===== КАРТОЧКИ ===== */
     .hero { background: linear-gradient(160deg, #111827, #0f172a); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); margin-bottom: 24px; }
-    
+
     .grid { display: grid; gap: 24px; align-items: start; }
     @media (min-width: 800px) { .grid.two { grid-template-columns: 1fr 1fr; } }
-    
+
     .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
     .card h3 { margin: 0 0 18px; font-size: 1.15rem; display: flex; align-items: center; gap: 10px; }
 
-    /* ===== ВИДЕО ===== */
     .video-hero { padding: 0; overflow: hidden; margin-bottom: 24px; }
     .video-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius) var(--radius) 0 0; overflow: hidden; max-height: 480px; }
     .demo-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
@@ -63,7 +58,6 @@
     .video-caption strong { font-size: 1rem; }
     .video-caption span { color: var(--muted); font-size: 0.9rem; }
 
-    /* ===== ЭЛЕМЕНТЫ УПРАВЛЕНИЯ ===== */
     .btn { appearance: none; border: none; cursor: pointer; padding: 12px 20px; border-radius: 10px; font-weight: 600; font-size: 0.95rem; transition: .18s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
     .btn:active { transform: translateY(1px); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -76,13 +70,12 @@
     .btn-success { background: var(--success); color: #fff; }
     .btn-success:hover:not(:disabled) { background: #059669; }
     .btn-full { width: 100%; }
-    
+
     select, input[type="file"], input[type="text"] { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); font-size: 0.95rem; outline: none; }
     select:focus, input:focus { border-color: var(--accent); }
     .field { margin-bottom: 18px; }
     .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
 
-    /* ===== КРУГОВОЙ ПРОГРЕСС ===== */
     .progress-circle-wrap { display: flex; flex-direction: column; align-items: center; margin: 24px 0; position: relative; }
     .progress-circle { width: 200px; height: 200px; transform: rotate(-90deg); }
     .progress-circle-bg { fill: none; stroke: var(--panel-2); stroke-width: 10; }
@@ -91,14 +84,13 @@
     .progress-addr { font-family: ui-monospace, monospace; font-size: 1.15rem; font-weight: 700; color: #60a5fa; }
     .progress-mb { font-family: ui-monospace, monospace; font-size: 0.9rem; color: var(--text); }
     .progress-pct { font-size: 1.6rem; font-weight: 700; color: var(--success); margin-top: 4px; }
-    
+
     .log { margin-top: 18px; background: #05070c; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: ui-monospace, monospace; font-size: 0.85rem; color: #a7f3d0; height: 140px; overflow: auto; white-space: pre-wrap; }
-    
-    /* ===== МОНИТОР ===== */
+
     .monitor-terminal { background: #000; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: ui-monospace, monospace; font-size: 0.85rem; color: #38bdf8; height: 400px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; margin-bottom: 16px; }
     .monitor-controls { display: flex; gap: 12px; flex-wrap: wrap; }
     .monitor-controls input { flex: 1; min-width: 200px; }
-    
+
     .status { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; margin: 12px 0; }
     .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
     .dot.ok { background: var(--success); box-shadow: 0 0 8px var(--success); }
@@ -110,7 +102,7 @@
     .err-text { color: #fca5a5; font-size: 0.85rem; }
     .muted { color: var(--muted); font-size: 0.9rem; }
     code { background: #1f2937; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: ui-monospace, monospace; }
-    
+
     .danger-zone { margin-top: 24px; padding-top: 20px; border-top: 1px dashed #374151; }
     .danger-zone h4 { margin: 0 0 10px; font-size: 0.9rem; color: #fca5a5; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
@@ -118,7 +110,6 @@
     .part-info strong { color: var(--text); display: block; margin-bottom: 6px; }
     .part-info code { color: #60a5fa; }
 
-    /* ===== МОДАЛЬНОЕ ОКНО ===== */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; backdrop-filter: blur(5px); }
     .modal-overlay.active { opacity: 1; visibility: visible; }
     .modal-content { background: #000; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column; align-items: center; gap: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
@@ -131,7 +122,7 @@
 </head>
 <body>
   <div class="wrap">
-    
+
     <!-- БАННЕР -->
     <div class="banner-container">
       <img src="banner.png" alt="K85 OS Banner" class="banner-img">
@@ -157,8 +148,7 @@
 
     <!-- ВКЛАДКА: ПРОШИВКА -->
     <div id="tab-flash" class="tab-content active">
-      
-      <!-- ВИДЕО-ИНСТРУКЦИЯ -->
+
       <section class="hero video-hero">
         <div class="video-embed">
           <video class="demo-video" src="https://github.com/kion85/k85OS/releases/download/video1/VID_20261108_181318.mp4" controls playsinline preload="metadata" muted loop>
@@ -182,7 +172,7 @@
 
         <div class="card">
           <h3>⚡ Прошивка</h3>
-          
+
           <div class="part-info">
             <strong>Разметка (Partition Table):</strong>
             OTA 0: <code>0x20000</code> (2.5 МБ)<br>
@@ -200,12 +190,11 @@
             <label for="localFile">…или файл вручную (.bin)</label>
             <input type="file" id="localFile" accept=".bin,application/octet-stream">
           </div>
-          
+
           <button class="btn btn-primary btn-full" id="flashBtn" disabled>
             ⬆️ Прошить (образ на 0x0)
           </button>
 
-          <!-- КРУГОВОЙ ПРОГРЕСС -->
           <div class="progress-circle-wrap">
             <svg class="progress-circle" viewBox="0 0 100 100">
               <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
@@ -219,8 +208,7 @@
           </div>
 
           <div class="log" id="flashLog">Готов к работе.</div>
-          
-          <!-- ОПАСНАЯ ЗОНА -->
+
           <div class="danger-zone">
             <h4>⚠️ Сброс выбора загрузки</h4>
             <p class="muted" style="margin:0 0 12px; font-size: 0.85rem;">
@@ -240,9 +228,9 @@
       <div class="card">
         <h3>🖥️ Монитор последовательного порта</h3>
         <p class="muted" style="margin-top:0;">Аналог <code>idf.py monitor</code>. Показывает логи устройства.</p>
-        
+
         <div class="monitor-terminal" id="monitorOutput">Ожидание подключения...</div>
-        
+
         <div class="monitor-controls">
           <input type="text" id="monitorInput" placeholder="Введите команду..." disabled>
           <button class="btn btn-primary" id="monitorSendBtn" disabled>Отправить</button>
@@ -318,11 +306,22 @@
       const p = total ? (written / total) : 0;
       const pct = Math.round(p * 100);
       const currentAddr = FLASH_ADDRESS + written;
-      
+
       progressAddr.textContent = `0x${currentAddr.toString(16).toUpperCase().padStart(8, '0')}`;
       progressMb.textContent = `${(written / 1024 / 1024).toFixed(2)} / ${(total / 1024 / 1024).toFixed(2)} МБ`;
       progressPct.textContent = `${pct}%`;
       progressCircleBar.style.strokeDashoffset = CIRCUMFERENCE - (p * CIRCUMFERENCE);
+    }
+
+    // --- БЕЗОПАСНОЕ ЗАКРЫТИЕ ПОРТА (лечит "port is already open") ---
+    async function closePortSilently(p) {
+      if (!p) return;
+      try {
+        // Снимаем блокировки reader/writer, если они активны
+        try { if (p.readable) { const r = p.readable.getReader(); await r.cancel().catch(()=>{}); r.releaseLock(); } } catch {}
+        try { if (p.writable) { const w = p.writable.getWriter(); try { w.releaseLock(); } catch {} } } catch {}
+        if (p.readable || p.writable) await p.close();
+      } catch (e) { /* порт уже закрыт — игнорируем */ }
     }
 
     // --- МОДАЛЬНОЕ ОКНО ---
@@ -356,7 +355,7 @@
         const res = await fetch(RELEASES_API, { headers: { Accept: "application/vnd.github+json" } });
         const releases = await res.json();
         releaseAssets = []; firmwareSelect.innerHTML = "";
-        
+
         for (const rel of releases) {
           const bins = (rel.assets || []).filter(a => a.name.toLowerCase().endsWith(".bin"));
           for (const asset of bins) {
@@ -376,15 +375,21 @@
     // --- ПОДКЛЮЧЕНИЕ ---
     async function connectDevice() {
       if (!("serial" in navigator)) return logFlash("Web Serial не поддерживается.", "err-text");
-      
+
       try {
-        // Очистка предыдущего состояния (лечит Failed to open)
+        // Очистка предыдущего состояния
         if (isMonitoring) await stopMonitor();
-        if (transport) await transport.disconnect().catch(()=>{});
-        if (port) { try { await port.close(); } catch(e) {} }
+        if (transport) { try { await transport.disconnect(); } catch {} }
+        transport = null; loader = null;
+        await closePortSilently(port);
+        port = null;
 
         setStatus("Запрос порта…", "busy");
         port = await navigator.serial.requestPort();
+
+        // ФИКС: порт мог остаться открытым с прошлого раза — закрываем перед открытием
+        await closePortSilently(port);
+
         await port.open({ baudRate: 115200 });
 
         transport = new Transport(port, true);
@@ -392,12 +397,12 @@
 
         setStatus("Определение чипа…", "busy");
         const chip = await loader.main();
-        
+
         connected = true;
         setStatus(`Подключено: ${chip}`, "ok");
         connectBtn.textContent = "❌ Отключить"; updateFlashButton(); eraseBtn.disabled = false; monitorStartBtn.disabled = false;
-      } catch (e) { 
-        logFlash(`Ошибка подключения: ${e.message}. Убедитесь, что порт не занят другой программой.`, "err-text"); 
+      } catch (e) {
+        logFlash(`Ошибка подключения: ${e.message}. Убедитесь, что порт не занят другой программой.`, "err-text");
         setStatus("Ошибка подключения", "err"); connected = false; port = null;
       }
     }
@@ -406,7 +411,8 @@
       if (connected) {
         if (isMonitoring) await stopMonitor();
         try { await transport.disconnect(); } catch {}
-        try { await port.close(); } catch {}
+        await closePortSilently(port);
+        transport = null; loader = null;
         connected = false; port = null; setStatus("Устройство не подключено", ""); connectBtn.textContent = "🔌 Подключить устройство"; flashBtn.disabled = true; eraseBtn.disabled = true;
       } else { connectDevice(); }
     });
@@ -414,10 +420,10 @@
     // --- ПРОШИВКА ---
     async function flashFirmware() {
       if (!connected || !loader) return logFlash("Сначала подключите устройство.", "err-text");
-      
+
       let firmwareData = null;
       const manualFile = localFileInput.files?.[0];
-      
+
       try {
         if (manualFile) { firmwareData = new Uint8Array(await manualFile.arrayBuffer()); }
         else {
@@ -492,52 +498,57 @@
     // --- МОНИТОР ---
     monitorStartBtn.addEventListener("click", async () => {
       if (!port || isMonitoring) return;
-      
+
       try {
-        // Закрываем транспорт, чтобы освободить поток
-        if (transport) await transport.disconnect().catch(()=>{});
-        if (port.readable || port.writable) await port.close().catch(()=>{});
-        
+        // Освобождаем транспорт прошивальщика, чтобы открыть порт для монитора
+        if (transport) { try { await transport.disconnect(); } catch {} }
+        await closePortSilently(port);
+        transport = null; loader = null;
+
         await port.open({ baudRate: 115200 });
         monitorReader = port.readable.getReader(); monitorWriter = port.writable.getWriter();
-        
+
         isMonitoring = true; monitorStartBtn.disabled = true; monitorStopBtn.disabled = false;
         monitorOutput.textContent = "--- Монитор запущен. Нажмите Reset на устройстве ---\n";
-        
+
         while (isMonitoring) {
           const { value, done } = await monitorReader.read();
           if (done) break;
           if (value) logMonitor(new TextDecoder().decode(value));
         }
-      } catch (e) { 
-        logMonitor(`\n[Ошибка: ${e.message}]`); isMonitoring = false; monitorStartBtn.disabled = false; monitorStopBtn.disabled = true; 
+      } catch (e) {
+        logMonitor(`\n[Ошибка: ${e.message}]`); isMonitoring = false; monitorStartBtn.disabled = false; monitorStopBtn.disabled = true;
       }
     });
 
     async function stopMonitor() {
       isMonitoring = false;
-      if (monitorReader) { await monitorReader.cancel().catch(()=>{}); monitorReader.releaseLock(); monitorReader = null; }
-      if (monitorWriter) { monitorWriter.releaseLock(); monitorWriter = null; }
-      
-      // Восстанавливаем лоадер
+      if (monitorReader) {
+        try { await monitorReader.cancel(); } catch {}
+        try { monitorReader.releaseLock(); } catch {}
+        monitorReader = null;
+      }
+      if (monitorWriter) { try { monitorWriter.releaseLock(); } catch {} monitorWriter = null; }
+
+      // Закрываем порт и пересоздаём транспорт для прошивальщика
       if (port) {
-          try {
-              if (port.readable || port.writable) await port.close().catch(()=>{});
-              await port.open({ baudRate: 115200 });
-              transport = new Transport(port, true);
-              loader = new ESPLoader({ transport, baudrate: 115200, terminal: { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) } });
-          } catch(e) { console.warn("Restore error:", e); }
+        try {
+          await closePortSilently(port);
+          await port.open({ baudRate: 115200 });
+          transport = new Transport(port, true);
+          loader = new ESPLoader({ transport, baudrate: 115200, terminal: { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) } });
+        } catch (e) { console.warn("Restore error:", e); transport = null; loader = null; }
       }
       monitorStartBtn.disabled = false; monitorStopBtn.disabled = true; logMonitor("\n--- Монитор остановлен ---\n");
     }
 
     monitorStopBtn.addEventListener("click", stopMonitor);
     monitorClearBtn.addEventListener("click", () => monitorOutput.textContent = "");
-    
+
     monitorSendBtn.addEventListener("click", async () => {
       if (!monitorWriter) return;
       const text = monitorInput.value; if (!text) return;
-      try { await monitorWriter.write(new TextEncoder().encode(text + "\n")); logMonitor(`\n>> ${text}\n`); monitorInput.value = ""; } 
+      try { await monitorWriter.write(new TextEncoder().encode(text + "\n")); logMonitor(`\n>> ${text}\n`); monitorInput.value = ""; }
       catch (e) { logMonitor(`\n[Ошибка отправки: ${e.message}]\n`); }
     });
     monitorInput.addEventListener("keypress", (e) => { if (e.key === "Enter") monitorSendBtn.click(); });
