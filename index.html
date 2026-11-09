@@ -108,6 +108,7 @@
       width: 100%;
     }
 
+    /* СЕТКА 50 / 50 */
     .grid { display: grid; gap: 24px; width: 100%; grid-template-columns: 1fr; align-items: start; }
     @media (min-width: 900px) {
       .grid.two { grid-template-columns: 1fr 1fr; }
@@ -163,6 +164,9 @@
     .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 4px 12px var(--accent-glow); }
     .btn-primary:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 6px 18px var(--accent-glow); }
     
+    .btn-secondary { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
+    .btn-secondary:hover:not(:disabled) { filter: brightness(1.1); }
+
     .btn-ghost { background: rgba(255, 255, 255, 0.05); color: var(--text); border-color: var(--border); }
     .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
     
@@ -174,7 +178,7 @@
     
     .btn-full { width: 100%; }
 
-    /* Поля */
+    /* Поля ввода */
     select, input[type="file"], input[type="text"] {
       width: 100%;
       padding: 12px 14px;
@@ -189,7 +193,7 @@
     .field { margin-bottom: 16px; }
     .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
 
-    /* Прогресс-кольцо */
+    /* Кольцо прогресса */
     .progress-circle-wrap {
       display: flex;
       flex-direction: column;
@@ -256,7 +260,7 @@
     .monitor-controls { display: flex; gap: 10px; flex-wrap: wrap; }
     .monitor-controls input { flex: 1; min-width: 200px; }
 
-    /* Цветной лог */
+    /* Цветной лог ESP-IDF */
     .log-I { color: #10b981; }
     .log-W { color: #f59e0b; }
     .log-E { color: #ef4444; font-weight: bold; }
@@ -325,7 +329,7 @@
       margin-bottom: 16px;
     }
 
-    /* Модалка */
+    /* Модальное окно */
     .modal-overlay {
       position: fixed; inset: 0;
       background: rgba(3, 7, 18, 0.85);
@@ -359,7 +363,7 @@
       <img src="banner.png" alt="K85 OS Banner" class="banner-img">
     </div>
 
-    <!-- Верхний блок -->
+    <!-- Верхняя панель -->
     <div class="hero" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
       <div>
         <h2 style="margin: 0 0 6px; font-size: 1.3rem; color: #fff;">Управление устройством</h2>
@@ -403,7 +407,7 @@
         </div>
       </section>
 
-      <!-- СЕТКА 50/50 -->
+      <!-- СЕТКА 50 / 50 -->
       <div class="grid two">
         
         <!-- ЛЕВАЯ ЧАСТЬ: ИНФОРМАЦИЯ О K85OS -->
@@ -467,13 +471,14 @@ idf.py -p COM_PORT monitor</div>
           </div>
         </div>
 
-        <!-- ПРАВАЯ ЧАСТЬ: ПРОШИВАТЕЛЬ -->
+        <!-- ПРАВАЯ ЧАСТЬ: ИНТЕРФЕЙС ПРОШИВКИ -->
         <div class="card">
           <h3>⚡ Прошивальщик</h3>
 
           <div class="part-info">
             <strong>Разметка Flash (Partition Table):</strong>
-            OTA 0: <code>0x20000</code> (2.5 МБ) | OTA 1: <code>0x2A0000</code> (2.5 МБ)<br>
+            OTA 0: <code>0x20000</code> (2.5 МБ)<br>
+            OTA 1: <code>0x2A0000</code> (2.5 МБ)<br>
             LittleFS: <code>0x520000</code> (2.875 МБ)
           </div>
 
@@ -493,9 +498,23 @@ idf.py -p COM_PORT monitor</div>
             ⬇️ Скачать .bin браузером (запасной вариант)
           </button>
 
-          <button class="btn btn-primary btn-full" id="flashBtn" disabled>
+          <button class="btn btn-primary btn-full" id="flashBtn" disabled style="margin-bottom: 12px;">
             ⬆️ Прошить (образ на 0x0)
           </button>
+
+          <!-- БЛОК ПРОШИВКИ В OTA СЛОТ (0 или 1) -->
+          <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 10px; padding: 14px; margin-bottom: 16px;">
+            <label for="otaSlotSelect" style="display:block; font-size:0.85rem; color:#c084fc; margin-bottom:6px; font-weight: 600;">📡 Выбор OTA слота для прошивки</label>
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+              <select id="otaSlotSelect">
+                <option value="0x20000">OTA 0 (Адрес: 0x20000)</option>
+                <option value="0x2A0000">OTA 1 (Адрес: 0x2A0000)</option>
+              </select>
+            </div>
+            <button class="btn btn-secondary btn-full" id="flashOtaBtn" disabled>
+              📡 Прошить выбранный OTA слот (.bin)
+            </button>
+          </div>
 
           <div class="progress-circle-wrap">
             <svg class="progress-circle" viewBox="0 0 100 100">
@@ -520,14 +539,14 @@ idf.py -p COM_PORT monitor</div>
           <div class="danger-zone">
             <h4>⚠️ Очистка памяти устройства</h4>
             <p class="muted" style="margin:0 0 10px; font-size: 0.83rem;">
-              Вы можете стереть отдельный загрузочный регион или полностью очистить всю flash-память с адреса 0x0.
+              Вы можете сбросить загрузочный сектор или выполнить полную очистку памяти чипа.
             </p>
             <div style="display: flex; gap: 8px;">
               <button class="btn btn-danger" id="eraseBtn" disabled style="flex: 1;">
-                🗑️ Стереть 0x10000
+                🗑️ Сброс 0x10000
               </button>
               <button class="btn btn-danger" id="eraseFullBtn" disabled style="flex: 1;">
-                💥 Полный Erase (0x0)
+                💥 Полный Erase
               </button>
             </div>
           </div>
@@ -536,7 +555,7 @@ idf.py -p COM_PORT monitor</div>
       </div>
     </div>
 
-    <!-- Вкладка Монитора со справкой -->
+    <!-- Вкладка Монитора -->
     <div id="tab-monitor" class="tab-content">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
@@ -550,7 +569,6 @@ idf.py -p COM_PORT monitor</div>
           </div>
         </div>
 
-        <!-- Справка по командам k85OS / ESP-IDF -->
         <div class="cmd-help-box">
           <strong>💡 Доступные системные команды (введите в строку ниже и нажмите Enter):</strong>
           <div class="cmd-grid" style="margin-top: 6px;">
@@ -589,16 +607,15 @@ idf.py -p COM_PORT monitor</div>
 
     const GITHUB_REPO = "kion85/k85OS";
     const RELEASES_API = `https://api.github.com/repos/${GITHUB_REPO}/releases`;
-    const OTA_SLOT_SIZE = 0x280000;
     const BOOT_REGION_OFFSET = 0x10000;
     const BOOT_REGION_SIZE   = 0x2000;
-    const FLASH_ADDRESS = 0x0;
     const CIRCUMFERENCE = 282.74;
 
     const $ = (id) => document.getElementById(id);
     const statusDot = $("statusDot"), statusText = $("statusText"), connectBtn = $("connectBtn");
     const baudSelect = $("baudSelect");
-    const flashBtn = $("flashBtn"), eraseBtn = $("eraseBtn"), eraseFullBtn = $("eraseFullBtn"), firmwareSelect = $("firmwareSelect"), localFileInput = $("localFile");
+    const flashBtn = $("flashBtn"), flashOtaBtn = $("flashOtaBtn"), otaSlotSelect = $("otaSlotSelect");
+    const eraseBtn = $("eraseBtn"), eraseFullBtn = $("eraseFullBtn"), firmwareSelect = $("firmwareSelect"), localFileInput = $("localFile");
     const directDownloadBtn = $("directDownloadBtn");
     const flashLog = $("flashLog");
     const progressCircleBar = $("progressCircleBar"), progressAddr = $("progressAddr"), progressMb = $("progressMb"), progressPct = $("progressPct");
@@ -621,7 +638,6 @@ idf.py -p COM_PORT monitor</div>
       return out;
     }
 
-    // --- УТИЛИТЫ ---
     function logFlash(msg, cls = "") {
       const line = document.createElement("div"); 
       line.textContent = msg; 
@@ -656,17 +672,17 @@ idf.py -p COM_PORT monitor</div>
       if (!enabled) monitorStopBtn.disabled = true;
     }
 
-    function resetProgress() {
-      progressAddr.textContent = "0x00000000";
+    function resetProgress(addr = 0) {
+      progressAddr.textContent = `0x${addr.toString(16).toUpperCase().padStart(8, '0')}`;
       progressMb.textContent = "0.00 / 0.00 МБ";
       progressPct.textContent = "0%";
       progressCircleBar.style.strokeDashoffset = CIRCUMFERENCE;
     }
 
-    function updateProgress(written, total) {
+    function updateProgress(written, total, baseAddr = 0) {
       const p = total ? (written / total) : 0;
       const pct = Math.round(p * 100);
-      const currentAddr = FLASH_ADDRESS + written;
+      const currentAddr = baseAddr + written;
 
       progressAddr.textContent = `0x${currentAddr.toString(16).toUpperCase().padStart(8, '0')}`;
       progressMb.textContent = `${(written / 1024 / 1024).toFixed(2)} / ${(total / 1024 / 1024).toFixed(2)} МБ`;
@@ -674,7 +690,6 @@ idf.py -p COM_PORT monitor</div>
       progressCircleBar.style.strokeDashoffset = CIRCUMFERENCE - (p * CIRCUMFERENCE);
     }
 
-    // --- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ---
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -684,11 +699,10 @@ idf.py -p COM_PORT monitor</div>
       });
     });
 
-    // --- ЗАКРЫТИЕ ПОРТА ---
     async function safeCloseRawPort() {
       if (!port) return;
       if (transport) {
-        try { await transport.disconnect(); } catch (e) { logFlash(`transport.disconnect: ${e.message}`, "err-text"); }
+        try { await transport.disconnect(); } catch (e) {}
         transport = null; loader = null;
       }
       if (!port.readable && !port.writable) return;
@@ -700,11 +714,9 @@ idf.py -p COM_PORT monitor</div>
         }
         if (monitorWriter) { try { monitorWriter.releaseLock(); } catch {} monitorWriter = null; }
       }
-      try { await port.close(); logFlash("Порт закрыт."); }
-      catch (e) { logFlash(`port.close: ${e.message}`, "err-text"); }
+      try { await port.close(); } catch (e) {}
     }
 
-    // --- МОДАЛЬНОЕ ОКНО ---
     function showModal(type, title, msg) {
       return new Promise((resolve) => {
         let imgSrc = "";
@@ -729,7 +741,6 @@ idf.py -p COM_PORT monitor</div>
       });
     }
 
-    // --- ЗАГРУЗКА РЕЛИЗОВ ---
     async function loadReleases() {
       try {
         const res = await fetch(RELEASES_API, { headers: { Accept: "application/vnd.github+json" } });
@@ -756,13 +767,11 @@ idf.py -p COM_PORT monitor</div>
         directDownloadBtn.disabled = false;
         updateFlashButton();
       } catch (e) {
-        console.error(e);
         firmwareSelect.innerHTML = `<option value="">Ошибка загрузки релизов: ${e.message}</option>`;
         directDownloadBtn.disabled = true;
       }
     }
 
-    // --- СКАЧИВАНИЕ ---
     async function downloadFirmware(asset) {
       const attempts = [
         { name: "прямой URL",     url: asset.url },
@@ -770,31 +779,25 @@ idf.py -p COM_PORT monitor</div>
         { name: "allorigins",     url: `https://api.allorigins.win/raw?url=${encodeURIComponent(asset.url)}` },
         { name: "codetabs",       url: `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(asset.url)}` },
         { name: "corsproxy",      url: `https://corsproxy.io/?url=${encodeURIComponent(asset.url)}` },
-        { name: "isomorphic",     url: `https://cors.isomorphic-git.org/${asset.url.replace(/^https:\/\//, "")}` },
-        { name: "corsproxy-alt",  url: `https://test.cors.workers.dev/?${asset.url}` },
       ];
 
-      let lastErr = "";
       for (const att of attempts) {
         try {
           logFlash(`Скачивание: ${att.name}…`);
           const resp = await fetch(att.url, { headers: att.headers || {}, redirect: "follow" });
-          if (!resp.ok) { lastErr = `${att.name}: HTTP ${resp.status}`; logFlash(`${att.name} не сработал (HTTP ${resp.status})`, "warn"); continue; }
+          if (!resp.ok) continue;
           const buf = await resp.arrayBuffer();
-          if (buf.byteLength === 0) { lastErr = `${att.name}: пустой ответ`; logFlash(`${att.name}: пустой ответ`, "warn"); continue; }
+          if (buf.byteLength === 0) continue;
           logFlash(`✅ Скачано через ${att.name}: ${(buf.byteLength / 1024 / 1024).toFixed(2)} МБ`);
           return new Uint8Array(buf);
-        } catch (e) {
-          lastErr = `${att.name}: ${e.message}`;
-          logFlash(`${att.name} не сработал (${e.message})`, "warn");
-        }
+        } catch (e) {}
       }
-      throw new Error(`Все способы не сработали (${lastErr}). Скачайте через браузер и выберите файл вручную.`);
+      throw new Error(`Все способы скачивания не сработали.`);
     }
 
     directDownloadBtn.addEventListener("click", () => {
       const idx = firmwareSelect.value;
-      if (idx === "") { alert("Сначала выберите прошивку в списке."); return; }
+      if (idx === "") { alert("Сначала выберите прошивку."); return; }
       const asset = releaseAssets[Number(idx)];
       const a = document.createElement("a");
       a.href = asset.url;
@@ -803,30 +806,22 @@ idf.py -p COM_PORT monitor</div>
       document.body.appendChild(a);
       a.click();
       a.remove();
-      logFlash(`Файл отправлен на скачивание: ${asset.url}`, "warn");
     });
 
-    // --- ПОДКЛЮЧЕНИЕ ---
     async function connectDevice() {
-      if (!("serial" in navigator)) return logFlash("Web Serial не поддерживается вашим браузером.", "err-text");
-
+      if (!("serial" in navigator)) return logFlash("WebSerial не поддерживается.", "err-text");
       const baud = getBaud();
 
       try {
-        logFlash(`[1/5] Очистка предыдущего подключения (${baud} baud)…`);
+        logFlash(`Подключение (${baud} baud)…`);
         await safeCloseRawPort();
 
-        logFlash("[2/5] Запрос порта у браузера…");
         port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a }] });
-
-        logFlash("[3/5] Инициализация Transport…");
         transport = new Transport(port, true);
         loader = new ESPLoader({ transport, baudrate: baud, terminal });
 
-        logFlash(`[4/5] Подключение к bootloader…`);
         const chip = await loader.main();
-
-        logFlash(`[5/5] Успешно! Чип: ${chip}`);
+        logFlash(`Успешно! Чип: ${chip}`);
         connected = true;
         setStatus(`Подключено: ${chip} @ ${baud}`, "ok");
         setMonitorControls(true);
@@ -851,6 +846,7 @@ idf.py -p COM_PORT monitor</div>
       setStatus("Устройство не подключено", "");
       connectBtn.textContent = "🔌 Подключить устройство";
       flashBtn.disabled = true; 
+      flashOtaBtn.disabled = true;
       eraseBtn.disabled = true;
       eraseFullBtn.disabled = true;
       setMonitorControls(false);
@@ -864,9 +860,9 @@ idf.py -p COM_PORT monitor</div>
       } else { connectDevice(); }
     });
 
-    // --- ПРОШИВКА ---
-    async function flashFirmware() {
-      if (!connected || !loader) return logFlash("Сначала подключите устройство.", "err-text");
+    // --- ОБЩАЯ ФУНКЦИЯ ПРОШИВКИ ---
+    async function executeFlash(targetAddress, buttonElement) {
+      if (!connected || !loader) return logFlash("Подключите устройство.", "err-text");
 
       let firmwareData = null;
       const manualFile = localFileInput.files?.[0];
@@ -874,7 +870,7 @@ idf.py -p COM_PORT monitor</div>
       try {
         if (manualFile) {
           firmwareData = new Uint8Array(await manualFile.arrayBuffer());
-          logFlash(`Выбран лок. файл: ${(firmwareData.length / 1024 / 1024).toFixed(2)} МБ`);
+          logFlash(`Файл вручную: ${(firmwareData.length / 1024 / 1024).toFixed(2)} МБ`);
         } else {
           const idx = firmwareSelect.value;
           if (idx === "") return logFlash("Выберите прошивку.", "err-text");
@@ -882,92 +878,93 @@ idf.py -p COM_PORT monitor</div>
         }
       } catch (e) { return logFlash(`Ошибка файла: ${e.message}`, "err-text"); }
 
-      if (firmwareData.length > OTA_SLOT_SIZE) {
-        const sizeMb = (firmwareData.length / 1024 / 1024).toFixed(2);
-        const proceed = await showModal('warning', 'Внимание', `Размер (${sizeMb} МБ) больше OTA-слота (2.5 МБ). Продолжить?`);
-        if (!proceed) return logFlash("Прошивка отменена.", "muted");
-      }
-
       const binaryString = u8ToBinaryString(firmwareData);
 
-      flashBtn.disabled = true; connectBtn.disabled = true; eraseBtn.disabled = true; eraseFullBtn.disabled = true;
-      logFlash(`Запись образа на 0x0...`);
-      resetProgress(); updateProgress(0, firmwareData.length);
+      flashBtn.disabled = true; flashOtaBtn.disabled = true; connectBtn.disabled = true; eraseBtn.disabled = true; eraseFullBtn.disabled = true;
+      logFlash(`Запись прошивки на адрес 0x${targetAddress.toString(16).toUpperCase()}...`);
+      resetProgress(targetAddress); 
+      updateProgress(0, firmwareData.length, targetAddress);
 
       try {
         await loader.writeFlash({
-          fileArray: [{ data: binaryString, address: FLASH_ADDRESS }],
+          fileArray: [{ data: binaryString, address: targetAddress }],
           flashSize: "keep", flashMode: "keep", flashFreq: "keep", eraseAll: false, compress: true,
-          reportProgress: (i, written, total) => updateProgress(written, total),
+          reportProgress: (i, written, total) => updateProgress(written, total, targetAddress),
         });
         logFlash("✅ Успешно прошито!", "muted");
-        await showModal('success', 'Готово!', 'Прошивка успешно записана. Нажмите Reset на устройстве.');
-      } catch (e) {
-        logFlash(`❌ Ошибка прошивки: ${e.message}`, "err-text");
-        await showModal('error', 'Ошибка', e.message);
-      } finally {
-        flashBtn.disabled = false; connectBtn.disabled = false; eraseBtn.disabled = false; eraseFullBtn.disabled = false;
-        updateFlashButton();
-      }
-    }
-
-    flashBtn.addEventListener("click", flashFirmware);
-
-    // --- СТИРАНИЕ РЕГИОНА 0x10000 ---
-    eraseBtn.addEventListener("click", async () => {
-      if (!connected || !loader) return;
-      const ok = await showModal('warning', 'Сброс bootloader', 'Стереть загрузочный регион 0x10000 / 0x2000?');
-      if (!ok) return;
-
-      eraseBtn.disabled = true; eraseFullBtn.disabled = true; connectBtn.disabled = true; flashBtn.disabled = true;
-      logFlash("Стирание региона 0x10000...");
-      resetProgress(); updateProgress(0, BOOT_REGION_SIZE);
-
-      try {
-        await loader.eraseRegion(BOOT_REGION_OFFSET, BOOT_REGION_SIZE);
-        updateProgress(BOOT_REGION_SIZE, BOOT_REGION_SIZE);
-        logFlash("✅ Регион стёрт.", "muted");
-        await showModal('success', 'Успех', 'Загрузочный регион очищен.');
+        await showModal('success', 'Готово!', `Прошивка записана на 0x${targetAddress.toString(16).toUpperCase()}. Нажмите Reset.`);
       } catch (e) {
         logFlash(`❌ Ошибка: ${e.message}`, "err-text");
         await showModal('error', 'Ошибка', e.message);
       } finally {
-        eraseBtn.disabled = false; eraseFullBtn.disabled = false; connectBtn.disabled = false;
+        flashBtn.disabled = false; flashOtaBtn.disabled = false; connectBtn.disabled = false; eraseBtn.disabled = false; eraseFullBtn.disabled = false;
         updateFlashButton();
+      }
+    }
+
+    // Прошивка на 0x0
+    flashBtn.addEventListener("click", () => executeFlash(0x0, flashBtn));
+
+    // Прошивка в выбранный OTA слот
+    flashOtaBtn.addEventListener("click", () => {
+      const addr = Number(otaSlotSelect.value);
+      executeFlash(addr, flashOtaBtn);
+    });
+
+    // Сброс региона 0x10000
+    eraseBtn.addEventListener("click", async () => {
+      if (!connected || !loader) return;
+      const ok = await showModal('warning', 'Сброс', 'Стереть регион 0x10000?');
+      if (!ok) return;
+
+      eraseBtn.disabled = true; eraseFullBtn.disabled = true;
+      logFlash("Стирание области bootloader (0x10000)...");
+      try {
+        const emptyData = new Uint8Array(BOOT_REGION_SIZE);
+        emptyData.fill(0xFF);
+        await loader.writeFlash({
+          fileArray: [{ data: u8ToBinaryString(emptyData), address: BOOT_REGION_OFFSET }],
+          flashSize: "keep", flashMode: "keep", flashFreq: "keep", eraseAll: false, compress: false
+        });
+        logFlash("✅ Регион очищен (перезаписан 0xFF).", "muted");
+        await showModal('success', 'Успех', 'Регион сброшен.');
+      } catch (e) {
+        logFlash(`❌ Ошибка: ${e.message}`, "err-text");
+      } finally {
+        eraseBtn.disabled = false; eraseFullBtn.disabled = false;
       }
     });
 
-    // --- ПОЛНОЕ СТИРАНИЕ (ERASE FLASH с 0x0) ---
+    // Полный Erase Flash
     eraseFullBtn.addEventListener("click", async () => {
       if (!connected || !loader) return;
-      const ok = await showModal('warning', 'Полная очистка памяти', 'ВНИМАНИЕ: Будет стерта ВСЯ flash-память устройства (включая LittleFS и все настройки)! Продолжить?');
+      const ok = await showModal('warning', 'Полная очистка', 'Стереть всю память устройства?');
       if (!ok) return;
 
-      eraseBtn.disabled = true; eraseFullBtn.disabled = true; connectBtn.disabled = true; flashBtn.disabled = true;
-      logFlash("Выполнение полного стирания flash-памяти...");
-      
+      eraseBtn.disabled = true; eraseFullBtn.disabled = true;
+      logFlash("Полное стирание памяти (Erase Flash)...");
       try {
         await loader.eraseFlash();
-        logFlash("✅ Вся flash-память полностью очищена!", "muted");
-        await showModal('success', 'Очищено!', 'Вся память устройства стерта. Теперь установите прошивку заново.');
+        logFlash("✅ Память полностью стерта!", "muted");
+        await showModal('success', 'Очищено!', 'Память устройства очищена.');
       } catch (e) {
-        logFlash(`❌ Ошибка полного стирания: ${e.message}`, "err-text");
-        await showModal('error', 'Ошибка', e.message);
+        logFlash(`❌ Ошибка: ${e.message}`, "err-text");
       } finally {
-        eraseBtn.disabled = false; eraseFullBtn.disabled = false; connectBtn.disabled = false;
-        updateFlashButton();
+        eraseBtn.disabled = false; eraseFullBtn.disabled = false;
       }
     });
 
     function updateFlashButton() {
       const hasManual = !!localFileInput.files?.length;
       const hasRelease = firmwareSelect.value !== "";
-      flashBtn.disabled = !(connected && (hasManual || hasRelease));
+      const canFlash = connected && (hasManual || hasRelease);
+      flashBtn.disabled = !canFlash;
+      flashOtaBtn.disabled = !canFlash;
     }
     firmwareSelect.addEventListener("change", updateFlashButton);
     localFileInput.addEventListener("change", updateFlashButton);
 
-    // --- МОНИТОР С ИСПРАВЛЕННЫМ УПРАВЛЕНИЕМ ПОТОКОМ ---
+    // --- МОНИТОР ---
     monitorStartBtn.addEventListener("click", async () => {
       if (!port || isMonitoring) return;
       const baud = getBaud();
@@ -980,7 +977,7 @@ idf.py -p COM_PORT monitor</div>
         await port.setSignals({ dataTerminalReady: false, requestToSend: false });
 
         textDecoderStream = new TextDecoderStream();
-        const readableStreamClosed = port.readable.pipeTo(textDecoderStream.writable);
+        port.readable.pipeTo(textDecoderStream.writable);
         
         monitorReader = textDecoderStream.readable.getReader();
         monitorWriter = port.writable.getWriter();
@@ -988,7 +985,7 @@ idf.py -p COM_PORT monitor</div>
         isMonitoring = true;
         monitorStartBtn.disabled = true; 
         monitorStopBtn.disabled = false;
-        monitorOutput.innerHTML = `<span class="muted">--- ESP-IDF Serial Monitor запущен @ ${baud} baud. Нажмите Reset на устройстве ---</span>\n`;
+        monitorOutput.innerHTML = `<span class="muted">--- Монитор запущен @ ${baud} baud ---</span>\n`;
 
         while (isMonitoring) {
           try {
@@ -996,7 +993,6 @@ idf.py -p COM_PORT monitor</div>
             if (done) break;
             if (value) appendMonitorText(value);
           } catch (readErr) {
-            console.warn("Stream read interrupted:", readErr);
             break;
           }
         }
@@ -1008,7 +1004,6 @@ idf.py -p COM_PORT monitor</div>
 
     async function stopMonitor() {
       isMonitoring = false;
-      
       if (monitorReader) {
         try { await monitorReader.cancel(); } catch {}
         try { monitorReader.releaseLock(); } catch {}
@@ -1024,9 +1019,7 @@ idf.py -p COM_PORT monitor</div>
       appendMonitorText("\n--- Монитор остановлен ---\n");
 
       try {
-        if (port && (port.readable || port.writable)) {
-          await port.close();
-        }
+        if (port && (port.readable || port.writable)) await port.close();
         if (port && port.readable === null && port.writable === null) {
           transport = new Transport(port, true);
           loader = new ESPLoader({ transport, baudrate: getBaud(), terminal });
@@ -1038,7 +1031,6 @@ idf.py -p COM_PORT monitor</div>
         }
       } catch (e) {
         setMonitorControls(false);
-        logFlash(`Сессия сброшена. Нажмите Reset на устройстве и подключитесь заново.`, "err-text");
         setDisconnectedUI();
       }
     }
@@ -1046,13 +1038,10 @@ idf.py -p COM_PORT monitor</div>
     monitorResetBtn.addEventListener("click", async () => {
       if (!port) return;
       try {
-        appendMonitorText("\n[Выполнение Hard Reset по RTS/DTR...]\n");
         await port.setSignals({ requestToSend: true, dataTerminalReady: false });
         await new Promise(r => setTimeout(r, 100));
         await port.setSignals({ requestToSend: false, dataTerminalReady: false });
-      } catch(e) {
-        appendMonitorText(`\n[Ошибка Reset: ${e.message}]\n`);
-      }
+      } catch(e) {}
     });
 
     monitorStopBtn.addEventListener("click", stopMonitor);
@@ -1066,23 +1055,11 @@ idf.py -p COM_PORT monitor</div>
         await monitorWriter.write(new TextEncoder().encode(text + "\r\n")); 
         appendMonitorText(`\n>> ${text}\n`); 
         monitorInput.value = ""; 
-      } catch (e) { 
-        appendMonitorText(`\n[Ошибка отправки: ${e.message}]\n`); 
-      }
+      } catch (e) {}
     });
 
     monitorInput.addEventListener("keypress", (e) => { 
       if (e.key === "Enter") monitorSendBtn.click(); 
-    });
-
-    navigator.serial?.addEventListener("disconnect", (e) => {
-      if (e.target === port) {
-        isMonitoring = false; 
-        monitorReader = null; 
-        monitorWriter = null;
-        setDisconnectedUI();
-        logFlash("Устройство отключено от USB.", "err-text");
-      }
     });
 
     loadReleases();
