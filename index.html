@@ -6,118 +6,337 @@
   <title>k85OS — Прошивальщик и Монитор</title>
   <style>
     :root {
-      --bg: #0b0e14;
-      --panel: #111827;
-      --panel-2: #1f2937;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
+      --bg-dark: #07090e;
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --panel-2: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
       --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.4);
       --accent-2: #2563eb;
       --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.4);
       --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.4);
       --warning: #f59e0b;
-      --border: #1f2937;
-      --radius: 14px;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(59, 130, 246, 0.3);
+      --radius: 16px;
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
+
     * { box-sizing: border-box; }
+    
     body {
       margin: 0;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(1400px 800px at 50% -10%, #1e293b 0%, var(--bg) 60%);
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.15), transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.08), transparent 50%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
     }
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
 
-    .banner-container { width: 100%; display: flex; justify-content: center; margin-bottom: 32px; }
-    .banner-img { max-width: 100%; height: auto; max-height: 350px; object-fit: contain; border-radius: var(--radius); box-shadow: var(--shadow); }
+    .wrap { max-width: 1400px; margin: 0 auto; padding: 32px 24px 80px; }
 
-    .tabs { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-    .tab-btn { background: transparent; border: none; color: var(--muted); font-size: 1.05rem; font-weight: 600; cursor: pointer; padding: 10px 20px; border-radius: 8px; transition: 0.2s; }
-    .tab-btn:hover { color: var(--text); background: var(--panel-2); }
-    .tab-btn.active { color: var(--accent); background: rgba(59, 130, 246, 0.1); }
-    .tab-content { display: none; animation: fadeIn 0.3s ease-out; }
+    /* Баннер */
+    .banner-container { width: 100%; display: flex; justify-content: center; margin-bottom: 24px; }
+    .banner-img {
+      max-width: 100%;
+      height: auto;
+      max-height: 280px;
+      object-fit: contain;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(59, 130, 246, 0.2);
+      border: 1px solid var(--border);
+    }
+
+    /* Вкладки */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 12px 20px;
+      border-radius: 8px;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+    .tab-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    .tab-content { display: none; animation: fadeIn 0.35s ease-out; }
     .tab-content.active { display: block; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    .hero { background: linear-gradient(160deg, #111827, #0f172a); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); margin-bottom: 24px; }
+    .hero {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      width: 100%;
+    }
 
-    .grid { display: grid; gap: 24px; align-items: start; }
-    @media (min-width: 800px) { .grid.two { grid-template-columns: 1fr 1fr; } }
+    /* ЖЕСТКАЯ СЕТКА 50 / 50 ДЛЯ ИСКЛЮЧЕНИЯ ПУСТОТЫ */
+    .grid { display: grid; gap: 24px; width: 100%; grid-template-columns: 1fr; align-items: start; }
+    @media (min-width: 900px) {
+      .grid.two { grid-template-columns: 1fr 1fr; }
+    }
 
-    .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
-    .card h3 { margin: 0 0 18px; font-size: 1.15rem; display: flex; align-items: center; gap: 10px; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .card h3 {
+      margin: 0 0 16px;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
 
+    /* Видео */
     .video-hero { padding: 0; overflow: hidden; margin-bottom: 24px; }
-    .video-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius) var(--radius) 0 0; overflow: hidden; max-height: 480px; }
-    .demo-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
-    .video-caption { padding: 16px 28px; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--border); background: var(--panel); }
-    .video-caption strong { font-size: 1rem; }
-    .video-caption span { color: var(--muted); font-size: 0.9rem; }
+    .video-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; max-height: 420px; }
+    .demo-video { width: 100%; height: 100%; object-fit: contain; }
+    .video-caption { padding: 16px 24px; background: rgba(15, 23, 42, 0.9); border-top: 1px solid var(--border); }
+    .video-caption strong { font-size: 1rem; color: #fff; display: block; }
+    .video-caption span { color: var(--muted); font-size: 0.88rem; }
 
-    .btn { appearance: none; border: none; cursor: pointer; padding: 12px 20px; border-radius: 10px; font-weight: 600; font-size: 0.95rem; transition: .18s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn:active { transform: translateY(1px); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover:not(:disabled) { background: var(--accent-2); }
-    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
-    .btn-ghost:hover:not(:disabled) { background: #1a2233; }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-danger:hover:not(:disabled) { background: #dc2626; }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-success:hover:not(:disabled) { background: #059669; }
+    /* Кнопки */
+    .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:active:not(:disabled) { transform: translateY(1px); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(60%); }
+    
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 4px 12px var(--accent-glow); }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 6px 18px var(--accent-glow); }
+    
+    .btn-ghost { background: rgba(255, 255, 255, 0.05); color: var(--text); border-color: var(--border); }
+    .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+    
+    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; box-shadow: 0 4px 12px var(--danger-glow); }
+    .btn-danger:hover:not(:disabled) { filter: brightness(1.1); }
+    
+    .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 4px 12px var(--success-glow); }
+    .btn-success:hover:not(:disabled) { filter: brightness(1.1); }
+    
     .btn-full { width: 100%; }
 
-    select, input[type="file"], input[type="text"] { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); font-size: 0.95rem; outline: none; }
-    select:focus, input:focus { border-color: var(--accent); }
-    .field { margin-bottom: 18px; }
-    .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+    /* Поля */
+    select, input[type="file"], input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text);
+      font-size: 0.92rem;
+      outline: none;
+    }
+    select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
 
-    .progress-circle-wrap { display: flex; flex-direction: column; align-items: center; margin: 24px 0; position: relative; }
-    .progress-circle { width: 200px; height: 200px; transform: rotate(-90deg); }
-    .progress-circle-bg { fill: none; stroke: var(--panel-2); stroke-width: 10; }
-    .progress-circle-bar { fill: none; stroke: var(--accent); stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
-    .progress-text-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; gap: 2px; }
-    .progress-addr { font-family: ui-monospace, monospace; font-size: 1.15rem; font-weight: 700; color: #60a5fa; }
-    .progress-mb { font-family: ui-monospace, monospace; font-size: 0.9rem; color: var(--text); }
-    .progress-pct { font-size: 1.6rem; font-weight: 700; color: var(--success); margin-top: 4px; }
+    /* Прогресс-кольцо */
+    .progress-circle-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 24px 0;
+      position: relative;
+    }
+    .progress-circle { width: 190px; height: 190px; transform: rotate(-90deg); }
+    .progress-circle-bg { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 8; }
+    .progress-circle-bar {
+      fill: none;
+      stroke: url(#gradient);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.15s linear;
+    }
+    .progress-text-overlay {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .progress-addr { font-family: ui-monospace, monospace; font-size: 1.05rem; font-weight: 700; color: #38bdf8; }
+    .progress-mb { font-family: ui-monospace, monospace; font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+    .progress-pct {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #38bdf8, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-    .log { margin-top: 18px; background: #05070c; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: ui-monospace, monospace; font-size: 0.85rem; color: #a7f3d0; height: 140px; overflow: auto; white-space: pre-wrap; }
+    /* Лог и Терминал */
+    .log {
+      margin-top: 16px;
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      font-family: ui-monospace, monospace;
+      font-size: 0.83rem;
+      color: #6EE7B7;
+      height: 140px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
 
-    .monitor-terminal { background: #000; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: ui-monospace, monospace; font-size: 0.85rem; color: #38bdf8; height: 400px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; margin-bottom: 16px; }
-    .monitor-controls { display: flex; gap: 12px; flex-wrap: wrap; }
+    .monitor-terminal {
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      height: 460px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-bottom: 16px;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.9);
+      line-height: 1.45;
+    }
+    .monitor-controls { display: flex; gap: 10px; flex-wrap: wrap; }
     .monitor-controls input { flex: 1; min-width: 200px; }
 
-    .status { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; margin: 12px 0; }
+    /* Цветной лог */
+    .log-I { color: #10b981; }
+    .log-W { color: #f59e0b; }
+    .log-E { color: #ef4444; font-weight: bold; }
+    .log-D { color: #38bdf8; }
+
+    /* Оформление блоков описания k85OS */
+    .info-section { margin-bottom: 16px; }
+    .info-section h4 { margin: 0 0 6px; font-size: 0.95rem; color: #38bdf8; font-weight: 600; }
+    .info-section p { margin: 0 0 8px; font-size: 0.88rem; color: var(--muted); }
+    .info-section ul { margin: 0; padding-left: 18px; font-size: 0.85rem; color: var(--muted); }
+    .info-section li { margin-bottom: 4px; }
+    .code-block {
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: ui-monospace, monospace;
+      font-size: 0.8rem;
+      color: #a5f3fc;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* Статусы */
+    .status { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; font-weight: 500; }
     .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
-    .dot.ok { background: var(--success); box-shadow: 0 0 8px var(--success); }
-    .dot.err { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
-    .dot.busy { background: var(--warning); animation: pulse 1.1s infinite; }
-    @keyframes pulse { 50% { opacity: .35; } }
+    .dot.ok { background: var(--success); box-shadow: 0 0 10px var(--success); }
+    .dot.err { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+    .dot.busy { background: var(--warning); animation: pulse 1s infinite alternate; }
+    @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
 
     .warn { color: var(--warning); font-size: 0.85rem; }
-    .err-text { color: #fca5a5; font-size: 0.85rem; }
-    .muted { color: var(--muted); font-size: 0.9rem; }
-    code { background: #1f2937; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: ui-monospace, monospace; }
+    .muted { color: var(--muted); font-size: 0.88rem; }
+    code { background: rgba(255, 255, 255, 0.08); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: ui-monospace, monospace; color: #38bdf8; }
 
-    .danger-zone { margin-top: 24px; padding-top: 20px; border-top: 1px dashed #374151; }
-    .danger-zone h4 { margin: 0 0 10px; font-size: 0.9rem; color: #fca5a5; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .danger-zone {
+      margin-top: 24px;
+      padding: 16px;
+      border: 1px dashed rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.04);
+      border-radius: 12px;
+    }
+    .danger-zone h4 { margin: 0 0 8px; font-size: 0.88rem; color: #fca5a5; text-transform: uppercase; letter-spacing: 0.5px; border: none; padding: 0; }
 
-    .part-info { background: #1a2233; border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 0.85rem; color: var(--muted); margin-bottom: 18px; line-height: 1.6; }
-    .part-info strong { color: var(--text); display: block; margin-bottom: 6px; }
-    .part-info code { color: #60a5fa; }
+    .part-info {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
 
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; backdrop-filter: blur(5px); }
+    /* Модалка */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(3, 7, 18, 0.85);
+      z-index: 1000;
+      display: flex; justify-content: center; align-items: center;
+      opacity: 0; visibility: hidden;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(6px);
+    }
     .modal-overlay.active { opacity: 1; visibility: visible; }
-    .modal-content { background: #000; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column; align-items: center; gap: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.3s ease; }
-    .modal-overlay.active .modal-content { transform: scale(1); }
-    .modal-img { max-width: 100%; max-height: 45vh; border-radius: 10px; object-fit: contain; }
-    .modal-title { font-size: 1.3rem; font-weight: 700; text-align: center; margin: 0; }
-    .modal-msg { color: var(--muted); text-align: center; font-size: 1rem; margin: 0; max-width: 400px; }
-    .modal-actions { display: flex; gap: 14px; margin-top: 10px; }
+    .modal-content {
+      background: #0b0f19;
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 440px;
+      width: 90%;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    }
+    .modal-img { max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; }
+    .modal-title { font-size: 1.25rem; font-weight: 700; margin: 0; color: #fff; }
+    .modal-msg { color: var(--muted); text-align: center; font-size: 0.95rem; margin: 0; }
+    .modal-actions { display: flex; gap: 10px; width: 100%; justify-content: center; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -127,17 +346,18 @@
       <img src="banner.png" alt="K85 OS Banner" class="banner-img">
     </div>
 
-    <div class="hero" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+    <!-- Верхний блок -->
+    <div class="hero" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
       <div>
-        <h2 style="margin: 0 0 6px; font-size: 1.3rem;">Управление устройством</h2>
-        <div class="status" style="margin: 0;">
+        <h2 style="margin: 0 0 6px; font-size: 1.3rem; color: #fff;">Управление устройством</h2>
+        <div class="status">
           <span class="dot" id="statusDot"></span>
           <span id="statusText">Устройство не подключено</span>
         </div>
       </div>
-      <div style="display:flex; gap:14px; align-items:center; flex-wrap: wrap;">
-        <div style="min-width:170px;">
-          <label for="baudSelect" style="display:block; font-size:0.8rem; color:var(--muted); margin-bottom:4px;">Скорость (ESP32-S3)</label>
+      <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap: wrap;">
+        <div style="min-width:160px;">
+          <label for="baudSelect" style="display:block; font-size:0.8rem; color:var(--muted); margin-bottom:4px;">Скорость (Baudrate)</label>
           <select id="baudSelect">
             <option value="115200" selected>115200</option>
             <option value="230400">230400</option>
@@ -145,7 +365,6 @@
             <option value="921600">921600</option>
             <option value="1500000">1500000</option>
             <option value="2000000">2000000</option>
-            <option value="3000000">3000000</option>
           </select>
         </div>
         <button class="btn btn-ghost" id="connectBtn">🔌 Подключить устройство</button>
@@ -162,43 +381,98 @@
       <section class="hero video-hero">
         <div class="video-embed">
           <video class="demo-video" src="https://github.com/kion85/k85OS/releases/download/video1/VID_20261108_181318.mp4" controls playsinline preload="metadata" muted loop>
-            Ваш браузер не поддерживает встроенное видео.
+            Ваш браузер не поддерживает видео.
           </video>
         </div>
         <div class="video-caption">
           <strong>🎬 Как перевести M5Stack в режим прошивки</strong>
-          <span>Нажмите и удерживайте кнопку Reset/G0, пока зелёный светодиод не замигает.</span>
+          <span>Зажмите и удерживайте кнопку Reset/G0, пока зелёный светодиод не замигает.</span>
         </div>
       </section>
 
+      <!-- ТЕПЕРЬ СЕТКА ЧЕТКО 50/50, В ЛЕВОЙ ЧАСТИ ВЕСЬ ТЕКСТ K85OS -->
       <div class="grid two">
+        
+        <!-- ЛЕВАЯ ЧАСТЬ: ИНФОРМАЦИЯ О K85OS И ИНСТРУКЦИЯ -->
         <div class="card">
-          <h3>📋 Инструкция</h3>
-          <p class="muted">1. Подключите устройство USB-кабелем.</p>
-          <p class="muted">2. Зажмите <strong>Reset/G0</strong> до мигания светодиода.</p>
-          <p class="muted">3. Выберите скорость (по умолчанию 115200) и нажмите «Подключить устройство».</p>
-          <p class="muted">4. Выберите прошивку и нажмите «Прошить».</p>
-          <p class="warn">Если скачивание с GitHub не удаётся (сетевой фильтр) — нажмите «⬇️ Скачать .bin браузером» и выберите файл в поле «файл вручную».</p>
+          <h3>🚀 k85OS — Custom Firmware</h3>
+          
+          <div class="info-section">
+            <p>Custom firmware for M5Stack-family devices (ESP32-S3), written in C/C++ on ESP-IDF v5.3.1. Originally ported from an earlier MicroPython/UIFlow prototype into a modular ESP-IDF C++ codebase.</p>
+          </div>
+
+          <div class="info-section">
+            <h4>🎯 Supported Targets</h4>
+            <p>ESP32-S3 (tested on ESP32-S3-PICO-1-N8R8, 8MB Flash + 8MB Octal PSRAM)</p>
+          </div>
+
+          <div class="info-section">
+            <h4>✨ Features</h4>
+            <ul>
+              <li><strong>Store (games):</strong> Puzzle (2048, Tetris), Arcade (Snake, Memory Match), Classic (Reaction test, Flappy, Balance), Pong</li>
+              <li><strong>Standalone apps:</strong> Cube (3D wireframe demo), Colors, Clock (NTP-aware with uptime fallback)</li>
+              <li><strong>Tools:</strong> WiFi Connect / Manager (3 saved networks), Terminal (Free RAM, Uptime, Reboot), Bluetooth Scan, I2C Scanner, GPIO Control, Files browser, Music Player, Melodies, Mic Test, Air Mouse (IMU cursor), Hotspot, Calculator</li>
+              <li><strong>Settings:</strong> Theme, battery mode, brightness, volume, boot style, cursor mode (IMU pointer), Desktop/OS mode (desktop + taskbar)</li>
+            </ul>
+          </div>
+
+          <div class="info-section">
+            <h4>🎨 Theming (.thm files)</h4>
+            <p>UEFI/BIOS themes are plain-text <code>.thm</code> files (single line, fields separated by <code>|</code>):</p>
+            <div class="code-block">Name|Background|Text|Accent|Dark|Icon</div>
+          </div>
+
+          <div class="info-section">
+            <h4>📂 Project Structure</h4>
+            <div class="code-block">├── CMakeLists.txt
+├── partitions.csv
+├── sdkconfig.defaults
+└── main
+    ├── CMakeLists.txt
+    ├── k85os_idf.cpp   # entry point
+    ├── core/           # config, theme, input, power, boot, rtc/ntp
+    ├── ui/             # menu, list_menu, settings_menu
+    ├── net/            # wifi
+    ├── apps/           # games & tools
+    └── system/, steps/</div>
+          </div>
+
+          <div class="info-section">
+            <h4>🛠️ Build</h4>
+            <p>Requires ESP-IDF v5.3.1.</p>
+            <div class="code-block">idf.py set-target esp32s3
+idf.py build
+idf.py -p COM_PORT flash
+idf.py -p COM_PORT monitor</div>
+          </div>
+
+          <div class="info-section">
+            <h4>💬 FAQ & Notes</h4>
+            <p style="font-size:0.83rem; font-style: italic; color: #94a3b8;">
+              "Why doesn't this firmware have features like Bruce? I don't have any real desire for my firmware to be able to attack anyone, capture handshakes, and so on. What I actually want is for these sticks to have something like a PC-style OS... packed into a tiny microcontroller. Good luck to everyone, and I wish you all the very best in life!"
+            </p>
+          </div>
         </div>
 
+        <!-- ПРАВАЯ ЧАСТЬ: ИНТЕРФЕЙС ПРОШИВКИ (РАСШИРЕН ВЛЕВО) -->
         <div class="card">
-          <h3>⚡ Прошивка</h3>
+          <h3>⚡ Прошивальщик</h3>
 
           <div class="part-info">
-            <strong>Разметка (Partition Table):</strong>
-            OTA 0: <code>0x20000</code> (2.5 МБ)<br>
-            OTA 1: <code>0x2A0000</code> (2.5 МБ)<br>
-            LittleFS: <code>0x520000</code> (2.875 МБ)<br>
+            <strong>Разметка Flash (Partition Table):</strong>
+            OTA 0: <code>0x20000</code> (2.5 МБ) | OTA 1: <code>0x2A0000</code> (2.5 МБ)<br>
+            LittleFS: <code>0x520000</code> (2.875 МБ)
           </div>
 
           <div class="field">
-            <label for="firmwareSelect">Релизы с GitHub</label>
+            <label for="firmwareSelect">Релизы GitHub</label>
             <select id="firmwareSelect">
               <option value="">Загрузка списка релизов…</option>
             </select>
           </div>
+
           <div class="field">
-            <label for="localFile">…или файл вручную (.bin)</label>
+            <label for="localFile">Или выбрать файл прошивки вручную (.bin)</label>
             <input type="file" id="localFile" accept=".bin,application/octet-stream">
           </div>
 
@@ -212,6 +486,12 @@
 
           <div class="progress-circle-wrap">
             <svg class="progress-circle" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#38bdf8" />
+                  <stop offset="100%" stop-color="#10b981" />
+                </linearGradient>
+              </defs>
               <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
               <circle class="progress-circle-bar" id="progressCircleBar" cx="50" cy="50" r="45" stroke-dasharray="282.74" stroke-dashoffset="282.74"></circle>
             </svg>
@@ -226,31 +506,39 @@
 
           <div class="danger-zone">
             <h4>⚠️ Сброс выбора загрузки</h4>
-            <p class="muted" style="margin:0 0 12px; font-size: 0.85rem;">
-              1. Попробуйте <strong>зажать кнопку A (или A+B)</strong> при включении/сбросе.<br>
-              2. Если не помогает — сотрите регион <code>0x10000</code>.
+            <p class="muted" style="margin:0 0 10px; font-size: 0.83rem;">
+              Если устройство не загружается, сотрите регион bootloader (<code>0x10000</code>).
             </p>
             <button class="btn btn-danger btn-full" id="eraseBtn" disabled>
               🗑️ Стереть регион 0x10000 / 0x2000
             </button>
           </div>
         </div>
+
       </div>
     </div>
 
+    <!-- Вкладка Монитора -->
     <div id="tab-monitor" class="tab-content">
       <div class="card">
-        <h3>🖥️ Монитор последовательного порта</h3>
-        <p class="muted" style="margin-top:0;">Аналог <code>idf.py monitor</code>. Скорость берётся из селекта сверху.</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 style="margin:0; border:none; padding:0;">🖥️ Serial Monitor (ESP-IDF)</h3>
+            <p class="muted" style="margin: 2px 0 0;">Консоль <code>idf.py monitor</code> с поддержкой цветных логов и Reset по DTR/RTS.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-ghost" id="monitorResetBtn" disabled title="Перезагрузить устройство по RTS/DTR">🔄 Hard Reset</button>
+            <button class="btn btn-ghost" id="monitorClearBtn">🧹 Очистить</button>
+          </div>
+        </div>
 
-        <div class="monitor-terminal" id="monitorOutput">Ожидание подключения...</div>
+        <div class="monitor-terminal" id="monitorOutput">Ожидание подключения к устройству...</div>
 
         <div class="monitor-controls">
-          <input type="text" id="monitorInput" placeholder="Введите команду..." disabled>
+          <input type="text" id="monitorInput" placeholder="Введите команду и нажмите Enter..." disabled>
           <button class="btn btn-primary" id="monitorSendBtn" disabled>Отправить</button>
-          <button class="btn btn-ghost" id="monitorClearBtn">Очистить</button>
-          <button class="btn btn-success" id="monitorStartBtn" disabled>Старт</button>
-          <button class="btn btn-danger" id="monitorStopBtn" disabled>Стоп</button>
+          <button class="btn btn-success" id="monitorStartBtn" disabled>▶️ Старт Монитора</button>
+          <button class="btn btn-danger" id="monitorStopBtn" disabled>⏹️ Стоп</button>
         </div>
       </div>
     </div>
@@ -271,7 +559,7 @@
 
     const GITHUB_REPO = "kion85/k85OS";
     const RELEASES_API = `https://api.github.com/repos/${GITHUB_REPO}/releases`;
-    const OTA_SLOT_SIZE = 0x280000; // 2.5 MB
+    const OTA_SLOT_SIZE = 0x280000;
     const BOOT_REGION_OFFSET = 0x10000;
     const BOOT_REGION_SIZE   = 0x2000;
     const FLASH_ADDRESS = 0x0;
@@ -284,7 +572,7 @@
     const directDownloadBtn = $("directDownloadBtn");
     const flashLog = $("flashLog");
     const progressCircleBar = $("progressCircleBar"), progressAddr = $("progressAddr"), progressMb = $("progressMb"), progressPct = $("progressPct");
-    const monitorOutput = $("monitorOutput"), monitorInput = $("monitorInput"), monitorSendBtn = $("monitorSendBtn"), monitorStartBtn = $("monitorStartBtn"), monitorStopBtn = $("monitorStopBtn"), monitorClearBtn = $("monitorClearBtn");
+    const monitorOutput = $("monitorOutput"), monitorInput = $("monitorInput"), monitorSendBtn = $("monitorSendBtn"), monitorStartBtn = $("monitorStartBtn"), monitorStopBtn = $("monitorStopBtn"), monitorClearBtn = $("monitorClearBtn"), monitorResetBtn = $("monitorResetBtn");
     const modalOverlay = $("modalOverlay"), modalImg = $("modalImg"), modalTitle = $("modalTitle"), modalMsg = $("modalMsg"), modalActions = $("modalActions");
 
     let port = null, transport = null, loader = null, connected = false, releaseAssets = [];
@@ -293,8 +581,6 @@
     function getBaud() { return Number(baudSelect.value) || 115200; }
     const terminal = { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) };
 
-    // ВАЖНО: esptool-js ожидает данные прошивки как БИНАРНУЮ СТРОКУ (1 символ = 1 байт).
-    // Uint8Array вызывает "A.charCodeAt is not a function".
     function u8ToBinaryString(u8) {
       const CHUNK = 0x8000;
       let out = "";
@@ -306,12 +592,24 @@
 
     // --- УТИЛИТЫ ---
     function logFlash(msg, cls = "") {
-      const line = document.createElement("div"); line.textContent = msg; if (cls) line.className = cls;
-      flashLog.appendChild(line); flashLog.scrollTop = flashLog.scrollHeight;
+      const line = document.createElement("div"); 
+      line.textContent = msg; 
+      if (cls) line.className = cls;
+      flashLog.appendChild(line); 
+      flashLog.scrollTop = flashLog.scrollHeight;
     }
 
-    function logMonitor(msg) {
-      monitorOutput.textContent += msg; monitorOutput.scrollTop = monitorOutput.scrollHeight;
+    function appendMonitorText(text) {
+      let formatted = text
+        .replace(/I \(([0-9]+)\)/g, '<span class="log-I">I ($1)</span>')
+        .replace(/W \(([0-9]+)\)/g, '<span class="log-W">W ($1)</span>')
+        .replace(/E \(([0-9]+)\)/g, '<span class="log-E">E ($1)</span>')
+        .replace(/D \(([0-9]+)\)/g, '<span class="log-D">D ($1)</span>');
+
+      const span = document.createElement("span");
+      span.innerHTML = formatted;
+      monitorOutput.appendChild(span);
+      monitorOutput.scrollTop = monitorOutput.scrollHeight;
     }
 
     function setStatus(text, state = "") {
@@ -323,6 +621,7 @@
       monitorStartBtn.disabled = !enabled;
       monitorInput.disabled = !enabled;
       monitorSendBtn.disabled = !enabled;
+      monitorResetBtn.disabled = !enabled;
       if (!enabled) monitorStopBtn.disabled = true;
     }
 
@@ -432,7 +731,7 @@
       }
     }
 
-    // --- СКАЧИВАНИЕ ПРОШИВКИ: каскад из 7 способов ---
+    // --- СКАЧИВАНИЕ ПРОШИВКИ ---
     async function downloadFirmware(asset) {
       const attempts = [
         { name: "прямой URL",     url: asset.url },
@@ -459,10 +758,9 @@
           logFlash(`${att.name} не сработал (${e.message})`, "warn");
         }
       }
-      throw new Error(`Все способы не сработали (последняя: ${lastErr}). Нажмите «⬇️ Скачать .bin браузером» и выберите файл в поле «файл вручную».`);
+      throw new Error(`Все способы не сработали (${lastErr}). Скачайте через браузер и выберите файл вручную.`);
     }
 
-    // Кнопка «Скачать .bin браузером» — обычная ссылка download
     directDownloadBtn.addEventListener("click", () => {
       const idx = firmwareSelect.value;
       if (idx === "") { alert("Сначала выберите прошивку в списке."); return; }
@@ -471,43 +769,40 @@
       a.href = asset.url;
       a.download = asset.label.split("—")[1]?.trim() || "firmware.bin";
       a.target = "_blank";
-      a.rel = "noopener";
       document.body.appendChild(a);
       a.click();
       a.remove();
-      logFlash(`Файл отправлен на скачивание браузером: ${asset.url}`, "warn");
-      logFlash("После загрузки выберите его в поле «файл вручную» и нажмите «Прошить».", "muted");
+      logFlash(`Файл отправлен на скачивание: ${asset.url}`, "warn");
     });
 
     // --- ПОДКЛЮЧЕНИЕ ---
     async function connectDevice() {
-      if (!("serial" in navigator)) return logFlash("Web Serial не поддерживается.", "err-text");
+      if (!("serial" in navigator)) return logFlash("Web Serial не поддерживается вашим браузером.", "err-text");
 
       const baud = getBaud();
 
       try {
-        logFlash(`[1/5] Очистка предыдущего состояния (скорость: ${baud})…`);
+        logFlash(`[1/5] Очистка предыдущего подключения (${baud} baud)…`);
         await safeCloseRawPort();
 
         logFlash("[2/5] Запрос порта у браузера…");
         port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a }] });
 
-        logFlash("[3/5] Создание Transport…");
+        logFlash("[3/5] Инициализация Transport…");
         transport = new Transport(port, true);
         loader = new ESPLoader({ transport, baudrate: baud, terminal });
 
-        logFlash(`[4/5] Handshake на ${baud} бод (устройство должно быть в bootloader-режиме — Reset/G0 до мигания LED!)…`);
+        logFlash(`[4/5] Подключение к bootloader…`);
         const chip = await loader.main();
 
-        logFlash(`[5/5] Готово. Чип: ${chip}, скорость: ${baud}`);
+        logFlash(`[5/5] Успешно! Чип: ${chip}`);
         connected = true;
         setStatus(`Подключено: ${chip} @ ${baud}`, "ok");
         setMonitorControls(true);
         connectBtn.textContent = "❌ Отключить";
         updateFlashButton(); eraseBtn.disabled = false;
       } catch (e) {
-        logFlash(`ОШИБКА: [${e.name}] ${e.message}`, "err-text");
-        console.error(e);
+        logFlash(`ОШИБКА: ${e.message}`, "err-text");
         try { if (transport) { await transport.disconnect(); } } catch {}
         transport = null; loader = null;
         setStatus("Ошибка подключения", "err");
@@ -542,25 +837,24 @@
       try {
         if (manualFile) {
           firmwareData = new Uint8Array(await manualFile.arrayBuffer());
-          logFlash(`Файл вручную: ${(firmwareData.length / 1024 / 1024).toFixed(2)} МБ`);
+          logFlash(`Выбран лок. файл: ${(firmwareData.length / 1024 / 1024).toFixed(2)} МБ`);
         } else {
           const idx = firmwareSelect.value;
           if (idx === "") return logFlash("Выберите прошивку.", "err-text");
           firmwareData = await downloadFirmware(releaseAssets[Number(idx)]);
         }
-      } catch (e) { return logFlash(`Ошибка чтения файла: ${e.message}`, "err-text"); }
+      } catch (e) { return logFlash(`Ошибка файла: ${e.message}`, "err-text"); }
 
       if (firmwareData.length > OTA_SLOT_SIZE) {
         const sizeMb = (firmwareData.length / 1024 / 1024).toFixed(2);
-        const proceed = await showModal('warning', 'Прошивка слишком большая', `Размер образа (${sizeMb} МБ) превышает OTA-слот (2.5 МБ). Это может повредить файловую систему. Вы уверены?`);
+        const proceed = await showModal('warning', 'Внимание', `Размер (${sizeMb} МБ) больше OTA-слота (2.5 МБ). Продолжить?`);
         if (!proceed) return logFlash("Прошивка отменена.", "muted");
       }
 
-      // ФИКС: конвертируем байты в бинарную строку для esptool-js
       const binaryString = u8ToBinaryString(firmwareData);
 
       flashBtn.disabled = true; connectBtn.disabled = true; eraseBtn.disabled = true;
-      logFlash(`Запись на 0x0 (${(firmwareData.length/1024/1024).toFixed(2)} МБ)...`);
+      logFlash(`Запись образу на 0x0...`);
       resetProgress(); updateProgress(0, firmwareData.length);
 
       try {
@@ -570,11 +864,10 @@
           reportProgress: (i, written, total) => updateProgress(written, total),
         });
         logFlash("✅ Успешно прошито!", "muted");
-        await showModal('success', 'Прошивка успешна!', 'Устройство готово к работе. Нажмите Reset для загрузки.');
+        await showModal('success', 'Готово!', 'Прошивка успешно записана. Нажмите Reset на устройстве.');
       } catch (e) {
-        logFlash(`❌ Ошибка: ${e.message}`, "err-text");
-        console.error(e);
-        await showModal('error', 'Ошибка прошивки', e.message);
+        logFlash(`❌ Ошибка прошивки: ${e.message}`, "err-text");
+        await showModal('error', 'Ошибка', e.message);
       } finally {
         flashBtn.disabled = false; connectBtn.disabled = false; eraseBtn.disabled = false;
         updateFlashButton();
@@ -586,7 +879,7 @@
     // --- СТИРАНИЕ РЕГИОНА ---
     eraseBtn.addEventListener("click", async () => {
       if (!connected || !loader) return;
-      const ok = await showModal('warning', 'Сброс загрузки', 'Стереть регион 0x10000 / 0x2000? Устройство вернётся в k85OS.');
+      const ok = await showModal('warning', 'Сброс bootloader', 'Стереть регион 0x10000 / 0x2000?');
       if (!ok) return;
 
       eraseBtn.disabled = true; connectBtn.disabled = true; flashBtn.disabled = true;
@@ -596,11 +889,11 @@
       try {
         await loader.eraseRegion(BOOT_REGION_OFFSET, BOOT_REGION_SIZE);
         updateProgress(BOOT_REGION_SIZE, BOOT_REGION_SIZE);
-        logFlash("✅ Регион стёрт. Нажмите Reset.", "muted");
-        await showModal('success', 'Регион стёрт!', 'Выбор загрузки сброшен. Нажмите Reset на устройстве.');
+        logFlash("✅ Регион стёрт.", "muted");
+        await showModal('success', 'Успех', 'Загрузочный регион очищен.');
       } catch (e) {
         logFlash(`❌ Ошибка: ${e.message}`, "err-text");
-        await showModal('error', 'Ошибка стирания', e.message);
+        await showModal('error', 'Ошибка', e.message);
       } finally {
         eraseBtn.disabled = false; connectBtn.disabled = false;
         updateFlashButton();
@@ -616,32 +909,39 @@
     localFileInput.addEventListener("change", updateFlashButton);
 
     // --- МОНИТОР ---
+    const decoder = new TextDecoderStream();
+
     monitorStartBtn.addEventListener("click", async () => {
       if (!port || isMonitoring) return;
       const baud = getBaud();
 
       try {
-        logMonitor(`--- Переключение порта в режим монитора (${baud} бод)… ---\n`);
         if (transport) { try { await transport.disconnect(); } catch {} transport = null; loader = null; }
         if (port.readable || port.writable) { try { await port.close(); } catch {} }
 
         await port.open({ baudRate: baud });
-        monitorReader = port.readable.getReader();
+        await port.setSignals({ dataTerminalReady: false, requestToSend: false });
+
+        const readableStreamClosed = port.readable.pipeTo(decoder.writable);
+        const reader = decoder.readable.getReader();
+        monitorReader = reader;
         monitorWriter = port.writable.getWriter();
 
         isMonitoring = true;
-        monitorStartBtn.disabled = true; monitorStopBtn.disabled = false;
-        monitorOutput.textContent = `--- Монитор запущен @ ${baud}. Нажмите Reset на устройстве ---\n`;
+        monitorStartBtn.disabled = true; 
+        monitorStopBtn.disabled = false;
+        monitorOutput.innerHTML = `<span class="muted">--- ESP-IDF Serial Monitor запущен @ ${baud} baud. Нажмите Reset на устройстве ---</span>\n`;
 
         while (isMonitoring) {
-          const { value, done } = await monitorReader.read();
+          const { value, done } = await reader.read();
           if (done) break;
-          if (value) logMonitor(new TextDecoder().decode(value));
+          if (value) appendMonitorText(value);
         }
       } catch (e) {
-        logMonitor(`\n[Ошибка монитора: ${e.name} ${e.message}]`);
+        appendMonitorText(`\n[Ошибка монитора: ${e.message}]\n`);
         isMonitoring = false;
-        monitorStartBtn.disabled = false; monitorStopBtn.disabled = true;
+        monitorStartBtn.disabled = false; 
+        monitorStopBtn.disabled = true;
       }
     });
 
@@ -649,43 +949,70 @@
       isMonitoring = false;
       if (monitorReader) {
         try { await monitorReader.cancel(); } catch {}
-        try { monitorReader.releaseLock(); } catch {}
         monitorReader = null;
       }
-      if (monitorWriter) { try { monitorWriter.releaseLock(); } catch {} monitorWriter = null; }
+      if (monitorWriter) {
+        try { monitorWriter.releaseLock(); } catch {}
+        monitorWriter = null;
+      }
 
-      monitorStartBtn.disabled = true; monitorStopBtn.disabled = true;
-      logMonitor("\n--- Монитор остановлен ---\n");
+      monitorStartBtn.disabled = true; 
+      monitorStopBtn.disabled = true;
+      appendMonitorText("\n--- Монитор остановлен ---\n");
 
       try {
         if (port.readable || port.writable) await port.close();
         transport = new Transport(port, true);
         loader = new ESPLoader({ transport, baudrate: getBaud(), terminal });
         await loader.main();
-        monitorStartBtn.disabled = false; monitorInput.disabled = false; monitorSendBtn.disabled = false;
+        monitorStartBtn.disabled = false; 
+        monitorInput.disabled = false; 
+        monitorSendBtn.disabled = false;
         setStatus("Подключено (сессия восстановлена)", "ok");
       } catch (e) {
-        console.warn("Restore error:", e);
         setMonitorControls(false);
-        logFlash(`Не удалось восстановить esptool-сессию (${e.message}). Нажмите Reset на устройстве (до мигания LED) и подключитесь заново.`, "err-text");
+        logFlash(`Сброс соединения (${e.message}). Нажмите Reset на устройстве и подключитесь заново.`, "err-text");
         setDisconnectedUI();
       }
     }
 
+    monitorResetBtn.addEventListener("click", async () => {
+      if (!port) return;
+      try {
+        appendMonitorText("\n[Выполнение Hard Reset по RTS/DTR...]\n");
+        await port.setSignals({ requestToSend: true, dataTerminalReady: false });
+        await new Promise(r => setTimeout(r, 100));
+        await port.setSignals({ requestToSend: false, dataTerminalReady: false });
+      } catch(e) {
+        appendMonitorText(`\n[Ошибка Reset: ${e.message}]\n`);
+      }
+    });
+
     monitorStopBtn.addEventListener("click", stopMonitor);
-    monitorClearBtn.addEventListener("click", () => monitorOutput.textContent = "");
+    monitorClearBtn.addEventListener("click", () => monitorOutput.innerHTML = "");
 
     monitorSendBtn.addEventListener("click", async () => {
       if (!monitorWriter) return;
-      const text = monitorInput.value; if (!text) return;
-      try { await monitorWriter.write(new TextEncoder().encode(text + "\n")); logMonitor(`\n>> ${text}\n`); monitorInput.value = ""; }
-      catch (e) { logMonitor(`\n[Ошибка отправки: ${e.message}]\n`); }
+      const text = monitorInput.value; 
+      if (!text) return;
+      try { 
+        await monitorWriter.write(new TextEncoder().encode(text + "\r\n")); 
+        appendMonitorText(`\n>> ${text}\n`); 
+        monitorInput.value = ""; 
+      } catch (e) { 
+        appendMonitorText(`\n[Ошибка отправки: ${e.message}]\n`); 
+      }
     });
-    monitorInput.addEventListener("keypress", (e) => { if (e.key === "Enter") monitorSendBtn.click(); });
+
+    monitorInput.addEventListener("keypress", (e) => { 
+      if (e.key === "Enter") monitorSendBtn.click(); 
+    });
 
     navigator.serial?.addEventListener("disconnect", (e) => {
       if (e.target === port) {
-        isMonitoring = false; monitorReader = null; monitorWriter = null;
+        isMonitoring = false; 
+        monitorReader = null; 
+        monitorWriter = null;
         setDisconnectedUI();
         logFlash("Устройство отключено от USB.", "err-text");
       }
