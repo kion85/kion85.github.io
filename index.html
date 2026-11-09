@@ -108,7 +108,6 @@
       width: 100%;
     }
 
-    /* ЖЕСТКАЯ СЕТКА 50 / 50 ДЛЯ ИСКЛЮЧЕНИЯ ПУСТОТЫ */
     .grid { display: grid; gap: 24px; width: 100%; grid-template-columns: 1fr; align-items: start; }
     @media (min-width: 900px) {
       .grid.two { grid-template-columns: 1fr 1fr; }
@@ -246,7 +245,7 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 0.85rem;
       color: #e2e8f0;
-      height: 460px;
+      height: 420px;
       overflow-y: auto;
       white-space: pre-wrap;
       word-break: break-all;
@@ -263,7 +262,7 @@
     .log-E { color: #ef4444; font-weight: bold; }
     .log-D { color: #38bdf8; }
 
-    /* Оформление блоков описания k85OS */
+    /* Оформление блоков k85OS */
     .info-section { margin-bottom: 16px; }
     .info-section h4 { margin: 0 0 6px; font-size: 0.95rem; color: #38bdf8; font-weight: 600; }
     .info-section p { margin: 0 0 8px; font-size: 0.88rem; color: var(--muted); }
@@ -280,6 +279,20 @@
       overflow-x: auto;
       white-space: pre;
     }
+
+    /* Блок помощи по командам */
+    .cmd-help-box {
+      background: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .cmd-help-box strong { color: #fff; display: block; margin-bottom: 6px; }
+    .cmd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 6px; }
+    .cmd-item code { color: #38bdf8; background: rgba(0,0,0,0.3); }
 
     /* Статусы */
     .status { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; font-weight: 500; }
@@ -390,10 +403,10 @@
         </div>
       </section>
 
-      <!-- ТЕПЕРЬ СЕТКА ЧЕТКО 50/50, В ЛЕВОЙ ЧАСТИ ВЕСЬ ТЕКСТ K85OS -->
+      <!-- СЕТКА 50/50 -->
       <div class="grid two">
         
-        <!-- ЛЕВАЯ ЧАСТЬ: ИНФОРМАЦИЯ О K85OS И ИНСТРУКЦИЯ -->
+        <!-- ЛЕВАЯ ЧАСТЬ: ИНФОРМАЦИЯ О K85OS -->
         <div class="card">
           <h3>🚀 k85OS — Custom Firmware</h3>
           
@@ -454,7 +467,7 @@ idf.py -p COM_PORT monitor</div>
           </div>
         </div>
 
-        <!-- ПРАВАЯ ЧАСТЬ: ИНТЕРФЕЙС ПРОШИВКИ (РАСШИРЕН ВЛЕВО) -->
+        <!-- ПРАВАЯ ЧАСТЬ: ПРОШИВАТЕЛЬ -->
         <div class="card">
           <h3>⚡ Прошивальщик</h3>
 
@@ -505,20 +518,25 @@ idf.py -p COM_PORT monitor</div>
           <div class="log" id="flashLog">Готов к работе.</div>
 
           <div class="danger-zone">
-            <h4>⚠️ Сброс выбора загрузки</h4>
+            <h4>⚠️ Очистка памяти устройства</h4>
             <p class="muted" style="margin:0 0 10px; font-size: 0.83rem;">
-              Если устройство не загружается, сотрите регион bootloader (<code>0x10000</code>).
+              Вы можете стереть отдельный загрузочный регион или полностью очистить всю flash-память с адреса 0x0.
             </p>
-            <button class="btn btn-danger btn-full" id="eraseBtn" disabled>
-              🗑️ Стереть регион 0x10000 / 0x2000
-            </button>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-danger" id="eraseBtn" disabled style="flex: 1;">
+                🗑️ Стереть 0x10000
+              </button>
+              <button class="btn btn-danger" id="eraseFullBtn" disabled style="flex: 1;">
+                💥 Полный Erase (0x0)
+              </button>
+            </div>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Вкладка Монитора -->
+    <!-- Вкладка Монитора со справкой -->
     <div id="tab-monitor" class="tab-content">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
@@ -529,6 +547,18 @@ idf.py -p COM_PORT monitor</div>
           <div style="display: flex; gap: 8px;">
             <button class="btn btn-ghost" id="monitorResetBtn" disabled title="Перезагрузить устройство по RTS/DTR">🔄 Hard Reset</button>
             <button class="btn btn-ghost" id="monitorClearBtn">🧹 Очистить</button>
+          </div>
+        </div>
+
+        <!-- Справка по командам k85OS / ESP-IDF -->
+        <div class="cmd-help-box">
+          <strong>💡 Доступные системные команды (введите в строку ниже и нажмите Enter):</strong>
+          <div class="cmd-grid" style="margin-top: 6px;">
+            <div class="cmd-item"><code>help</code> — список команд терминала</div>
+            <div class="cmd-item"><code>free</code> — информация о свободной RAM</div>
+            <div class="cmd-item"><code>uptime</code> — время работы устройства</div>
+            <div class="cmd-item"><code>wifi</code> — статус Wi-Fi соединения</div>
+            <div class="cmd-item"><code>reboot</code> — перезагрузка контроллера</div>
           </div>
         </div>
 
@@ -568,7 +598,7 @@ idf.py -p COM_PORT monitor</div>
     const $ = (id) => document.getElementById(id);
     const statusDot = $("statusDot"), statusText = $("statusText"), connectBtn = $("connectBtn");
     const baudSelect = $("baudSelect");
-    const flashBtn = $("flashBtn"), eraseBtn = $("eraseBtn"), firmwareSelect = $("firmwareSelect"), localFileInput = $("localFile");
+    const flashBtn = $("flashBtn"), eraseBtn = $("eraseBtn"), eraseFullBtn = $("eraseFullBtn"), firmwareSelect = $("firmwareSelect"), localFileInput = $("localFile");
     const directDownloadBtn = $("directDownloadBtn");
     const flashLog = $("flashLog");
     const progressCircleBar = $("progressCircleBar"), progressAddr = $("progressAddr"), progressMb = $("progressMb"), progressPct = $("progressPct");
@@ -577,6 +607,7 @@ idf.py -p COM_PORT monitor</div>
 
     let port = null, transport = null, loader = null, connected = false, releaseAssets = [];
     let monitorReader = null, monitorWriter = null, isMonitoring = false;
+    let textDecoderStream = null;
 
     function getBaud() { return Number(baudSelect.value) || 115200; }
     const terminal = { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) };
@@ -698,7 +729,7 @@ idf.py -p COM_PORT monitor</div>
       });
     }
 
-    // --- ЗАГРУЗКА СПИСКА РЕЛИЗОВ ---
+    // --- ЗАГРУЗКА РЕЛИЗОВ ---
     async function loadReleases() {
       try {
         const res = await fetch(RELEASES_API, { headers: { Accept: "application/vnd.github+json" } });
@@ -731,7 +762,7 @@ idf.py -p COM_PORT monitor</div>
       }
     }
 
-    // --- СКАЧИВАНИЕ ПРОШИВКИ ---
+    // --- СКАЧИВАНИЕ ---
     async function downloadFirmware(asset) {
       const attempts = [
         { name: "прямой URL",     url: asset.url },
@@ -800,14 +831,18 @@ idf.py -p COM_PORT monitor</div>
         setStatus(`Подключено: ${chip} @ ${baud}`, "ok");
         setMonitorControls(true);
         connectBtn.textContent = "❌ Отключить";
-        updateFlashButton(); eraseBtn.disabled = false;
+        updateFlashButton(); 
+        eraseBtn.disabled = false;
+        eraseFullBtn.disabled = false;
       } catch (e) {
         logFlash(`ОШИБКА: ${e.message}`, "err-text");
         try { if (transport) { await transport.disconnect(); } } catch {}
         transport = null; loader = null;
         setStatus("Ошибка подключения", "err");
         setMonitorControls(false);
-        updateFlashButton(); eraseBtn.disabled = true;
+        updateFlashButton(); 
+        eraseBtn.disabled = true;
+        eraseFullBtn.disabled = true;
       }
     }
 
@@ -815,7 +850,9 @@ idf.py -p COM_PORT monitor</div>
       connected = false; port = null; transport = null; loader = null;
       setStatus("Устройство не подключено", "");
       connectBtn.textContent = "🔌 Подключить устройство";
-      flashBtn.disabled = true; eraseBtn.disabled = true;
+      flashBtn.disabled = true; 
+      eraseBtn.disabled = true;
+      eraseFullBtn.disabled = true;
       setMonitorControls(false);
     }
 
@@ -853,8 +890,8 @@ idf.py -p COM_PORT monitor</div>
 
       const binaryString = u8ToBinaryString(firmwareData);
 
-      flashBtn.disabled = true; connectBtn.disabled = true; eraseBtn.disabled = true;
-      logFlash(`Запись образу на 0x0...`);
+      flashBtn.disabled = true; connectBtn.disabled = true; eraseBtn.disabled = true; eraseFullBtn.disabled = true;
+      logFlash(`Запись образа на 0x0...`);
       resetProgress(); updateProgress(0, firmwareData.length);
 
       try {
@@ -869,21 +906,21 @@ idf.py -p COM_PORT monitor</div>
         logFlash(`❌ Ошибка прошивки: ${e.message}`, "err-text");
         await showModal('error', 'Ошибка', e.message);
       } finally {
-        flashBtn.disabled = false; connectBtn.disabled = false; eraseBtn.disabled = false;
+        flashBtn.disabled = false; connectBtn.disabled = false; eraseBtn.disabled = false; eraseFullBtn.disabled = false;
         updateFlashButton();
       }
     }
 
     flashBtn.addEventListener("click", flashFirmware);
 
-    // --- СТИРАНИЕ РЕГИОНА ---
+    // --- СТИРАНИЕ РЕГИОНА 0x10000 ---
     eraseBtn.addEventListener("click", async () => {
       if (!connected || !loader) return;
-      const ok = await showModal('warning', 'Сброс bootloader', 'Стереть регион 0x10000 / 0x2000?');
+      const ok = await showModal('warning', 'Сброс bootloader', 'Стереть загрузочный регион 0x10000 / 0x2000?');
       if (!ok) return;
 
-      eraseBtn.disabled = true; connectBtn.disabled = true; flashBtn.disabled = true;
-      logFlash("Стирание...");
+      eraseBtn.disabled = true; eraseFullBtn.disabled = true; connectBtn.disabled = true; flashBtn.disabled = true;
+      logFlash("Стирание региона 0x10000...");
       resetProgress(); updateProgress(0, BOOT_REGION_SIZE);
 
       try {
@@ -895,7 +932,29 @@ idf.py -p COM_PORT monitor</div>
         logFlash(`❌ Ошибка: ${e.message}`, "err-text");
         await showModal('error', 'Ошибка', e.message);
       } finally {
-        eraseBtn.disabled = false; connectBtn.disabled = false;
+        eraseBtn.disabled = false; eraseFullBtn.disabled = false; connectBtn.disabled = false;
+        updateFlashButton();
+      }
+    });
+
+    // --- ПОЛНОЕ СТИРАНИЕ (ERASE FLASH с 0x0) ---
+    eraseFullBtn.addEventListener("click", async () => {
+      if (!connected || !loader) return;
+      const ok = await showModal('warning', 'Полная очистка памяти', 'ВНИМАНИЕ: Будет стерта ВСЯ flash-память устройства (включая LittleFS и все настройки)! Продолжить?');
+      if (!ok) return;
+
+      eraseBtn.disabled = true; eraseFullBtn.disabled = true; connectBtn.disabled = true; flashBtn.disabled = true;
+      logFlash("Выполнение полного стирания flash-памяти...");
+      
+      try {
+        await loader.eraseFlash();
+        logFlash("✅ Вся flash-память полностью очищена!", "muted");
+        await showModal('success', 'Очищено!', 'Вся память устройства стерта. Теперь установите прошивку заново.');
+      } catch (e) {
+        logFlash(`❌ Ошибка полного стирания: ${e.message}`, "err-text");
+        await showModal('error', 'Ошибка', e.message);
+      } finally {
+        eraseBtn.disabled = false; eraseFullBtn.disabled = false; connectBtn.disabled = false;
         updateFlashButton();
       }
     });
@@ -908,9 +967,7 @@ idf.py -p COM_PORT monitor</div>
     firmwareSelect.addEventListener("change", updateFlashButton);
     localFileInput.addEventListener("change", updateFlashButton);
 
-    // --- МОНИТОР ---
-    const decoder = new TextDecoderStream();
-
+    // --- МОНИТОР С ИСПРАВЛЕННЫМ УПРАВЛЕНИЕМ ПОТОКОМ ---
     monitorStartBtn.addEventListener("click", async () => {
       if (!port || isMonitoring) return;
       const baud = getBaud();
@@ -922,9 +979,10 @@ idf.py -p COM_PORT monitor</div>
         await port.open({ baudRate: baud });
         await port.setSignals({ dataTerminalReady: false, requestToSend: false });
 
-        const readableStreamClosed = port.readable.pipeTo(decoder.writable);
-        const reader = decoder.readable.getReader();
-        monitorReader = reader;
+        textDecoderStream = new TextDecoderStream();
+        const readableStreamClosed = port.readable.pipeTo(textDecoderStream.writable);
+        
+        monitorReader = textDecoderStream.readable.getReader();
         monitorWriter = port.writable.getWriter();
 
         isMonitoring = true;
@@ -933,22 +991,27 @@ idf.py -p COM_PORT monitor</div>
         monitorOutput.innerHTML = `<span class="muted">--- ESP-IDF Serial Monitor запущен @ ${baud} baud. Нажмите Reset на устройстве ---</span>\n`;
 
         while (isMonitoring) {
-          const { value, done } = await reader.read();
-          if (done) break;
-          if (value) appendMonitorText(value);
+          try {
+            const { value, done } = await monitorReader.read();
+            if (done) break;
+            if (value) appendMonitorText(value);
+          } catch (readErr) {
+            console.warn("Stream read interrupted:", readErr);
+            break;
+          }
         }
       } catch (e) {
         appendMonitorText(`\n[Ошибка монитора: ${e.message}]\n`);
-        isMonitoring = false;
-        monitorStartBtn.disabled = false; 
-        monitorStopBtn.disabled = true;
+        await stopMonitor();
       }
     });
 
     async function stopMonitor() {
       isMonitoring = false;
+      
       if (monitorReader) {
         try { await monitorReader.cancel(); } catch {}
+        try { monitorReader.releaseLock(); } catch {}
         monitorReader = null;
       }
       if (monitorWriter) {
@@ -961,17 +1024,21 @@ idf.py -p COM_PORT monitor</div>
       appendMonitorText("\n--- Монитор остановлен ---\n");
 
       try {
-        if (port.readable || port.writable) await port.close();
-        transport = new Transport(port, true);
-        loader = new ESPLoader({ transport, baudrate: getBaud(), terminal });
-        await loader.main();
-        monitorStartBtn.disabled = false; 
-        monitorInput.disabled = false; 
-        monitorSendBtn.disabled = false;
-        setStatus("Подключено (сессия восстановлена)", "ok");
+        if (port && (port.readable || port.writable)) {
+          await port.close();
+        }
+        if (port && port.readable === null && port.writable === null) {
+          transport = new Transport(port, true);
+          loader = new ESPLoader({ transport, baudrate: getBaud(), terminal });
+          await loader.main();
+          monitorStartBtn.disabled = false; 
+          monitorInput.disabled = false; 
+          monitorSendBtn.disabled = false;
+          setStatus("Подключено (сессия восстановлена)", "ok");
+        }
       } catch (e) {
         setMonitorControls(false);
-        logFlash(`Сброс соединения (${e.message}). Нажмите Reset на устройстве и подключитесь заново.`, "err-text");
+        logFlash(`Сессия сброшена. Нажмите Reset на устройстве и подключитесь заново.`, "err-text");
         setDisconnectedUI();
       }
     }
