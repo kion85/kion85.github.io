@@ -4,377 +4,627 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>k85OS — Прошивальщик и Монитор</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #07090e;
-      --bg-card: rgba(15, 23, 42, 0.75);
-      --panel-2: #1e293b;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --accent: #3b82f6;
-      --accent-glow: rgba(59, 130, 246, 0.4);
-      --accent-2: #2563eb;
-      --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.4);
-      --danger: #ef4444;
-      --danger-glow: rgba(239, 68, 68, 0.4);
-      --warning: #f59e0b;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-accent: rgba(59, 130, 246, 0.3);
-      --radius: 16px;
-      --shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      --bg: #05070d;
+      --bg-elev: #0b1020;
+      --bg-card: #0e1428;
+      --bg-input: rgba(8, 12, 26, 0.9);
+      --text: #eef2f7;
+      --muted: #8b96ab;
+      --accent: #4f8cff;
+      --accent-2: #7c5cff;
+      --accent-glow: rgba(79, 140, 255, 0.35);
+      --success: #34d399;
+      --success-glow: rgba(52, 211, 153, 0.35);
+      --danger: #f87171;
+      --danger-glow: rgba(248, 113, 113, 0.3);
+      --warning: #fbbf24;
+      --purple: #a78bfa;
+      --border: rgba(148, 163, 184, 0.12);
+      --border-strong: rgba(148, 163, 184, 0.22);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      --sidebar-w: 260px;
     }
 
     * { box-sizing: border-box; }
-    
+
+    html, body { height: 100%; }
+
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-dark);
-      background-image: 
-        radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.15), transparent 70%),
-        radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.08), transparent 50%),
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-
-    .wrap { max-width: 1400px; margin: 0 auto; padding: 32px 24px 80px; }
-
-    /* Баннер */
-    .banner-container { width: 100%; display: flex; justify-content: center; margin-bottom: 24px; }
-    .banner-img {
-      max-width: 100%;
-      height: auto;
-      max-height: 280px;
-      object-fit: contain;
-      border-radius: var(--radius);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(59, 130, 246, 0.2);
-      border: 1px solid var(--border);
-    }
-
-    /* Вкладки */
-    .tabs {
+      line-height: 1.55;
       display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      background: rgba(15, 23, 42, 0.6);
-      padding: 6px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      backdrop-filter: blur(10px);
+      overflow: hidden;
     }
-    .tab-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 12px 20px;
-      border-radius: 8px;
-      transition: all 0.25s ease;
+
+    /* ═══════════ САЙДБАР ═══════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      height: 100vh;
+      background: linear-gradient(180deg, #080d1a 0%, #060910 100%);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px;
+      gap: 8px;
+      z-index: 50;
+    }
+    .brand {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
+      gap: 12px;
+      padding: 6px 10px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
     }
-    .tab-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
-    .tab-btn.active {
-      color: #fff;
+    .brand-logo {
+      width: 42px; height: 42px;
+      border-radius: 12px;
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 4px 15px var(--accent-glow);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.05rem; color: #fff;
+      box-shadow: 0 4px 18px var(--accent-glow);
+      flex-shrink: 0;
     }
-    .tab-content { display: none; animation: fadeIn 0.35s ease-out; }
-    .tab-content.active { display: block; }
+    .brand-name { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; }
+    .brand-sub { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+    .nav-btn {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    .nav-btn .nav-icon {
+      font-size: 1.15rem;
+      width: 26px; text-align: center;
+      flex-shrink: 0;
+    }
+    .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .nav-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(79,140,255,0.18), rgba(124,92,255,0.12));
+      border-color: rgba(79,140,255,0.3);
+    }
+    .nav-btn.active .nav-icon { filter: drop-shadow(0 0 6px var(--accent-glow)); }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ═══════════ ОСНОВНАЯ ОБЛАСТЬ ═══════════ */
+    .main {
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+    .main-inner { max-width: 1200px; margin: 0 auto; padding: 28px 32px 60px; }
+
+    /* Верхняя панель подключения */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(5, 7, 13, 0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .topbar-title { font-size: 1.05rem; font-weight: 700; }
+    .topbar-sub { font-size: 0.8rem; color: var(--muted); }
+
+    .connect-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    .status-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+    }
+    .dot.ok { background: var(--success); box-shadow: 0 0 10px var(--success); }
+    .dot.err { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+    .dot.busy { background: var(--warning); animation: pulse 1s infinite alternate; }
+    @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
+
+    .baud-mini {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 4px 6px 4px 14px;
+    }
+    .baud-mini label { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+    .baud-mini select {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+    .baud-mini select option { background: var(--bg-elev); }
+
+    /* ═══════════ СТРАНИЦЫ ═══════════ */
+    .page { display: none; animation: pageIn 0.35s ease-out; }
+    .page.active { display: block; }
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .hero {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      margin-bottom: 24px;
-      backdrop-filter: blur(12px);
-      width: 100%;
+    .page-hero { margin-bottom: 26px; }
+    .page-hero h1 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
     }
+    .page-hero p { margin: 0; color: var(--muted); font-size: 0.92rem; max-width: 640px; }
 
-    /* СЕТКА 50 / 50 */
-    .grid { display: grid; gap: 24px; width: 100%; grid-template-columns: 1fr; align-items: start; }
-    @media (min-width: 900px) {
+    .grid {
+      display: grid;
+      gap: 22px;
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    @media (min-width: 1000px) {
       .grid.two { grid-template-columns: 1fr 1fr; }
+      .grid-wide-left { grid-template-columns: 3fr 2fr; }
     }
 
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 22px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
       width: 100%;
-      box-sizing: border-box;
     }
-    .card h3 {
-      margin: 0 0 16px;
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #fff;
+    .card-header {
+      display: flex; align-items: center; gap: 12px;
+      margin: -22px -22px 18px;
+      padding: 16px 22px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 10px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: rgba(255,255,255,0.02);
+    }
+    .card-header .ch-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: rgba(79,140,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .card-header h2 { margin: 0; font-size: 1.05rem; font-weight: 700; }
+    .card-header p { margin: 0; font-size: 0.78rem; color: var(--muted); }
+
+    /* Главная страница */
+    .banner-container { display: flex; justify-content: center; margin-bottom: 24px; }
+    .banner-img {
+      max-width: 100%; max-height: 220px; object-fit: contain;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
     }
 
-    /* Видео */
-    .video-hero { padding: 0; overflow: hidden; margin-bottom: 24px; }
-    .video-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; max-height: 420px; }
-    .demo-video { width: 100%; height: 100%; object-fit: contain; }
-    .video-caption { padding: 16px 24px; background: rgba(15, 23, 42, 0.9); border-top: 1px solid var(--border); }
-    .video-caption strong { font-size: 1rem; color: #fff; display: block; }
-    .video-caption span { color: var(--muted); font-size: 0.88rem; }
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex; align-items: center; gap: 14px;
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: var(--border-strong); }
+    .stat-icon {
+      width: 40px; height: 40px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .stat-icon.blue { background: rgba(79,140,255,0.14); }
+    .stat-icon.green { background: rgba(52,211,153,0.14); }
+    .stat-icon.purple { background: rgba(167,139,250,0.14); }
+    .stat-icon.amber { background: rgba(251,191,36,0.14); }
+    .stat-value { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+    .stat-label { font-size: 0.76rem; color: var(--muted); }
 
     /* Кнопки */
     .btn {
       appearance: none;
       border: 1px solid transparent;
       cursor: pointer;
-      padding: 12px 18px;
-      border-radius: 10px;
+      padding: 11px 18px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
       font-weight: 600;
-      font-size: 0.92rem;
-      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      transition: all 0.18s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      white-space: nowrap;
     }
-    .btn:active:not(:disabled) { transform: translateY(1px); }
+    .btn:active:not(:disabled) { transform: translateY(1px) scale(0.99); }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(60%); }
-    
-    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 4px 12px var(--accent-glow); }
-    .btn-primary:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 6px 18px var(--accent-glow); }
-    
-    .btn-secondary { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
-    .btn-secondary:hover:not(:disabled) { filter: brightness(1.1); }
 
-    .btn-ghost { background: rgba(255, 255, 255, 0.05); color: var(--text); border-color: var(--border); }
-    .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
-    
-    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; box-shadow: 0 4px 12px var(--danger-glow); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 4px 16px var(--accent-glow); }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.12); box-shadow: 0 6px 22px var(--accent-glow); }
+    .btn-secondary { background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; box-shadow: 0 4px 16px rgba(167,139,250,0.3); }
+    .btn-secondary:hover:not(:disabled) { filter: brightness(1.12); }
+    .btn-ghost { background: rgba(255,255,255,0.05); color: var(--text); border-color: var(--border); }
+    .btn-ghost:hover:not(:disabled) { background: rgba(255,255,255,0.09); }
+    .btn-danger { background: linear-gradient(135deg, #f87171, #dc2626); color: #fff; box-shadow: 0 4px 16px var(--danger-glow); }
     .btn-danger:hover:not(:disabled) { filter: brightness(1.1); }
-    
-    .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 4px 12px var(--success-glow); }
+    .btn-success { background: linear-gradient(135deg, #34d399, #059669); color: #fff; box-shadow: 0 4px 16px var(--success-glow); }
     .btn-success:hover:not(:disabled) { filter: brightness(1.1); }
-    
     .btn-full { width: 100%; }
+    .btn-lg { padding: 14px 22px; font-size: 0.95rem; }
 
-    /* Поля ввода */
+    /* Поля */
     select, input[type="file"], input[type="text"] {
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border);
-      background: rgba(15, 23, 42, 0.85);
+      background: var(--bg-input);
       color: var(--text);
-      font-size: 0.92rem;
+      font-family: inherit;
+      font-size: 0.9rem;
       outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
     .field { margin-bottom: 16px; }
-    .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+    .field > label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
 
-    /* Кольцо прогресса */
-    .progress-circle-wrap {
+    /* Прошивка */
+    .partition-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .partition-item {
+      background: rgba(79,140,255,0.05);
+      border: 1px solid rgba(79,140,255,0.18);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+    }
+    .partition-item .p-name { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .partition-item .p-addr { font-family: "JetBrains Mono", monospace; font-size: 0.95rem; font-weight: 600; color: #7dd3fc; }
+    .partition-item .p-size { font-size: 0.75rem; color: var(--muted); }
+
+    .ota-slot-box {
+      background: linear-gradient(135deg, rgba(124,92,255,0.08), rgba(124,92,255,0.03));
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .ota-slot-box .ota-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; color: var(--purple);
+      font-weight: 700; margin-bottom: 10px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+
+    /* Прогресс */
+    .progress-section {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin: 24px 0;
-      position: relative;
+      padding: 8px 0 4px;
     }
-    .progress-circle { width: 190px; height: 190px; transform: rotate(-90deg); }
-    .progress-circle-bg { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 8; }
+    .progress-circle-wrap { position: relative; width: 180px; height: 180px; }
+    .progress-circle { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .progress-circle-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7; }
     .progress-circle-bar {
       fill: none;
       stroke: url(#gradient);
-      stroke-width: 8;
+      stroke-width: 7;
       stroke-linecap: round;
       transition: stroke-dashoffset 0.15s linear;
     }
     .progress-text-overlay {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 2px;
     }
-    .progress-addr { font-family: ui-monospace, monospace; font-size: 1.05rem; font-weight: 700; color: #38bdf8; }
-    .progress-mb { font-family: ui-monospace, monospace; font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+    .progress-addr { font-family: "JetBrains Mono", monospace; font-size: 0.95rem; font-weight: 700; color: #7dd3fc; }
+    .progress-mb { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; color: var(--muted); }
     .progress-pct {
-      font-size: 1.8rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #38bdf8, #10b981);
+      font-size: 1.7rem; font-weight: 800; line-height: 1;
+      background: linear-gradient(135deg, #7dd3fc, #34d399);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* Лог и Терминал */
     .log {
-      margin-top: 16px;
       background: #030712;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      font-family: ui-monospace, monospace;
-      font-size: 0.83rem;
-      color: #6EE7B7;
-      height: 140px;
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      color: #6ee7b7;
+      height: 150px;
       overflow-y: auto;
       white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    .err-text { color: var(--danger); }
+
+    /* Опасная зона */
+    .danger-zone {
+      margin-top: 20px;
+      padding: 16px;
+      border: 1px dashed rgba(248,113,113,0.35);
+      background: rgba(248,113,113,0.04);
+      border-radius: var(--radius);
+    }
+    .danger-zone h4 {
+      margin: 0 0 6px; font-size: 0.8rem;
+      color: #fca5a5; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .danger-zone p { margin: 0 0 12px; font-size: 0.8rem; color: var(--muted); }
+    .danger-zone .btn-row { display: flex; gap: 10px; }
+    .danger-zone .btn { flex: 1; }
+
+    /* Страница «О k85OS» */
+    .feature-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .feature-list li {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 0.87rem; color: var(--muted);
+    }
+    .feature-list li b { color: var(--text); font-weight: 600; }
+    .feature-list .f-check { color: var(--success); flex-shrink: 0; margin-top: 1px; }
+
+    .code-block {
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      color: #a5f3fc;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.55;
+    }
+
+    .quote-box {
+      border-left: 3px solid var(--accent);
+      background: rgba(79,140,255,0.05);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 14px 16px;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    /* Монитор */
+    .monitor-toolbar {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .cmd-help-box {
+      background: rgba(79,140,255,0.05);
+      border: 1px solid rgba(79,140,255,0.18);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+    .cmd-help-box strong { color: #fff; display: block; margin-bottom: 10px; font-size: 0.85rem; }
+    .cmd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px; }
+    .cmd-item {
+      font-size: 0.8rem; color: var(--muted);
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .cmd-item code {
+      background: rgba(79,140,255,0.15);
+      color: #7dd3fc;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
     }
 
     .monitor-terminal {
       background: #030712;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.85rem;
-      color: #e2e8f0;
-      height: 420px;
+      border-radius: var(--radius);
+      padding: 16px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.82rem;
+      color: #d7e0ea;
+      height: 46vh;
+      min-height: 320px;
       overflow-y: auto;
       white-space: pre-wrap;
       word-break: break-all;
-      margin-bottom: 16px;
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.9);
-      line-height: 1.45;
+      margin-bottom: 14px;
+      box-shadow: inset 0 2px 14px rgba(0,0,0,0.85);
+      line-height: 1.5;
     }
+    .log-I { color: #34d399; }
+    .log-W { color: #fbbf24; }
+    .log-E { color: #f87171; font-weight: bold; }
+    .log-D { color: #7dd3fc; }
+    .muted { color: var(--muted); }
+
     .monitor-controls { display: flex; gap: 10px; flex-wrap: wrap; }
-    .monitor-controls input { flex: 1; min-width: 200px; }
-
-    /* Цветной лог ESP-IDF */
-    .log-I { color: #10b981; }
-    .log-W { color: #f59e0b; }
-    .log-E { color: #ef4444; font-weight: bold; }
-    .log-D { color: #38bdf8; }
-
-    /* Оформление блоков k85OS */
-    .info-section { margin-bottom: 16px; }
-    .info-section h4 { margin: 0 0 6px; font-size: 0.95rem; color: #38bdf8; font-weight: 600; }
-    .info-section p { margin: 0 0 8px; font-size: 0.88rem; color: var(--muted); }
-    .info-section ul { margin: 0; padding-left: 18px; font-size: 0.85rem; color: var(--muted); }
-    .info-section li { margin-bottom: 4px; }
-    .code-block {
-      background: #030712;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-family: ui-monospace, monospace;
-      font-size: 0.8rem;
-      color: #a5f3fc;
-      overflow-x: auto;
-      white-space: pre;
-    }
-
-    /* Блок помощи по командам */
-    .cmd-help-box {
-      background: rgba(59, 130, 246, 0.05);
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      border-radius: 10px;
-      padding: 12px 16px;
-      margin-bottom: 16px;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .cmd-help-box strong { color: #fff; display: block; margin-bottom: 6px; }
-    .cmd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 6px; }
-    .cmd-item code { color: #38bdf8; background: rgba(0,0,0,0.3); }
-
-    /* Статусы */
-    .status { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; font-weight: 500; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
-    .dot.ok { background: var(--success); box-shadow: 0 0 10px var(--success); }
-    .dot.err { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
-    .dot.busy { background: var(--warning); animation: pulse 1s infinite alternate; }
-    @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
-
-    .warn { color: var(--warning); font-size: 0.85rem; }
-    .muted { color: var(--muted); font-size: 0.88rem; }
-    code { background: rgba(255, 255, 255, 0.08); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: ui-monospace, monospace; color: #38bdf8; }
-
-    .danger-zone {
-      margin-top: 24px;
-      padding: 16px;
-      border: 1px dashed rgba(239, 68, 68, 0.3);
-      background: rgba(239, 68, 68, 0.04);
-      border-radius: 12px;
-    }
-    .danger-zone h4 { margin: 0 0 8px; font-size: 0.88rem; color: #fca5a5; text-transform: uppercase; letter-spacing: 0.5px; border: none; padding: 0; }
-
-    .part-info {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
+    .monitor-controls input { flex: 1; min-width: 200px; font-family: "JetBrains Mono", monospace; }
 
     /* Модальное окно */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(3, 7, 18, 0.85);
+      background: rgba(3, 6, 12, 0.85);
       z-index: 1000;
       display: flex; justify-content: center; align-items: center;
       opacity: 0; visibility: hidden;
       transition: all 0.25s ease;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
     }
     .modal-overlay.active { opacity: 1; visibility: visible; }
     .modal-content {
-      background: #0b0f19;
-      border: 1px solid var(--border-accent);
-      border-radius: var(--radius);
-      padding: 24px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border-strong);
+      border-radius: 18px;
+      padding: 28px;
       max-width: 440px;
       width: 90%;
       display: flex; flex-direction: column; align-items: center; gap: 14px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+      transform: scale(0.95);
+      transition: transform 0.25s ease;
     }
-    .modal-img { max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; }
-    .modal-title { font-size: 1.25rem; font-weight: 700; margin: 0; color: #fff; }
-    .modal-msg { color: var(--muted); text-align: center; font-size: 0.95rem; margin: 0; }
-    .modal-actions { display: flex; gap: 10px; width: 100%; justify-content: center; margin-top: 8px; }
+    .modal-overlay.active .modal-content { transform: scale(1); }
+    .modal-img { max-width: 100%; max-height: 180px; border-radius: 10px; object-fit: contain; }
+    .modal-title { font-size: 1.3rem; font-weight: 800; margin: 0; }
+    .modal-msg { color: var(--muted); text-align: center; font-size: 0.92rem; margin: 0; }
+    .modal-actions { display: flex; gap: 10px; width: 100%; justify-content: center; margin-top: 6px; }
+
+    /* ═══════════ АДАПТИВ: мобильные ═══════════ */
+    .mobile-nav { display: none; }
+
+    @media (max-width: 860px) {
+      body { flex-direction: column; }
+      .sidebar { display: none; }
+      .main { height: auto; flex: none; }
+      .topbar { padding: 12px 16px; }
+      .main-inner { padding: 20px 16px 100px; }
+
+      .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        z-index: 60;
+        background: rgba(8, 12, 26, 0.95);
+        backdrop-filter: blur(16px);
+        border-top: 1px solid var(--border);
+        padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+        gap: 6px;
+      }
+      .mnav-btn {
+        flex: 1;
+        display: flex; flex-direction: column; align-items: center; gap: 3px;
+        background: transparent; border: none; cursor: pointer;
+        color: var(--muted);
+        font-family: inherit; font-size: 0.65rem; font-weight: 600;
+        padding: 7px 4px;
+        border-radius: 10px;
+        transition: all 0.2s;
+      }
+      .mnav-btn .mnav-icon { font-size: 1.25rem; }
+      .mnav-btn.active {
+        color: #fff;
+        background: rgba(79,140,255,0.15);
+      }
+    }
+
+    /* Скроллбары */
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.18); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,0.3); }
   </style>
 </head>
 <body>
-  <div class="wrap">
 
-    <div class="banner-container">
-      <img src="banner.png" alt="K85 OS Banner" class="banner-img">
+  <!-- ═══════════ САЙДБАР ═══════════ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">k85</div>
+      <div>
+        <div class="brand-name">k85OS</div>
+        <div class="brand-sub">Web Flasher</div>
+      </div>
     </div>
 
-    <!-- Верхняя панель -->
-    <div class="hero" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <button class="nav-btn active" data-page="page-home"><span class="nav-icon">🏠</span> Главная</button>
+    <button class="nav-btn" data-page="page-flash"><span class="nav-icon">⚡</span> Прошивка</button>
+    <button class="nav-btn" data-page="page-monitor"><span class="nav-icon">🖥️</span> Монитор</button>
+    <button class="nav-btn" data-page="page-about"><span class="nav-icon">📖</span> О k85OS</button>
+
+    <div class="sidebar-footer">ESP32-S3 · WebSerial<br>esptool-js v0.7.0</div>
+  </aside>
+
+  <!-- ═══════════ ОСНОВНАЯ ОБЛАСТЬ ═══════════ -->
+  <main class="main">
+    <div class="topbar">
       <div>
-        <h2 style="margin: 0 0 6px; font-size: 1.3rem; color: #fff;">Управление устройством</h2>
-        <div class="status">
-          <span class="dot" id="statusDot"></span>
-          <span id="statusText">Устройство не подключено</span>
-        </div>
+        <div class="topbar-title" id="pageTitle">Главная</div>
+        <div class="topbar-sub" id="pageSub">Добро пожаловать в k85OS Web Flasher</div>
       </div>
-      <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap: wrap;">
-        <div style="min-width:160px;">
-          <label for="baudSelect" style="display:block; font-size:0.8rem; color:var(--muted); margin-bottom:4px;">Скорость (Baudrate)</label>
+      <div class="connect-group">
+        <div class="status-pill">
+          <span class="dot" id="statusDot"></span>
+          <span id="statusText">Не подключено</span>
+        </div>
+        <div class="baud-mini">
+          <label>BAUD</label>
           <select id="baudSelect">
             <option value="115200" selected>115200</option>
             <option value="230400">230400</option>
@@ -384,214 +634,318 @@
             <option value="2000000">2000000</option>
           </select>
         </div>
-        <button class="btn btn-ghost" id="connectBtn">🔌 Подключить устройство</button>
+        <button class="btn btn-primary" id="connectBtn">🔌 Подключить</button>
       </div>
     </div>
 
-    <div class="tabs">
-      <button class="tab-btn active" data-target="tab-flash">⚡ Прошивка</button>
-      <button class="tab-btn" data-target="tab-monitor">🖥️ Монитор (Serial)</button>
-    </div>
+    <div class="main-inner">
 
-    <div id="tab-flash" class="tab-content active">
-
-      <section class="hero video-hero">
-        <div class="video-embed">
-          <video class="demo-video" src="https://github.com/kion85/k85OS/releases/download/video1/VID_20261108_181318.mp4" controls playsinline preload="metadata" muted loop>
-            Ваш браузер не поддерживает видео.
-          </video>
+      <!-- ═══ СТРАНИЦА: ГЛАВНАЯ ═══ -->
+      <div id="page-home" class="page active">
+        <div class="page-hero">
+          <h1>Управление устройством</h1>
+          <p>Прошивка, серийный монитор и справка по k85OS — всё в одном окне. Подключите устройство через USB и выберите раздел в меню слева.</p>
         </div>
-        <div class="video-caption">
-          <strong>🎬 Как перевести M5Stack в режим прошивки</strong>
-          <span>Зажмите и удерживайте кнопку Reset/G0, пока зелёный светодиод не замигает.</span>
-        </div>
-      </section>
 
-      <!-- СЕТКА 50 / 50 -->
-      <div class="grid two">
-        
-        <!-- ЛЕВАЯ ЧАСТЬ: ИНФОРМАЦИЯ О K85OS -->
+        <div class="banner-container">
+          <img src="banner.png" alt="K85 OS Banner" class="banner-img">
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-icon blue">🔌</div>
+            <div>
+              <div class="stat-value" id="statChip">—</div>
+              <div class="stat-label">Чип</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">📶</div>
+            <div>
+              <div class="stat-value" id="statBaud">—</div>
+              <div class="stat-label">Baudrate</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple">📦</div>
+            <div>
+              <div class="stat-value" id="statReleases">…</div>
+              <div class="stat-label">Релизов на GitHub</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon amber">🖥️</div>
+            <div>
+              <div class="stat-value">ESP32-S3</div>
+              <div class="stat-label">Целевая платформа</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <div class="card-header">
+              <div class="ch-icon">🎬</div>
+              <div>
+                <h2>Как перевести M5Stack в режим прошивки</h2>
+                <p>Обязательный шаг перед записью образа</p>
+              </div>
+            </div>
+            <div style="border-radius: var(--radius-sm); overflow: hidden; background: #000; aspect-ratio: 16/9;">
+              <video class="demo-video" src="https://github.com/kion85/k85OS/releases/download/video1/VID_20261108_181318.mp4" controls playsinline preload="metadata" muted loop style="width:100%; height:100%; object-fit:contain;">
+                Ваш браузер не поддерживает видео.
+              </video>
+            </div>
+            <p class="muted" style="margin: 14px 0 0; font-size: 0.85rem;">
+              Зажмите и удерживайте кнопку <b>Reset/G0</b>, пока зелёный светодиод не замигает.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="ch-icon">🗺️</div>
+              <div>
+                <h2>Разметка Flash</h2>
+                <p>Partition Table (ESP32-S3, 8 MB)</p>
+              </div>
+            </div>
+            <div class="partition-box">
+              <div class="partition-item">
+                <div class="p-name">OTA 0</div>
+                <div class="p-addr">0x20000</div>
+                <div class="p-size">2.5 МБ</div>
+              </div>
+              <div class="partition-item">
+                <div class="p-name">OTA 1</div>
+                <div class="p-addr">0x2A0000</div>
+                <div class="p-size">2.5 МБ</div>
+              </div>
+              <div class="partition-item">
+                <div class="p-name">LittleFS</div>
+                <div class="p-addr">0x520000</div>
+                <div class="p-size">2.875 МБ</div>
+              </div>
+            </div>
+            <p class="muted" style="margin: 6px 0 16px; font-size: 0.83rem;">
+              Полный образ прошивается на <b>0x0</b>. OTA-слоты используются для обновления прошивки без затирания загрузчика.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="btn btn-primary" data-goto="page-flash">⚡ Перейти к прошивке</button>
+              <button class="btn btn-ghost" data-goto="page-monitor">🖥️ Открыть монитор</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ СТРАНИЦА: ПРОШИВКА ═══ -->
+      <div id="page-flash" class="page">
+        <div class="page-hero">
+          <h1>Прошивка</h1>
+          <p>Выберите релиз с GitHub или загрузите локальный .bin-файл. Полный образ записывается на 0x0, обновления — в выбранный OTA-слот.</p>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <div class="card-header">
+              <div class="ch-icon">📥</div>
+              <div>
+                <h2>Источник прошивки</h2>
+                <p>GitHub Releases или локальный файл</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>⚙️ Релизы GitHub</label>
+              <select id="firmwareSelect">
+                <option value="">Загрузка списка релизов…</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>📁 Или локальный .bin</label>
+              <input type="file" id="localFile" accept=".bin,application/octet-stream">
+            </div>
+
+            <button class="btn btn-ghost btn-full" id="directDownloadBtn" style="margin-bottom: 16px;">
+              ⬇️ Скачать .bin браузером (запасной вариант)
+            </button>
+
+            <div style="border-top: 1px solid var(--border); padding-top: 16px;">
+              <button class="btn btn-primary btn-full btn-lg" id="flashBtn" disabled style="margin-bottom: 14px;">
+                ⬆️ Прошить полный образ (0x0)
+              </button>
+
+              <div class="ota-slot-box">
+                <div class="ota-label">📡 OTA-слот</div>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                  <select id="otaSlotSelect">
+                    <option value="0x20000">OTA 0 (Адрес: 0x20000)</option>
+                    <option value="0x2A0000">OTA 1 (Адрес: 0x2A0000)</option>
+                  </select>
+                </div>
+                <button class="btn btn-secondary btn-full" id="flashOtaBtn" disabled>
+                  Прошить выбранный OTA слот
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="ch-icon">📊</div>
+              <div>
+                <h2>Прогресс записи</h2>
+                <p>Адрес, объём и состояние</p>
+              </div>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-circle-wrap">
+                <svg class="progress-circle" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#7dd3fc" />
+                      <stop offset="100%" stop-color="#34d399" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
+                  <circle class="progress-circle-bar" id="progressCircleBar" cx="50" cy="50" r="45" stroke-dasharray="282.74" stroke-dashoffset="282.74"></circle>
+                </svg>
+                <div class="progress-text-overlay">
+                  <div class="progress-addr" id="progressAddr">0x00000000</div>
+                  <div class="progress-mb" id="progressMb">0.00 / 0.00 МБ</div>
+                  <div class="progress-pct" id="progressPct">0%</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="log" id="flashLog">Готов к работе.</div>
+
+            <div class="danger-zone">
+              <h4>⚠️ Очистка памяти устройства</h4>
+              <p>Сброс загрузочного региона или полная очистка чипа — необратимые операции.</p>
+              <div class="btn-row">
+                <button class="btn btn-danger" id="eraseBtn" disabled>🗑️ Сброс 0x10000</button>
+                <button class="btn btn-danger" id="eraseFullBtn" disabled>💥 Полный Erase</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ СТРАНИЦА: МОНИТОР ═══ -->
+      <div id="page-monitor" class="page">
+        <div class="page-hero">
+          <h1>Serial Monitor</h1>
+          <p>Консоль в стиле <b>idf.py monitor</b> с цветной подсветкой логов ESP-IDF и аппаратным сбросом по RTS/DTR.</p>
+        </div>
+
         <div class="card">
-          <h3>🚀 k85OS — Custom Firmware</h3>
-          
-          <div class="info-section">
-            <p>Custom firmware for M5Stack-family devices (ESP32-S3), written in C/C++ on ESP-IDF v5.3.1. Originally ported from an earlier MicroPython/UIFlow prototype into a modular ESP-IDF C++ codebase.</p>
+          <div class="cmd-help-box">
+            <strong>💡 Доступные системные команды (введите в строку ниже и нажмите Enter):</strong>
+            <div class="cmd-grid">
+              <div class="cmd-item"><code>help</code> — список команд терминала</div>
+              <div class="cmd-item"><code>free</code> — информация о свободной RAM</div>
+              <div class="cmd-item"><code>uptime</code> — время работы устройства</div>
+              <div class="cmd-item"><code>wifi</code> — статус Wi-Fi соединения</div>
+              <div class="cmd-item"><code>reboot</code> — перезагрузка контроллера</div>
+            </div>
           </div>
 
-          <div class="info-section">
-            <h4>🎯 Supported Targets</h4>
-            <p>ESP32-S3 (tested on ESP32-S3-PICO-1-N8R8, 8MB Flash + 8MB Octal PSRAM)</p>
+          <div class="monitor-toolbar">
+            <button class="btn btn-success" id="monitorStartBtn" disabled>▶️ Старт</button>
+            <button class="btn btn-danger" id="monitorStopBtn" disabled>⏹️ Стоп</button>
+            <button class="btn btn-ghost" id="monitorResetBtn" disabled title="Перезагрузить устройство по RTS/DTR">🔄 Hard Reset</button>
+            <button class="btn btn-ghost" id="monitorClearBtn">🧹 Очистить</button>
           </div>
 
-          <div class="info-section">
-            <h4>✨ Features</h4>
-            <ul>
-              <li><strong>Store (games):</strong> Puzzle (2048, Tetris), Arcade (Snake, Memory Match), Classic (Reaction test, Flappy, Balance), Pong</li>
-              <li><strong>Standalone apps:</strong> Cube (3D wireframe demo), Colors, Clock (NTP-aware with uptime fallback)</li>
-              <li><strong>Tools:</strong> WiFi Connect / Manager (3 saved networks), Terminal (Free RAM, Uptime, Reboot), Bluetooth Scan, I2C Scanner, GPIO Control, Files browser, Music Player, Melodies, Mic Test, Air Mouse (IMU cursor), Hotspot, Calculator</li>
-              <li><strong>Settings:</strong> Theme, battery mode, brightness, volume, boot style, cursor mode (IMU pointer), Desktop/OS mode (desktop + taskbar)</li>
+          <div class="monitor-terminal" id="monitorOutput">Ожидание подключения к устройству...</div>
+
+          <div class="monitor-controls">
+            <input type="text" id="monitorInput" placeholder="Введите команду и нажмите Enter..." autocomplete="off" spellcheck="false" disabled>
+            <button class="btn btn-primary" id="monitorSendBtn" disabled>Отправить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ СТРАНИЦА: О k85OS ═══ -->
+      <div id="page-about" class="page">
+        <div class="page-hero">
+          <h1>О k85OS</h1>
+          <p>Custom firmware for M5Stack-family devices (ESP32-S3), written in C/C++ on ESP-IDF v5.3.1.</p>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <div class="card-header">
+              <div class="ch-icon">✨</div>
+              <div>
+                <h2>Возможности</h2>
+                <p>Что входит в прошивку</p>
+              </div>
+            </div>
+            <ul class="feature-list">
+              <li><span class="f-check">✔</span><span><b>Store (игры):</b> Puzzle (2048, Tetris), Arcade (Snake, Memory Match), Classic (Reaction, Flappy, Balance), Pong</span></li>
+              <li><span class="f-check">✔</span><span><b>Отдельные приложения:</b> Cube (3D wireframe), Colors, Clock (NTP-aware with uptime fallback)</span></li>
+              <li><span class="f-check">✔</span><span><b>Инструменты:</b> WiFi Manager (3 сети), Terminal, Bluetooth Scan, I2C Scanner, GPIO Control, Files, Music Player, Melodies, Mic Test, Air Mouse (IMU), Hotspot, Calculator</span></li>
+              <li><span class="f-check">✔</span><span><b>Настройки:</b> тема, батарея, яркость, громкость, стиль загрузки, курсор (IMU), Desktop/OS mode</span></li>
+              <li><span class="f-check">✔</span><span><b>Темы (.thm):</b> plain-text, поля через <code>|</code> → <code>Name|Background|Text|Accent|Dark|Icon</code></span></li>
             </ul>
           </div>
 
-          <div class="info-section">
-            <h4>🎨 Theming (.thm files)</h4>
-            <p>UEFI/BIOS themes are plain-text <code>.thm</code> files (single line, fields separated by <code>|</code>):</p>
-            <div class="code-block">Name|Background|Text|Accent|Dark|Icon</div>
-          </div>
-
-          <div class="info-section">
-            <h4>📂 Project Structure</h4>
-            <div class="code-block">├── CMakeLists.txt
-├── partitions.csv
-├── sdkconfig.defaults
-└── main
-    ├── CMakeLists.txt
-    ├── k85os_idf.cpp   # entry point
-    ├── core/           # config, theme, input, power, boot, rtc/ntp
-    ├── ui/             # menu, list_menu, settings_menu
-    ├── net/            # wifi
-    ├── apps/           # games & tools
-    └── system/, steps/</div>
-          </div>
-
-          <div class="info-section">
-            <h4>🛠️ Build</h4>
-            <p>Requires ESP-IDF v5.3.1.</p>
+          <div class="card">
+            <div class="card-header">
+              <div class="ch-icon">🛠️</div>
+              <div>
+                <h2>Сборка из исходников</h2>
+                <p>Требуется ESP-IDF v5.3.1</p>
+              </div>
+            </div>
             <div class="code-block">idf.py set-target esp32s3
 idf.py build
 idf.py -p COM_PORT flash
 idf.py -p COM_PORT monitor</div>
-          </div>
 
-          <div class="info-section">
-            <h4>💬 FAQ & Notes</h4>
-            <p style="font-size:0.83rem; font-style: italic; color: #94a3b8;">
-              "Why doesn't this firmware have features like Bruce? I don't have any real desire for my firmware to be able to attack anyone, capture handshakes, and so on. What I actually want is for these sticks to have something like a PC-style OS... packed into a tiny microcontroller. Good luck to everyone, and I wish you all the very best in life!"
-            </p>
-          </div>
-        </div>
-
-        <!-- ПРАВАЯ ЧАСТЬ: ИНТЕРФЕЙС ПРОШИВКИ -->
-        <div class="card">
-          <h3>⚡ Прошивальщик</h3>
-
-          <div class="part-info">
-            <strong>Разметка Flash (Partition Table):</strong>
-            OTA 0: <code>0x20000</code> (2.5 МБ)<br>
-            OTA 1: <code>0x2A0000</code> (2.5 МБ)<br>
-            LittleFS: <code>0x520000</code> (2.875 МБ)
-          </div>
-
-          <div class="field">
-            <label for="firmwareSelect">Релизы GitHub</label>
-            <select id="firmwareSelect">
-              <option value="">Загрузка списка релизов…</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="localFile">Или выбрать файл прошивки вручную (.bin)</label>
-            <input type="file" id="localFile" accept=".bin,application/octet-stream">
-          </div>
-
-          <button class="btn btn-ghost btn-full" id="directDownloadBtn" style="margin-bottom: 12px;">
-            ⬇️ Скачать .bin браузером (запасной вариант)
-          </button>
-
-          <button class="btn btn-primary btn-full" id="flashBtn" disabled style="margin-bottom: 12px;">
-            ⬆️ Прошить (образ на 0x0)
-          </button>
-
-          <!-- БЛОК ПРОШИВКИ В OTA СЛОТ (0 или 1) -->
-          <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 10px; padding: 14px; margin-bottom: 16px;">
-            <label for="otaSlotSelect" style="display:block; font-size:0.85rem; color:#c084fc; margin-bottom:6px; font-weight: 600;">📡 Выбор OTA слота для прошивки</label>
-            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-              <select id="otaSlotSelect">
-                <option value="0x20000">OTA 0 (Адрес: 0x20000)</option>
-                <option value="0x2A0000">OTA 1 (Адрес: 0x2A0000)</option>
-              </select>
-            </div>
-            <button class="btn btn-secondary btn-full" id="flashOtaBtn" disabled>
-              📡 Прошить выбранный OTA слот (.bin)
-            </button>
-          </div>
-
-          <div class="progress-circle-wrap">
-            <svg class="progress-circle" viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#38bdf8" />
-                  <stop offset="100%" stop-color="#10b981" />
-                </linearGradient>
-              </defs>
-              <circle class="progress-circle-bg" cx="50" cy="50" r="45"></circle>
-              <circle class="progress-circle-bar" id="progressCircleBar" cx="50" cy="50" r="45" stroke-dasharray="282.74" stroke-dashoffset="282.74"></circle>
-            </svg>
-            <div class="progress-text-overlay">
-              <div class="progress-addr" id="progressAddr">0x00000000</div>
-              <div class="progress-mb" id="progressMb">0.00 / 0.00 МБ</div>
-              <div class="progress-pct" id="progressPct">0%</div>
-            </div>
-          </div>
-
-          <div class="log" id="flashLog">Готов к работе.</div>
-
-          <div class="danger-zone">
-            <h4>⚠️ Очистка памяти устройства</h4>
-            <p class="muted" style="margin:0 0 10px; font-size: 0.83rem;">
-              Вы можете сбросить загрузочный сектор или выполнить полную очистку памяти чипа.
-            </p>
-            <div style="display: flex; gap: 8px;">
-              <button class="btn btn-danger" id="eraseBtn" disabled style="flex: 1;">
-                🗑️ Сброс 0x10000
-              </button>
-              <button class="btn btn-danger" id="eraseFullBtn" disabled style="flex: 1;">
-                💥 Полный Erase
-              </button>
+            <div style="margin-top: 18px;">
+              <div class="card-header" style="margin: 0 -22px 14px;">
+                <div class="ch-icon">📂</div>
+                <div><h2 style="font-size:0.95rem;">Структура проекта</h2></div>
+              </div>
+              <div class="code-block">├── CMakeLists.txt
+├── partitions.csv
+├── sdkconfig.defaults
+└── main
+    ├── k85os_idf.cpp   # entry point
+    ├── core/           # config, theme, input, power, boot
+    ├── ui/             # menu, list_menu, settings_menu
+    ├── net/            # wifi
+    ├── apps/           # games & tools
+    └── system/, steps/</div>
             </div>
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- Вкладка Монитора -->
-    <div id="tab-monitor" class="tab-content">
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
-          <div>
-            <h3 style="margin:0; border:none; padding:0;">🖥️ Serial Monitor (ESP-IDF)</h3>
-            <p class="muted" style="margin: 2px 0 0;">Консоль <code>idf.py monitor</code> с поддержкой цветных логов и Reset по DTR/RTS.</p>
+        <div class="card" style="margin-top: 22px;">
+          <div class="card-header">
+            <div class="ch-icon">💬</div>
+            <div><h2>FAQ / Заметки автора</h2></div>
           </div>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn btn-ghost" id="monitorResetBtn" disabled title="Перезагрузить устройство по RTS/DTR">🔄 Hard Reset</button>
-            <button class="btn btn-ghost" id="monitorClearBtn">🧹 Очистить</button>
+          <div class="quote-box">
+            "Why doesn't this firmware have features like Bruce? I don't have any real desire for my firmware to be able to attack anyone, capture handshakes, and so on. What I actually want is for these sticks to have something like a PC-style OS... packed into a tiny microcontroller. Good luck to everyone, and I wish you all the very best in life!"
           </div>
-        </div>
-
-        <div class="cmd-help-box">
-          <strong>💡 Доступные системные команды (введите в строку ниже и нажмите Enter):</strong>
-          <div class="cmd-grid" style="margin-top: 6px;">
-            <div class="cmd-item"><code>help</code> — список команд терминала</div>
-            <div class="cmd-item"><code>free</code> — информация о свободной RAM</div>
-            <div class="cmd-item"><code>uptime</code> — время работы устройства</div>
-            <div class="cmd-item"><code>wifi</code> — статус Wi-Fi соединения</div>
-            <div class="cmd-item"><code>reboot</code> — перезагрузка контроллера</div>
-          </div>
-        </div>
-
-        <div class="monitor-terminal" id="monitorOutput">Ожидание подключения к устройству...</div>
-
-        <div class="monitor-controls">
-          <input type="text" id="monitorInput" placeholder="Введите команду и нажмите Enter..." disabled>
-          <button class="btn btn-primary" id="monitorSendBtn" disabled>Отправить</button>
-          <button class="btn btn-success" id="monitorStartBtn" disabled>▶️ Старт Монитора</button>
-          <button class="btn btn-danger" id="monitorStopBtn" disabled>⏹️ Стоп</button>
         </div>
       </div>
-    </div>
 
-  </div>
+    </div>
+  </main>
+
+  <!-- ═══ МОБИЛЬНАЯ НАВИГАЦИЯ ═══ -->
+  <nav class="mobile-nav">
+    <button class="mnav-btn active" data-page="page-home"><span class="mnav-icon">🏠</span>Главная</button>
+    <button class="mnav-btn" data-page="page-flash"><span class="mnav-icon">⚡</span>Прошивка</button>
+    <button class="mnav-btn" data-page="page-monitor"><span class="mnav-icon">🖥️</span>Монитор</button>
+    <button class="mnav-btn" data-page="page-about"><span class="mnav-icon">📖</span>О k85OS</button>
+  </nav>
 
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal-content">
@@ -603,13 +957,20 @@ idf.py -p COM_PORT monitor</div>
   </div>
 
   <script type="module">
-    import { ESPLoader, Transport } from "https://cdn.jsdelivr.net/npm/esptool-js@0.5.4/bundle.js";
+    import { ESPLoader, Transport } from "https://unpkg.com/esptool-js@0.7.0/bundle.js";
 
     const GITHUB_REPO = "kion85/k85OS";
     const RELEASES_API = `https://api.github.com/repos/${GITHUB_REPO}/releases`;
     const BOOT_REGION_OFFSET = 0x10000;
     const BOOT_REGION_SIZE   = 0x2000;
     const CIRCUMFERENCE = 282.74;
+
+    const PAGE_META = {
+      "page-home":    ["Главная", "Добро пожаловать в k85OS Web Flasher"],
+      "page-flash":   ["Прошивка", "Запись образа на 0x0 или в OTA-слот"],
+      "page-monitor": ["Монитор", "Serial-консоль устройства"],
+      "page-about":   ["О k85OS", "Возможности и сборка прошивки"],
+    };
 
     const $ = (id) => document.getElementById(id);
     const statusDot = $("statusDot"), statusText = $("statusText"), connectBtn = $("connectBtn");
@@ -624,30 +985,25 @@ idf.py -p COM_PORT monitor</div>
 
     let port = null, transport = null, loader = null, connected = false, releaseAssets = [];
     let monitorReader = null, monitorWriter = null, isMonitoring = false;
-    let textDecoderStream = null;
+    let textDecoderStream = null, pipePromise = null;
 
     function getBaud() { return Number(baudSelect.value) || 115200; }
     const terminal = { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) };
 
-    function u8ToBinaryString(u8) {
-      const CHUNK = 0x8000;
-      let out = "";
-      for (let i = 0; i < u8.length; i += CHUNK) {
-        out += String.fromCharCode.apply(null, u8.subarray(i, i + CHUNK));
-      }
-      return out;
+    function escapeHtml(s) {
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
     function logFlash(msg, cls = "") {
-      const line = document.createElement("div"); 
-      line.textContent = msg; 
+      const line = document.createElement("div");
+      line.textContent = msg;
       if (cls) line.className = cls;
-      flashLog.appendChild(line); 
+      flashLog.appendChild(line);
       flashLog.scrollTop = flashLog.scrollHeight;
     }
 
     function appendMonitorText(text) {
-      let formatted = text
+      let formatted = escapeHtml(text)
         .replace(/I \(([0-9]+)\)/g, '<span class="log-I">I ($1)</span>')
         .replace(/W \(([0-9]+)\)/g, '<span class="log-W">W ($1)</span>')
         .replace(/E \(([0-9]+)\)/g, '<span class="log-E">E ($1)</span>')
@@ -690,14 +1046,23 @@ idf.py -p COM_PORT monitor</div>
       progressCircleBar.style.strokeDashoffset = CIRCUMFERENCE - (p * CIRCUMFERENCE);
     }
 
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-        btn.classList.add("active");
-        $(btn.dataset.target).classList.add("active");
-      });
-    });
+    /* ─── Навигация ─── */
+    function gotoPage(pageId) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".nav-btn, .mnav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === pageId));
+      $(pageId).classList.add("active");
+      const [title, sub] = PAGE_META[pageId] || ["", ""];
+      $("pageTitle").textContent = title;
+      $("pageSub").textContent = sub;
+      document.querySelector(".main").scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.querySelectorAll(".nav-btn, .mnav-btn").forEach(btn =>
+      btn.addEventListener("click", () => gotoPage(btn.dataset.page))
+    );
+    document.querySelectorAll("[data-goto]").forEach(btn =>
+      btn.addEventListener("click", () => gotoPage(btn.dataset.goto))
+    );
 
     async function safeCloseRawPort() {
       if (!port) return;
@@ -758,6 +1123,7 @@ idf.py -p COM_PORT monitor</div>
             });
           }
         }
+        $("statReleases").textContent = releases.length;
         if (!releaseAssets.length) { firmwareSelect.innerHTML = `<option value="">Нет .bin-файлов</option>`; directDownloadBtn.disabled = true; return; }
         releaseAssets.forEach((a, i) => {
           const opt = document.createElement("option"); opt.value = String(i);
@@ -809,24 +1175,32 @@ idf.py -p COM_PORT monitor</div>
     });
 
     async function connectDevice() {
-      if (!("serial" in navigator)) return logFlash("WebSerial не поддерживается.", "err-text");
+      if (!("serial" in navigator)) return logFlash("WebSerial не поддерживается. Используйте Chrome/Edge/Opera по HTTPS или localhost.", "err-text");
       const baud = getBaud();
 
+      setStatus("Подключение…", "busy");
       try {
         logFlash(`Подключение (${baud} baud)…`);
         await safeCloseRawPort();
 
-        port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a }] });
+        port = await navigator.serial.requestPort({ filters: [
+          { usbVendorId: 0x303a },  // Espressif USB-Serial-JTAG
+          { usbVendorId: 0x10c4 },  // CP210x
+          { usbVendorId: 0x1a86 },  // CH340/CH9102
+          { usbVendorId: 0x0403 }   // FTDI
+        ]});
         transport = new Transport(port, true);
         loader = new ESPLoader({ transport, baudrate: baud, terminal });
 
         const chip = await loader.main();
         logFlash(`Успешно! Чип: ${chip}`);
         connected = true;
-        setStatus(`Подключено: ${chip} @ ${baud}`, "ok");
+        setStatus(`${chip} @ ${baud}`, "ok");
+        $("statChip").textContent = chip.replace("ESP32-", "");
+        $("statBaud").textContent = baud;
         setMonitorControls(true);
         connectBtn.textContent = "❌ Отключить";
-        updateFlashButton(); 
+        updateFlashButton();
         eraseBtn.disabled = false;
         eraseFullBtn.disabled = false;
       } catch (e) {
@@ -835,7 +1209,7 @@ idf.py -p COM_PORT monitor</div>
         transport = null; loader = null;
         setStatus("Ошибка подключения", "err");
         setMonitorControls(false);
-        updateFlashButton(); 
+        updateFlashButton();
         eraseBtn.disabled = true;
         eraseFullBtn.disabled = true;
       }
@@ -843,9 +1217,9 @@ idf.py -p COM_PORT monitor</div>
 
     function setDisconnectedUI() {
       connected = false; port = null; transport = null; loader = null;
-      setStatus("Устройство не подключено", "");
-      connectBtn.textContent = "🔌 Подключить устройство";
-      flashBtn.disabled = true; 
+      setStatus("Не подключено", "");
+      connectBtn.textContent = "🔌 Подключить";
+      flashBtn.disabled = true;
       flashOtaBtn.disabled = true;
       eraseBtn.disabled = true;
       eraseFullBtn.disabled = true;
@@ -860,8 +1234,7 @@ idf.py -p COM_PORT monitor</div>
       } else { connectDevice(); }
     });
 
-    // --- ОБЩАЯ ФУНКЦИЯ ПРОШИВКИ ---
-    async function executeFlash(targetAddress, buttonElement) {
+    async function executeFlash(targetAddress) {
       if (!connected || !loader) return logFlash("Подключите устройство.", "err-text");
 
       let firmwareData = null;
@@ -878,64 +1251,53 @@ idf.py -p COM_PORT monitor</div>
         }
       } catch (e) { return logFlash(`Ошибка файла: ${e.message}`, "err-text"); }
 
-      const binaryString = u8ToBinaryString(firmwareData);
-
       flashBtn.disabled = true; flashOtaBtn.disabled = true; connectBtn.disabled = true; eraseBtn.disabled = true; eraseFullBtn.disabled = true;
       logFlash(`Запись прошивки на адрес 0x${targetAddress.toString(16).toUpperCase()}...`);
-      resetProgress(targetAddress); 
+      resetProgress(targetAddress);
       updateProgress(0, firmwareData.length, targetAddress);
 
       try {
         await loader.writeFlash({
-          fileArray: [{ data: binaryString, address: targetAddress }],
+          fileArray: [{ data: firmwareData, address: targetAddress }],
           flashSize: "keep", flashMode: "keep", flashFreq: "keep", eraseAll: false, compress: true,
           reportProgress: (i, written, total) => updateProgress(written, total, targetAddress),
         });
-        logFlash("✅ Успешно прошито!", "muted");
-        await showModal('success', 'Готово!', `Прошивка записана на 0x${targetAddress.toString(16).toUpperCase()}. Нажмите Reset.`);
+        logFlash("✅ Успешно прошито! Перезагрузка устройства…", "muted");
+        try { await loader.after("hard_reset"); } catch {}
+        await showModal('success', 'Готово!', `Прошивка записана на 0x${targetAddress.toString(16).toUpperCase()} и устройство перезагружено.`);
       } catch (e) {
         logFlash(`❌ Ошибка: ${e.message}`, "err-text");
         await showModal('error', 'Ошибка', e.message);
       } finally {
-        flashBtn.disabled = false; flashOtaBtn.disabled = false; connectBtn.disabled = false; eraseBtn.disabled = false; eraseFullBtn.disabled = false;
+        connectBtn.disabled = false;
+        if (connected && loader) {
+          flashBtn.disabled = false; flashOtaBtn.disabled = false; eraseBtn.disabled = false; eraseFullBtn.disabled = false;
+        }
         updateFlashButton();
       }
     }
 
-    // Прошивка на 0x0
-    flashBtn.addEventListener("click", () => executeFlash(0x0, flashBtn));
+    flashBtn.addEventListener("click", () => executeFlash(0x0));
+    flashOtaBtn.addEventListener("click", () => executeFlash(Number(otaSlotSelect.value)));
 
-    // Прошивка в выбранный OTA слот
-    flashOtaBtn.addEventListener("click", () => {
-      const addr = Number(otaSlotSelect.value);
-      executeFlash(addr, flashOtaBtn);
-    });
-
-    // Сброс региона 0x10000
     eraseBtn.addEventListener("click", async () => {
       if (!connected || !loader) return;
       const ok = await showModal('warning', 'Сброс', 'Стереть регион 0x10000?');
       if (!ok) return;
 
       eraseBtn.disabled = true; eraseFullBtn.disabled = true;
-      logFlash("Стирание области bootloader (0x10000)...");
+      logFlash("Стирание региона 0x10000 (eraseRegion)...");
       try {
-        const emptyData = new Uint8Array(BOOT_REGION_SIZE);
-        emptyData.fill(0xFF);
-        await loader.writeFlash({
-          fileArray: [{ data: u8ToBinaryString(emptyData), address: BOOT_REGION_OFFSET }],
-          flashSize: "keep", flashMode: "keep", flashFreq: "keep", eraseAll: false, compress: false
-        });
-        logFlash("✅ Регион очищен (перезаписан 0xFF).", "muted");
+        await loader.eraseRegion(BOOT_REGION_OFFSET, BOOT_REGION_SIZE);
+        logFlash("✅ Регион стёрт.", "muted");
         await showModal('success', 'Успех', 'Регион сброшен.');
       } catch (e) {
         logFlash(`❌ Ошибка: ${e.message}`, "err-text");
       } finally {
-        eraseBtn.disabled = false; eraseFullBtn.disabled = false;
+        if (connected && loader) { eraseBtn.disabled = false; eraseFullBtn.disabled = false; }
       }
     });
 
-    // Полный Erase Flash
     eraseFullBtn.addEventListener("click", async () => {
       if (!connected || !loader) return;
       const ok = await showModal('warning', 'Полная очистка', 'Стереть всю память устройства?');
@@ -950,7 +1312,7 @@ idf.py -p COM_PORT monitor</div>
       } catch (e) {
         logFlash(`❌ Ошибка: ${e.message}`, "err-text");
       } finally {
-        eraseBtn.disabled = false; eraseFullBtn.disabled = false;
+        if (connected && loader) { eraseBtn.disabled = false; eraseFullBtn.disabled = false; }
       }
     });
 
@@ -964,7 +1326,7 @@ idf.py -p COM_PORT monitor</div>
     firmwareSelect.addEventListener("change", updateFlashButton);
     localFileInput.addEventListener("change", updateFlashButton);
 
-    // --- МОНИТОР ---
+    /* ─── Монитор ─── */
     monitorStartBtn.addEventListener("click", async () => {
       if (!port || isMonitoring) return;
       const baud = getBaud();
@@ -977,15 +1339,16 @@ idf.py -p COM_PORT monitor</div>
         await port.setSignals({ dataTerminalReady: false, requestToSend: false });
 
         textDecoderStream = new TextDecoderStream();
-        port.readable.pipeTo(textDecoderStream.writable);
-        
+        pipePromise = port.readable.pipeTo(textDecoderStream.writable).catch(() => {});
+
         monitorReader = textDecoderStream.readable.getReader();
         monitorWriter = port.writable.getWriter();
 
         isMonitoring = true;
-        monitorStartBtn.disabled = true; 
+        monitorStartBtn.disabled = true;
         monitorStopBtn.disabled = false;
         monitorOutput.innerHTML = `<span class="muted">--- Монитор запущен @ ${baud} baud ---</span>\n`;
+        setStatus(`Монитор активен @ ${baud}`, "busy");
 
         while (isMonitoring) {
           try {
@@ -1014,18 +1377,19 @@ idf.py -p COM_PORT monitor</div>
         monitorWriter = null;
       }
 
-      monitorStartBtn.disabled = true; 
+      monitorStartBtn.disabled = true;
       monitorStopBtn.disabled = true;
       appendMonitorText("\n--- Монитор остановлен ---\n");
 
       try {
+        if (pipePromise) { await pipePromise.catch(() => {}); pipePromise = null; }
         if (port && (port.readable || port.writable)) await port.close();
         if (port && port.readable === null && port.writable === null) {
           transport = new Transport(port, true);
           loader = new ESPLoader({ transport, baudrate: getBaud(), terminal });
           await loader.main();
-          monitorStartBtn.disabled = false; 
-          monitorInput.disabled = false; 
+          monitorStartBtn.disabled = false;
+          monitorInput.disabled = false;
           monitorSendBtn.disabled = false;
           setStatus("Подключено (сессия восстановлена)", "ok");
         }
@@ -1049,17 +1413,17 @@ idf.py -p COM_PORT monitor</div>
 
     monitorSendBtn.addEventListener("click", async () => {
       if (!monitorWriter) return;
-      const text = monitorInput.value; 
+      const text = monitorInput.value;
       if (!text) return;
-      try { 
-        await monitorWriter.write(new TextEncoder().encode(text + "\r\n")); 
-        appendMonitorText(`\n>> ${text}\n`); 
-        monitorInput.value = ""; 
+      try {
+        await monitorWriter.write(new TextEncoder().encode(text + "\r\n"));
+        appendMonitorText(`\n>> ${text}\n`);
+        monitorInput.value = "";
       } catch (e) {}
     });
 
-    monitorInput.addEventListener("keypress", (e) => { 
-      if (e.key === "Enter") monitorSendBtn.click(); 
+    monitorInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") monitorSendBtn.click();
     });
 
     loadReleases();
