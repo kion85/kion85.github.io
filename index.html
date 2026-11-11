@@ -9,267 +9,70 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #05070d;
-      --bg-elev: #0b1020;
-      --bg-card: #0e1428;
-      --bg-input: rgba(8, 12, 26, 0.9);
-      --text: #eef2f7;
-      --muted: #8b96ab;
-      --accent: #4f8cff;
-      --accent-2: #7c5cff;
-      --accent-glow: rgba(79, 140, 255, 0.35);
-      --success: #34d399;
-      --success-glow: rgba(52, 211, 153, 0.35);
-      --danger: #f87171;
-      --danger-glow: rgba(248, 113, 113, 0.3);
-      --warning: #fbbf24;
-      --purple: #a78bfa;
-      --border: rgba(148, 163, 184, 0.12);
-      --border-strong: rgba(148, 163, 184, 0.22);
-      --radius: 14px;
-      --radius-sm: 10px;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-      --sidebar-w: 260px;
+      --bg: #05070d; --bg-elev: #0b1020; --bg-card: #0e1428; --bg-input: rgba(8, 12, 26, 0.9);
+      --text: #eef2f7; --muted: #8b96ab; --accent: #4f8cff; --accent-2: #7c5cff;
+      --accent-glow: rgba(79, 140, 255, 0.35); --success: #34d399; --success-glow: rgba(52, 211, 153, 0.35);
+      --danger: #f87171; --danger-glow: rgba(248, 113, 113, 0.3); --warning: #fbbf24; --purple: #a78bfa;
+      --border: rgba(148, 163, 184, 0.12); --border-strong: rgba(148, 163, 184, 0.22);
+      --radius: 14px; --radius-sm: 10px; --shadow: 0 10px 30px rgba(0, 0, 0, 0.45); --sidebar-w: 260px;
     }
-
     * { box-sizing: border-box; }
-
     html, body { height: 100%; }
-
-    body {
-      margin: 0;
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.55;
-      display: flex;
-      overflow: hidden;
-    }
+    body { margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; display: flex; overflow: hidden; }
 
     /* ═══════════ САЙДБАР ═══════════ */
-    .sidebar {
-      width: var(--sidebar-w);
-      min-width: var(--sidebar-w);
-      height: 100vh;
-      background: linear-gradient(180deg, #080d1a 0%, #060910 100%);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      padding: 20px 14px;
-      gap: 8px;
-      z-index: 50;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 6px 10px 20px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 12px;
-    }
-    .brand-logo {
-      width: 42px; height: 42px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 1.05rem; color: #fff;
-      box-shadow: 0 4px 18px var(--accent-glow);
-      flex-shrink: 0;
-    }
+    .sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); height: 100vh; background: linear-gradient(180deg, #080d1a 0%, #060910 100%); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 14px; gap: 8px; z-index: 50; }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 6px 10px 20px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+    .brand-logo { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.05rem; color: #fff; box-shadow: 0 4px 18px var(--accent-glow); flex-shrink: 0; }
     .brand-name { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; }
     .brand-sub { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
-
-    .nav-btn {
-      display: flex; align-items: center; gap: 12px;
-      width: 100%;
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--muted);
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 600;
-      padding: 12px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: left;
-    }
-    .nav-btn .nav-icon {
-      font-size: 1.15rem;
-      width: 26px; text-align: center;
-      flex-shrink: 0;
-    }
+    .nav-btn { display: flex; align-items: center; gap: 12px; width: 100%; background: transparent; border: 1px solid transparent; color: var(--muted); font-family: inherit; font-size: 0.95rem; font-weight: 600; padding: 12px 14px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; text-align: left; }
+    .nav-btn .nav-icon { font-size: 1.15rem; width: 26px; text-align: center; flex-shrink: 0; }
     .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-    .nav-btn.active {
-      color: #fff;
-      background: linear-gradient(135deg, rgba(79,140,255,0.18), rgba(124,92,255,0.12));
-      border-color: rgba(79,140,255,0.3);
-    }
+    .nav-btn.active { color: #fff; background: linear-gradient(135deg, rgba(79,140,255,0.18), rgba(124,92,255,0.12)); border-color: rgba(79,140,255,0.3); }
     .nav-btn.active .nav-icon { filter: drop-shadow(0 0 6px var(--accent-glow)); }
-
-    .sidebar-footer {
-      margin-top: auto;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-align: center;
-    }
+    .sidebar-footer { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted); text-align: center; }
 
     /* ═══════════ ОСНОВНАЯ ОБЛАСТЬ ═══════════ */
-    .main {
-      flex: 1;
-      height: 100vh;
-      overflow-y: auto;
-      padding: 0;
-      scroll-behavior: smooth;
-    }
+    .main { flex: 1; height: 100vh; overflow-y: auto; padding: 0; scroll-behavior: smooth; }
     .main-inner { max-width: 1200px; margin: 0 auto; padding: 28px 32px 60px; }
-
-    /* Верхняя панель подключения */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      background: rgba(5, 7, 13, 0.82);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
+    .topbar { position: sticky; top: 0; z-index: 40; background: rgba(5, 7, 13, 0.82); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
     .topbar-title { font-size: 1.05rem; font-weight: 700; }
     .topbar-sub { font-size: 0.8rem; color: var(--muted); }
-
     .connect-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-    .status-pill {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 14px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 99px;
-      font-size: 0.82rem;
-      color: var(--muted);
-      font-weight: 500;
-    }
-    .dot {
-      width: 9px; height: 9px; border-radius: 50%;
-      background: var(--muted);
-      flex-shrink: 0;
-    }
+    .status-pill { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 99px; font-size: 0.82rem; color: var(--muted); font-weight: 500; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
     .dot.ok { background: var(--success); box-shadow: 0 0 10px var(--success); }
     .dot.err { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
     .dot.busy { background: var(--warning); animation: pulse 1s infinite alternate; }
     @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
-
-    .baud-mini {
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 99px;
-      padding: 4px 6px 4px 14px;
-    }
+    .baud-mini { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 99px; padding: 4px 6px 4px 14px; }
     .baud-mini label { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
-    .baud-mini select {
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-weight: 600;
-      font-size: 0.85rem;
-      padding: 4px;
-      outline: none;
-      cursor: pointer;
-    }
+    .baud-mini select { background: transparent; border: none; color: var(--text); font-weight: 600; font-size: 0.85rem; padding: 4px; outline: none; cursor: pointer; width: auto; }
     .baud-mini select option { background: var(--bg-elev); }
 
     /* ═══════════ СТРАНИЦЫ ═══════════ */
     .page { display: none; animation: pageIn 0.35s ease-out; }
     .page.active { display: block; }
-    @keyframes pageIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    @keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     .page-hero { margin-bottom: 26px; }
-    .page-hero h1 {
-      margin: 0 0 6px;
-      font-size: 1.6rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-    }
+    .page-hero h1 { margin: 0 0 6px; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; }
     .page-hero p { margin: 0; color: var(--muted); font-size: 0.92rem; max-width: 640px; }
-
-    .grid {
-      display: grid;
-      gap: 22px;
-      grid-template-columns: 1fr;
-      align-items: start;
-    }
-    @media (min-width: 1000px) {
-      .grid.two { grid-template-columns: 1fr 1fr; }
-      .grid-wide-left { grid-template-columns: 3fr 2fr; }
-    }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px;
-      box-shadow: var(--shadow);
-      width: 100%;
-    }
-    .card-header {
-      display: flex; align-items: center; gap: 12px;
-      margin: -22px -22px 18px;
-      padding: 16px 22px;
-      border-bottom: 1px solid var(--border);
-      border-radius: var(--radius) var(--radius) 0 0;
-      background: rgba(255,255,255,0.02);
-    }
-    .card-header .ch-icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: rgba(79,140,255,0.12);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
+    .grid { display: grid; gap: 22px; grid-template-columns: 1fr; align-items: start; }
+    @media (min-width: 1000px) { .grid.two { grid-template-columns: 1fr 1fr; } .grid-wide-left { grid-template-columns: 3fr 2fr; } }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); width: 100%; }
+    .card-header { display: flex; align-items: center; gap: 12px; margin: -22px -22px 18px; padding: 16px 22px; border-bottom: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; background: rgba(255,255,255,0.02); }
+    .card-header .ch-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(79,140,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
     .card-header h2 { margin: 0; font-size: 1.05rem; font-weight: 700; }
     .card-header p { margin: 0; font-size: 0.78rem; color: var(--muted); }
 
-    /* Главная страница */
+    /* Главная */
     .banner-container { display: flex; justify-content: center; margin-bottom: 24px; }
-    .banner-img {
-      max-width: 100%; max-height: 220px; object-fit: contain;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
-
-    .stat-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px 18px;
-      display: flex; align-items: center; gap: 14px;
-      transition: border-color 0.2s;
-    }
+    .banner-img { max-width: 100%; max-height: 220px; object-fit: contain; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; display: flex; align-items: center; gap: 14px; transition: border-color 0.2s; }
     .stat-card:hover { border-color: var(--border-strong); }
-    .stat-icon {
-      width: 40px; height: 40px; border-radius: 11px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; flex-shrink: 0;
-    }
+    .stat-icon { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
     .stat-icon.blue { background: rgba(79,140,255,0.14); }
     .stat-icon.green { background: rgba(52,211,153,0.14); }
     .stat-icon.purple { background: rgba(167,139,250,0.14); }
@@ -278,25 +81,9 @@
     .stat-label { font-size: 0.76rem; color: var(--muted); }
 
     /* Кнопки */
-    .btn {
-      appearance: none;
-      border: 1px solid transparent;
-      cursor: pointer;
-      padding: 11px 18px;
-      border-radius: var(--radius-sm);
-      font-family: inherit;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.18s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      white-space: nowrap;
-    }
+    .btn { appearance: none; border: 1px solid transparent; cursor: pointer; padding: 11px 18px; border-radius: var(--radius-sm); font-family: inherit; font-weight: 600; font-size: 0.9rem; transition: all 0.18s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; text-decoration: none; }
     .btn:active:not(:disabled) { transform: translateY(1px) scale(0.99); }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(60%); }
-
     .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 4px 16px var(--accent-glow); }
     .btn-primary:hover:not(:disabled) { filter: brightness(1.12); box-shadow: 0 6px 22px var(--accent-glow); }
     .btn-secondary { background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; box-shadow: 0 4px 16px rgba(167,139,250,0.3); }
@@ -307,239 +94,109 @@
     .btn-danger:hover:not(:disabled) { filter: brightness(1.1); }
     .btn-success { background: linear-gradient(135deg, #34d399, #059669); color: #fff; box-shadow: 0 4px 16px var(--success-glow); }
     .btn-success:hover:not(:disabled) { filter: brightness(1.1); }
+    .btn-warn { background: linear-gradient(135deg, #fbbf24, #d97706); color: #1a1202; box-shadow: 0 4px 16px rgba(251,191,36,0.3); }
+    .btn-warn:hover:not(:disabled) { filter: brightness(1.1); }
     .btn-full { width: 100%; }
     .btn-lg { padding: 14px 22px; font-size: 0.95rem; }
+    .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
 
     /* Поля */
-    select, input[type="file"], input[type="text"] {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--bg-input);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
+    select, input[type="file"], input[type="text"] { width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-input); color: var(--text); font-family: inherit; font-size: 0.9rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
     select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
     .field { margin-bottom: 16px; }
-    .field > label {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.8rem; font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 7px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
+    .field > label { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.04em; }
 
     /* Прошивка */
-    .partition-box {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-    .partition-item {
-      background: rgba(79,140,255,0.05);
-      border: 1px solid rgba(79,140,255,0.18);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-    }
+    .partition-box { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px; }
+    .partition-item { background: rgba(79,140,255,0.05); border: 1px solid rgba(79,140,255,0.18); border-radius: var(--radius-sm); padding: 10px 14px; }
     .partition-item .p-name { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
     .partition-item .p-addr { font-family: "JetBrains Mono", monospace; font-size: 0.95rem; font-weight: 600; color: #7dd3fc; }
     .partition-item .p-size { font-size: 0.75rem; color: var(--muted); }
-
-    .ota-slot-box {
-      background: linear-gradient(135deg, rgba(124,92,255,0.08), rgba(124,92,255,0.03));
-      border: 1px solid rgba(167,139,250,0.25);
-      border-radius: var(--radius);
-      padding: 16px;
-    }
-    .ota-slot-box .ota-label {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.82rem; color: var(--purple);
-      font-weight: 700; margin-bottom: 10px;
-      text-transform: uppercase; letter-spacing: 0.04em;
-    }
+    .ota-slot-box { background: linear-gradient(135deg, rgba(124,92,255,0.08), rgba(124,92,255,0.03)); border: 1px solid rgba(167,139,250,0.25); border-radius: var(--radius); padding: 16px; }
+    .ota-slot-box .ota-label { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--purple); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .boot-box { margin-top: 14px; background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,191,36,0.02)); border: 1px solid rgba(251,191,36,0.28); border-radius: var(--radius); padding: 16px; }
+    .boot-box .boot-label { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--warning); font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .boot-box p { margin: 0 0 12px; font-size: 0.8rem; color: var(--muted); }
 
     /* Прогресс */
-    .progress-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 8px 0 4px;
-    }
+    .progress-section { display: flex; flex-direction: column; align-items: center; padding: 8px 0 4px; }
     .progress-circle-wrap { position: relative; width: 180px; height: 180px; }
     .progress-circle { width: 100%; height: 100%; transform: rotate(-90deg); }
     .progress-circle-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7; }
-    .progress-circle-bar {
-      fill: none;
-      stroke: url(#gradient);
-      stroke-width: 7;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 0.15s linear;
-    }
-    .progress-text-overlay {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 2px;
-    }
+    .progress-circle-bar { fill: none; stroke: url(#gradient); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset 0.15s linear; }
+    .progress-text-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
     .progress-addr { font-family: "JetBrains Mono", monospace; font-size: 0.95rem; font-weight: 700; color: #7dd3fc; }
     .progress-mb { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; color: var(--muted); }
-    .progress-pct {
-      font-size: 1.7rem; font-weight: 800; line-height: 1;
-      background: linear-gradient(135deg, #7dd3fc, #34d399);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .log {
-      background: #030712;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      color: #6ee7b7;
-      height: 150px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
+    .progress-pct { font-size: 1.7rem; font-weight: 800; line-height: 1; background: linear-gradient(135deg, #7dd3fc, #34d399); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .log { background: #030712; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; font-family: "JetBrains Mono", monospace; font-size: 0.78rem; color: #6ee7b7; height: 150px; overflow-y: auto; white-space: pre-wrap; line-height: 1.5; }
     .err-text { color: var(--danger); }
-
-    /* Опасная зона */
-    .danger-zone {
-      margin-top: 20px;
-      padding: 16px;
-      border: 1px dashed rgba(248,113,113,0.35);
-      background: rgba(248,113,113,0.04);
-      border-radius: var(--radius);
-    }
-    .danger-zone h4 {
-      margin: 0 0 6px; font-size: 0.8rem;
-      color: #fca5a5; text-transform: uppercase; letter-spacing: 0.06em;
-    }
+    .danger-zone { margin-top: 20px; padding: 16px; border: 1px dashed rgba(248,113,113,0.35); background: rgba(248,113,113,0.04); border-radius: var(--radius); }
+    .danger-zone h4 { margin: 0 0 6px; font-size: 0.8rem; color: #fca5a5; text-transform: uppercase; letter-spacing: 0.06em; }
     .danger-zone p { margin: 0 0 12px; font-size: 0.8rem; color: var(--muted); }
     .danger-zone .btn-row { display: flex; gap: 10px; }
     .danger-zone .btn { flex: 1; }
 
-    /* Страница «О k85OS» */
+    /* О k85OS */
     .feature-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .feature-list li {
-      display: flex; gap: 10px; align-items: flex-start;
-      font-size: 0.87rem; color: var(--muted);
-    }
+    .feature-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 0.87rem; color: var(--muted); }
     .feature-list li b { color: var(--text); font-weight: 600; }
     .feature-list .f-check { color: var(--success); flex-shrink: 0; margin-top: 1px; }
-
-    .code-block {
-      background: #030712;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      color: #a5f3fc;
-      overflow-x: auto;
-      white-space: pre;
-      line-height: 1.55;
-    }
-
-    .quote-box {
-      border-left: 3px solid var(--accent);
-      background: rgba(79,140,255,0.05);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      padding: 14px 16px;
-      font-size: 0.85rem;
-      font-style: italic;
-      color: var(--muted);
-    }
+    .code-block { background: #030712; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; font-family: "JetBrains Mono", monospace; font-size: 0.78rem; color: #a5f3fc; overflow-x: auto; white-space: pre; line-height: 1.55; }
+    .quote-box { border-left: 3px solid var(--accent); background: rgba(79,140,255,0.05); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 14px 16px; font-size: 0.85rem; font-style: italic; color: var(--muted); }
 
     /* Монитор */
-    .monitor-toolbar {
-      display: flex; gap: 8px; flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-    .cmd-help-box {
-      background: rgba(79,140,255,0.05);
-      border: 1px solid rgba(79,140,255,0.18);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      margin-bottom: 16px;
-    }
+    .monitor-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .cmd-help-box { background: rgba(79,140,255,0.05); border: 1px solid rgba(79,140,255,0.18); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
     .cmd-help-box strong { color: #fff; display: block; margin-bottom: 10px; font-size: 0.85rem; }
     .cmd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px; }
-    .cmd-item {
-      font-size: 0.8rem; color: var(--muted);
-      background: rgba(0,0,0,0.25);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
-    }
-    .cmd-item code {
-      background: rgba(79,140,255,0.15);
-      color: #7dd3fc;
-      padding: 2px 8px;
-      border-radius: 5px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      font-weight: 600;
-    }
-
-    .monitor-terminal {
-      background: #030712;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.82rem;
-      color: #d7e0ea;
-      height: 46vh;
-      min-height: 320px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-      margin-bottom: 14px;
-      box-shadow: inset 0 2px 14px rgba(0,0,0,0.85);
-      line-height: 1.5;
-    }
-    .log-I { color: #34d399; }
-    .log-W { color: #fbbf24; }
-    .log-E { color: #f87171; font-weight: bold; }
-    .log-D { color: #7dd3fc; }
+    .cmd-item { font-size: 0.8rem; color: var(--muted); background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+    .cmd-item code { background: rgba(79,140,255,0.15); color: #7dd3fc; padding: 2px 8px; border-radius: 5px; font-family: "JetBrains Mono", monospace; font-size: 0.78rem; font-weight: 600; }
+    .monitor-terminal { background: #030712; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; font-family: "JetBrains Mono", monospace; font-size: 0.82rem; color: #d7e0ea; height: 46vh; min-height: 320px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; margin-bottom: 14px; box-shadow: inset 0 2px 14px rgba(0,0,0,0.85); line-height: 1.5; }
+    .log-I { color: #34d399; } .log-W { color: #fbbf24; } .log-E { color: #f87171; font-weight: bold; } .log-D { color: #7dd3fc; }
     .muted { color: var(--muted); }
-
     .monitor-controls { display: flex; gap: 10px; flex-wrap: wrap; }
     .monitor-controls input { flex: 1; min-width: 200px; font-family: "JetBrains Mono", monospace; }
 
+    /* ═══════════ СПИСОК ПРОШИВОК (как GitHub Releases) ═══════════ */
+    .rel-toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+    .rel-toolbar input { flex: 1; min-width: 220px; }
+    .rel-list { display: flex; flex-direction: column; gap: 22px; }
+    .rel-card { display: grid; grid-template-columns: 190px 1fr; gap: 22px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+    .rel-side { font-size: 0.82rem; color: var(--muted); display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+    .rel-tag { display: inline-flex; align-items: center; gap: 6px; font-family: "JetBrains Mono", monospace; font-size: 0.95rem; font-weight: 700; color: #7dd3fc; }
+    .rel-date { font-size: 0.8rem; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border: 1px solid transparent; }
+    .badge.latest { background: rgba(52,211,153,0.14); color: var(--success); border-color: rgba(52,211,153,0.35); }
+    .badge.pre { background: rgba(251,191,36,0.14); color: var(--warning); border-color: rgba(251,191,36,0.35); }
+    .badge.draft { background: rgba(148,163,184,0.14); color: var(--muted); border-color: var(--border-strong); }
+    .rel-title { margin: 0 0 4px; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
+    .rel-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 14px; display: flex; gap: 14px; flex-wrap: wrap; }
+    .rel-meta b { color: var(--text); font-weight: 600; }
+    .rel-notes { margin-bottom: 14px; }
+    .rel-notes summary { cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--accent); }
+    .rel-notes pre { margin: 10px 0 0; padding: 12px 14px; background: #030712; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: "JetBrains Mono", monospace; font-size: 0.76rem; color: #c7d2e0; white-space: pre-wrap; word-break: break-word; max-height: 260px; overflow-y: auto; }
+    .asset-box { border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .asset-head { padding: 10px 14px; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); }
+    .asset { display: grid; grid-template-columns: 26px 1fr auto auto auto; gap: 12px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 0.86rem; }
+    .asset:last-child { border-bottom: none; }
+    .asset:hover { background: rgba(255,255,255,0.025); }
+    .a-name { color: #7dd3fc; font-weight: 600; text-decoration: none; word-break: break-all; font-family: "JetBrains Mono", monospace; font-size: 0.8rem; }
+    .a-name:hover { text-decoration: underline; }
+    .a-size, .a-dl { color: var(--muted); font-size: 0.78rem; white-space: nowrap; font-family: "JetBrains Mono", monospace; }
+    .a-acts { display: flex; gap: 6px; }
+    .asset.src .a-name { color: var(--text); font-family: inherit; font-size: 0.85rem; }
+    .rel-empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+    @media (max-width: 860px) {
+      .rel-card { grid-template-columns: 1fr; gap: 14px; }
+      .rel-side { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 10px; }
+      .asset { grid-template-columns: 26px 1fr; }
+      .asset .a-size, .asset .a-dl, .asset .a-acts { grid-column: 2; }
+    }
+
     /* Модальное окно */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(3, 6, 12, 0.85);
-      z-index: 1000;
-      display: flex; justify-content: center; align-items: center;
-      opacity: 0; visibility: hidden;
-      transition: all 0.25s ease;
-      backdrop-filter: blur(8px);
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(3, 6, 12, 0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.25s ease; backdrop-filter: blur(8px); }
     .modal-overlay.active { opacity: 1; visibility: visible; }
-    .modal-content {
-      background: var(--bg-elev);
-      border: 1px solid var(--border-strong);
-      border-radius: 18px;
-      padding: 28px;
-      max-width: 440px;
-      width: 90%;
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
-      transform: scale(0.95);
-      transition: transform 0.25s ease;
-    }
+    .modal-content { background: var(--bg-elev); border: 1px solid var(--border-strong); border-radius: 18px; padding: 28px; max-width: 440px; width: 90%; display: flex; flex-direction: column; align-items: center; gap: 14px; box-shadow: 0 24px 60px rgba(0,0,0,0.8); transform: scale(0.95); transition: transform 0.25s ease; }
     .modal-overlay.active .modal-content { transform: scale(1); }
     .modal-img { max-width: 100%; max-height: 180px; border-radius: 10px; object-fit: contain; }
     .modal-title { font-size: 1.3rem; font-weight: 800; margin: 0; }
@@ -548,40 +205,16 @@
 
     /* ═══════════ АДАПТИВ: мобильные ═══════════ */
     .mobile-nav { display: none; }
-
     @media (max-width: 860px) {
       body { flex-direction: column; }
       .sidebar { display: none; }
       .main { height: auto; flex: none; }
       .topbar { padding: 12px 16px; }
       .main-inner { padding: 20px 16px 100px; }
-
-      .mobile-nav {
-        display: flex;
-        position: fixed;
-        bottom: 0; left: 0; right: 0;
-        z-index: 60;
-        background: rgba(8, 12, 26, 0.95);
-        backdrop-filter: blur(16px);
-        border-top: 1px solid var(--border);
-        padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
-        gap: 6px;
-      }
-      .mnav-btn {
-        flex: 1;
-        display: flex; flex-direction: column; align-items: center; gap: 3px;
-        background: transparent; border: none; cursor: pointer;
-        color: var(--muted);
-        font-family: inherit; font-size: 0.65rem; font-weight: 600;
-        padding: 7px 4px;
-        border-radius: 10px;
-        transition: all 0.2s;
-      }
+      .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 60; background: rgba(8, 12, 26, 0.95); backdrop-filter: blur(16px); border-top: 1px solid var(--border); padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); gap: 6px; }
+      .mnav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; background: transparent; border: none; cursor: pointer; color: var(--muted); font-family: inherit; font-size: 0.65rem; font-weight: 600; padding: 7px 4px; border-radius: 10px; transition: all 0.2s; }
       .mnav-btn .mnav-icon { font-size: 1.25rem; }
-      .mnav-btn.active {
-        color: #fff;
-        background: rgba(79,140,255,0.15);
-      }
+      .mnav-btn.active { color: #fff; background: rgba(79,140,255,0.15); }
     }
 
     /* Скроллбары */
@@ -605,6 +238,7 @@
 
     <button class="nav-btn active" data-page="page-home"><span class="nav-icon">🏠</span> Главная</button>
     <button class="nav-btn" data-page="page-flash"><span class="nav-icon">⚡</span> Прошивка</button>
+    <button class="nav-btn" data-page="page-releases"><span class="nav-icon">📦</span> Firmware список</button>
     <button class="nav-btn" data-page="page-monitor"><span class="nav-icon">🖥️</span> Монитор</button>
     <button class="nav-btn" data-page="page-about"><span class="nav-icon">📖</span> О k85OS</button>
 
@@ -731,6 +365,7 @@
             </p>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
               <button class="btn btn-primary" data-goto="page-flash">⚡ Перейти к прошивке</button>
+              <button class="btn btn-ghost" data-goto="page-releases">📦 Список прошивок</button>
               <button class="btn btn-ghost" data-goto="page-monitor">🖥️ Открыть монитор</button>
             </div>
           </div>
@@ -787,6 +422,17 @@
                   Прошить выбранный OTA слот
                 </button>
               </div>
+
+              <div class="boot-box">
+                <div class="boot-label">🥾 2-stage bootloader</div>
+                <p>Записывается на <b>0x0</b> (до 32 КБ). Если файл не выбран, берётся последний .bin с «bootloader» в имени из релизов GitHub.</p>
+                <div class="field" style="margin-bottom: 10px;">
+                  <input type="file" id="bootFile" accept=".bin,application/octet-stream">
+                </div>
+                <button class="btn btn-warn btn-full" id="flashBootBtn" disabled>
+                  🥾 Прошить 2-stage bootloader (0x0)
+                </button>
+              </div>
             </div>
           </div>
 
@@ -830,6 +476,43 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- ═══ СТРАНИЦА: FIRMWARE СПИСОК ═══ -->
+      <div id="page-releases" class="page">
+        <div class="page-hero">
+          <h1>Firmware список</h1>
+          <p>Все релизы репозитория <b>kion85/k85OS</b>: версии, файлы с размерами, количество скачиваний и исходники — как на странице GitHub Releases.</p>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-icon purple">🏷️</div>
+            <div><div class="stat-value" id="relStatCount">—</div><div class="stat-label">Версий</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">📄</div>
+            <div><div class="stat-value" id="relStatFiles">—</div><div class="stat-label">Файлов</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">💾</div>
+            <div><div class="stat-value" id="relStatSize">—</div><div class="stat-label">Общий размер</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon amber">⬇️</div>
+            <div><div class="stat-value" id="relStatDl">—</div><div class="stat-label">Скачиваний</div></div>
+          </div>
+        </div>
+
+        <div class="rel-toolbar">
+          <input type="text" id="relSearch" placeholder="Поиск по версии или имени файла…" autocomplete="off" spellcheck="false">
+          <button class="btn btn-ghost" id="relRefreshBtn">🔄 Обновить</button>
+          <a class="btn btn-ghost" href="https://github.com/kion85/k85OS" target="_blank" rel="noopener">🐙 Репозиторий</a>
+        </div>
+
+        <div class="rel-list" id="relList">
+          <div class="rel-empty">Загрузка списка релизов…</div>
         </div>
       </div>
 
@@ -943,6 +626,7 @@ idf.py -p COM_PORT monitor</div>
   <nav class="mobile-nav">
     <button class="mnav-btn active" data-page="page-home"><span class="mnav-icon">🏠</span>Главная</button>
     <button class="mnav-btn" data-page="page-flash"><span class="mnav-icon">⚡</span>Прошивка</button>
+    <button class="mnav-btn" data-page="page-releases"><span class="mnav-icon">📦</span>Firmware</button>
     <button class="mnav-btn" data-page="page-monitor"><span class="mnav-icon">🖥️</span>Монитор</button>
     <button class="mnav-btn" data-page="page-about"><span class="mnav-icon">📖</span>О k85OS</button>
   </nav>
@@ -960,30 +644,35 @@ idf.py -p COM_PORT monitor</div>
     import { ESPLoader, Transport } from "https://unpkg.com/esptool-js@0.7.0/bundle.js";
 
     const GITHUB_REPO = "kion85/k85OS";
-    const RELEASES_API = `https://api.github.com/repos/${GITHUB_REPO}/releases`;
+    const RELEASES_API = `https://api.github.com/repos/${GITHUB_REPO}/releases?per_page=100`;
     const BOOT_REGION_OFFSET = 0x10000;
     const BOOT_REGION_SIZE   = 0x2000;
+    const BOOTLOADER_ADDR    = 0x0;
+    const BOOTLOADER_MAX     = 0x8000; // 2nd stage bootloader: 0x0..0x8000 (partition table лежит на 0x8000)
     const CIRCUMFERENCE = 282.74;
 
     const PAGE_META = {
-      "page-home":    ["Главная", "Добро пожаловать в k85OS Web Flasher"],
-      "page-flash":   ["Прошивка", "Запись образа на 0x0 или в OTA-слот"],
-      "page-monitor": ["Монитор", "Serial-консоль устройства"],
-      "page-about":   ["О k85OS", "Возможности и сборка прошивки"],
+      "page-home":     ["Главная", "Добро пожаловать в k85OS Web Flasher"],
+      "page-flash":    ["Прошивка", "Запись образа на 0x0, в OTA-слот или bootloader"],
+      "page-releases": ["Firmware список", "Релизы, файлы и исходники с GitHub"],
+      "page-monitor":  ["Монитор", "Serial-консоль устройства"],
+      "page-about":    ["О k85OS", "Возможности и сборка прошивки"],
     };
 
     const $ = (id) => document.getElementById(id);
     const statusDot = $("statusDot"), statusText = $("statusText"), connectBtn = $("connectBtn");
     const baudSelect = $("baudSelect");
     const flashBtn = $("flashBtn"), flashOtaBtn = $("flashOtaBtn"), otaSlotSelect = $("otaSlotSelect");
+    const flashBootBtn = $("flashBootBtn"), bootFileInput = $("bootFile");
     const eraseBtn = $("eraseBtn"), eraseFullBtn = $("eraseFullBtn"), firmwareSelect = $("firmwareSelect"), localFileInput = $("localFile");
     const directDownloadBtn = $("directDownloadBtn");
     const flashLog = $("flashLog");
     const progressCircleBar = $("progressCircleBar"), progressAddr = $("progressAddr"), progressMb = $("progressMb"), progressPct = $("progressPct");
     const monitorOutput = $("monitorOutput"), monitorInput = $("monitorInput"), monitorSendBtn = $("monitorSendBtn"), monitorStartBtn = $("monitorStartBtn"), monitorStopBtn = $("monitorStopBtn"), monitorClearBtn = $("monitorClearBtn"), monitorResetBtn = $("monitorResetBtn");
     const modalOverlay = $("modalOverlay"), modalImg = $("modalImg"), modalTitle = $("modalTitle"), modalMsg = $("modalMsg"), modalActions = $("modalActions");
+    const relList = $("relList"), relSearch = $("relSearch"), relRefreshBtn = $("relRefreshBtn");
 
-    let port = null, transport = null, loader = null, connected = false, releaseAssets = [];
+    let port = null, transport = null, loader = null, connected = false, releaseAssets = [], allReleases = [];
     let monitorReader = null, monitorWriter = null, isMonitoring = false;
     let textDecoderStream = null, pipePromise = null;
 
@@ -991,7 +680,19 @@ idf.py -p COM_PORT monitor</div>
     const terminal = { clean() {}, writeLine: (d) => logFlash(d), write: (d) => logFlash(d) };
 
     function escapeHtml(s) {
-      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function fmtSize(bytes) {
+      if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(2) + " МБ";
+      if (bytes >= 1024) return (bytes / 1024).toFixed(1) + " КБ";
+      return bytes + " Б";
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return "—";
+      const d = new Date(iso);
+      return isNaN(d) ? "—" : d.toLocaleDateString("ru-RU", { day: "2-digit", month: "long", year: "numeric" });
     }
 
     function logFlash(msg, cls = "") {
@@ -1106,10 +807,14 @@ idf.py -p COM_PORT monitor</div>
       });
     }
 
+    /* ─── Релизы GitHub ─── */
     async function loadReleases() {
+      relList.innerHTML = `<div class="rel-empty">Загрузка списка релизов…</div>`;
       try {
         const res = await fetch(RELEASES_API, { headers: { Accept: "application/vnd.github+json" } });
         const releases = await res.json();
+        if (!res.ok || !Array.isArray(releases)) throw new Error(releases?.message || `HTTP ${res.status}`);
+        allReleases = releases;
         releaseAssets = []; firmwareSelect.innerHTML = "";
 
         for (const rel of releases) {
@@ -1117,6 +822,7 @@ idf.py -p COM_PORT monitor</div>
           for (const asset of bins) {
             releaseAssets.push({
               label: `${rel.tag_name || rel.name} — ${asset.name}`,
+              name: asset.name,
               url: asset.browser_download_url,
               assetId: asset.id,
               size: asset.size
@@ -1124,7 +830,9 @@ idf.py -p COM_PORT monitor</div>
           }
         }
         $("statReleases").textContent = releases.length;
-        if (!releaseAssets.length) { firmwareSelect.innerHTML = `<option value="">Нет .bin-файлов</option>`; directDownloadBtn.disabled = true; return; }
+        renderReleases();
+
+        if (!releaseAssets.length) { firmwareSelect.innerHTML = `<option value="">Нет .bin-файлов</option>`; directDownloadBtn.disabled = true; updateFlashButton(); return; }
         releaseAssets.forEach((a, i) => {
           const opt = document.createElement("option"); opt.value = String(i);
           opt.textContent = `[${(a.size/1024/1024).toFixed(2)} МБ] ${a.label}`;
@@ -1135,8 +843,107 @@ idf.py -p COM_PORT monitor</div>
       } catch (e) {
         firmwareSelect.innerHTML = `<option value="">Ошибка загрузки релизов: ${e.message}</option>`;
         directDownloadBtn.disabled = true;
+        relList.innerHTML = `<div class="rel-empty">❌ Не удалось загрузить релизы: ${escapeHtml(e.message)}<br>Возможно, превышен лимит GitHub API — попробуйте позже.</div>`;
+        updateFlashButton();
       }
     }
+
+    function renderReleases() {
+      const q = relSearch.value.trim().toLowerCase();
+
+      // Общая статистика (по всем релизам, без учёта поиска)
+      let files = 0, size = 0, dl = 0;
+      for (const r of allReleases) for (const a of (r.assets || [])) { files++; size += a.size || 0; dl += a.download_count || 0; }
+      $("relStatCount").textContent = allReleases.length;
+      $("relStatFiles").textContent = files;
+      $("relStatSize").textContent = fmtSize(size);
+      $("relStatDl").textContent = dl;
+
+      const latestId = allReleases.find(r => !r.prerelease && !r.draft)?.id;
+      const filtered = allReleases.filter(r => {
+        if (!q) return true;
+        const hay = [r.tag_name, r.name, ...(r.assets || []).map(a => a.name)].join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+
+      if (!filtered.length) {
+        relList.innerHTML = `<div class="rel-empty">${allReleases.length ? "Ничего не найдено." : "Релизов пока нет."}</div>`;
+        return;
+      }
+
+      relList.innerHTML = filtered.map(rel => {
+        const tag = rel.tag_name || "";
+        const assets = rel.assets || [];
+        const totalSize = assets.reduce((s, a) => s + (a.size || 0), 0);
+        const totalDl = assets.reduce((s, a) => s + (a.download_count || 0), 0);
+        const badges = [
+          rel.id === latestId ? `<span class="badge latest">Latest</span>` : "",
+          rel.prerelease ? `<span class="badge pre">Pre-release</span>` : "",
+          rel.draft ? `<span class="badge draft">Draft</span>` : ""
+        ].join("");
+
+        const assetRows = assets.map(a => {
+          const isBin = a.name.toLowerCase().endsWith(".bin");
+          const isBoot = /bootloader/i.test(a.name);
+          return `<div class="asset">
+            <span>${isBin ? "💾" : "📄"}</span>
+            <a class="a-name" href="${escapeHtml(a.browser_download_url)}" target="_blank" rel="noopener">${escapeHtml(a.name)}</a>
+            <span class="a-size">${fmtSize(a.size || 0)}</span>
+            <span class="a-dl" title="Скачиваний">⬇ ${a.download_count || 0}</span>
+            <span class="a-acts">
+              ${isBin && !isBoot ? `<button class="btn btn-ghost btn-sm" data-pick="${a.id}">⚡ В прошивку</button>` : ""}
+              <a class="btn btn-ghost btn-sm" href="${escapeHtml(a.browser_download_url)}" target="_blank" rel="noopener">Скачать</a>
+            </span>
+          </div>`;
+        }).join("");
+
+        const zip = `https://github.com/${GITHUB_REPO}/archive/refs/tags/${encodeURIComponent(tag)}.zip`;
+        const tgz = `https://github.com/${GITHUB_REPO}/archive/refs/tags/${encodeURIComponent(tag)}.tar.gz`;
+        const srcRows = tag ? `
+          <div class="asset src"><span>🗜️</span><a class="a-name" href="${zip}" target="_blank" rel="noopener">Source code (zip)</a><span class="a-size">исходники</span><span></span><span class="a-acts"><a class="btn btn-ghost btn-sm" href="${zip}" target="_blank" rel="noopener">Скачать</a></span></div>
+          <div class="asset src"><span>🗜️</span><a class="a-name" href="${tgz}" target="_blank" rel="noopener">Source code (tar.gz)</a><span class="a-size">исходники</span><span></span><span class="a-acts"><a class="btn btn-ghost btn-sm" href="${tgz}" target="_blank" rel="noopener">Скачать</a></span></div>` : "";
+
+        const notes = (rel.body || "").trim();
+
+        return `<article class="rel-card">
+          <div class="rel-side">
+            <span class="rel-tag">🏷️ ${escapeHtml(tag)}</span>
+            <span class="rel-date">${fmtDate(rel.published_at || rel.created_at)}</span>
+            <span>${badges}</span>
+          </div>
+          <div>
+            <h3 class="rel-title">${escapeHtml(rel.name || tag)}</h3>
+            <div class="rel-meta">
+              <span>Файлов: <b>${assets.length}</b></span>
+              <span>Размер: <b>${fmtSize(totalSize)}</b></span>
+              <span>Скачиваний: <b>${totalDl}</b></span>
+              <a href="${escapeHtml(rel.html_url)}" target="_blank" rel="noopener" style="color: var(--accent);">Открыть на GitHub ↗</a>
+            </div>
+            ${notes ? `<details class="rel-notes"><summary>Описание релиза</summary><pre>${escapeHtml(notes)}</pre></details>` : ""}
+            <div class="asset-box">
+              <div class="asset-head">Assets (${assets.length + (tag ? 2 : 0)})</div>
+              ${assetRows}${srcRows}
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    relSearch.addEventListener("input", renderReleases);
+    relRefreshBtn.addEventListener("click", loadReleases);
+
+    // «В прошивку» из списка → выбрать файл на странице прошивки
+    relList.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-pick]");
+      if (!btn) return;
+      const idx = releaseAssets.findIndex(a => String(a.assetId) === btn.dataset.pick);
+      if (idx < 0) return;
+      localFileInput.value = "";
+      firmwareSelect.value = String(idx);
+      updateFlashButton();
+      gotoPage("page-flash");
+      logFlash(`Выбрано из списка: ${releaseAssets[idx].label}`);
+    });
 
     async function downloadFirmware(asset) {
       const attempts = [
@@ -1221,6 +1028,7 @@ idf.py -p COM_PORT monitor</div>
       connectBtn.textContent = "🔌 Подключить";
       flashBtn.disabled = true;
       flashOtaBtn.disabled = true;
+      flashBootBtn.disabled = true;
       eraseBtn.disabled = true;
       eraseFullBtn.disabled = true;
       setMonitorControls(false);
@@ -1233,6 +1041,40 @@ idf.py -p COM_PORT monitor</div>
         setDisconnectedUI();
       } else { connectDevice(); }
     });
+
+    function lockFlashUI() {
+      flashBtn.disabled = true; flashOtaBtn.disabled = true; flashBootBtn.disabled = true;
+      connectBtn.disabled = true; eraseBtn.disabled = true; eraseFullBtn.disabled = true;
+    }
+    function unlockFlashUI() {
+      connectBtn.disabled = false;
+      if (connected && loader) { eraseBtn.disabled = false; eraseFullBtn.disabled = false; }
+      updateFlashButton();
+    }
+
+    // Общая запись: data — Uint8Array, targetAddress — адрес во flash
+    async function writeImage(data, targetAddress, doneMsg) {
+      lockFlashUI();
+      logFlash(`Запись на адрес 0x${targetAddress.toString(16).toUpperCase()} (${fmtSize(data.length)})...`);
+      resetProgress(targetAddress);
+      updateProgress(0, data.length, targetAddress);
+
+      try {
+        await loader.writeFlash({
+          fileArray: [{ data, address: targetAddress }],
+          flashSize: "keep", flashMode: "keep", flashFreq: "keep", eraseAll: false, compress: true,
+          reportProgress: (i, written, total) => updateProgress(written, total, targetAddress),
+        });
+        logFlash("✅ Успешно прошито! Перезагрузка устройства…", "muted");
+        try { await loader.after("hard_reset"); } catch {}
+        await showModal('success', 'Готово!', doneMsg);
+      } catch (e) {
+        logFlash(`❌ Ошибка: ${e.message}`, "err-text");
+        await showModal('error', 'Ошибка', e.message);
+      } finally {
+        unlockFlashUI();
+      }
+    }
 
     async function executeFlash(targetAddress) {
       if (!connected || !loader) return logFlash("Подключите устройство.", "err-text");
@@ -1251,34 +1093,46 @@ idf.py -p COM_PORT monitor</div>
         }
       } catch (e) { return logFlash(`Ошибка файла: ${e.message}`, "err-text"); }
 
-      flashBtn.disabled = true; flashOtaBtn.disabled = true; connectBtn.disabled = true; eraseBtn.disabled = true; eraseFullBtn.disabled = true;
-      logFlash(`Запись прошивки на адрес 0x${targetAddress.toString(16).toUpperCase()}...`);
-      resetProgress(targetAddress);
-      updateProgress(0, firmwareData.length, targetAddress);
+      await writeImage(firmwareData, targetAddress, `Прошивка записана на 0x${targetAddress.toString(16).toUpperCase()} и устройство перезагружено.`);
+    }
 
+    // 2-stage bootloader → 0x0
+    async function flashBootloader() {
+      if (!connected || !loader) return logFlash("Подключите устройство.", "err-text");
+
+      let data = null;
       try {
-        await loader.writeFlash({
-          fileArray: [{ data: firmwareData, address: targetAddress }],
-          flashSize: "keep", flashMode: "keep", flashFreq: "keep", eraseAll: false, compress: true,
-          reportProgress: (i, written, total) => updateProgress(written, total, targetAddress),
-        });
-        logFlash("✅ Успешно прошито! Перезагрузка устройства…", "muted");
-        try { await loader.after("hard_reset"); } catch {}
-        await showModal('success', 'Готово!', `Прошивка записана на 0x${targetAddress.toString(16).toUpperCase()} и устройство перезагружено.`);
-      } catch (e) {
-        logFlash(`❌ Ошибка: ${e.message}`, "err-text");
-        await showModal('error', 'Ошибка', e.message);
-      } finally {
-        connectBtn.disabled = false;
-        if (connected && loader) {
-          flashBtn.disabled = false; flashOtaBtn.disabled = false; eraseBtn.disabled = false; eraseFullBtn.disabled = false;
+        const manual = bootFileInput.files?.[0];
+        if (manual) {
+          data = new Uint8Array(await manual.arrayBuffer());
+          logFlash(`Bootloader (файл): ${manual.name}, ${fmtSize(data.length)}`);
+        } else {
+          const asset = releaseAssets.find(a => /bootloader/i.test(a.name));
+          if (!asset) return logFlash("Выберите bootloader.bin или добавьте файл с «bootloader» в имени в релиз GitHub.", "err-text");
+          logFlash(`Bootloader из релиза: ${asset.label}`);
+          data = await downloadFirmware(asset);
         }
-        updateFlashButton();
+      } catch (e) { return logFlash(`Ошибка файла: ${e.message}`, "err-text"); }
+
+      if (data.length > BOOTLOADER_MAX) {
+        const msg = `Файл ${fmtSize(data.length)} больше 32 КБ — это не 2nd-stage bootloader (похоже на полный образ). Запись отменена.`;
+        logFlash(`❌ ${msg}`, "err-text");
+        return showModal('error', 'Не bootloader', msg);
       }
+      if (data[0] !== 0xE9) {
+        logFlash("❌ Нет сигнатуры 0xE9 в начале файла — это не образ ESP.", "err-text");
+        return showModal('error', 'Неверный файл', 'Файл не начинается с 0xE9 (магический байт образа ESP).');
+      }
+
+      const ok = await showModal('warning', 'Прошить bootloader?', `Будет перезаписан 2-stage bootloader на 0x0 (${fmtSize(data.length)}). При неверном файле устройство перестанет загружаться, придётся прошивать по USB заново.`);
+      if (!ok) return;
+
+      await writeImage(data, BOOTLOADER_ADDR, `2-stage bootloader записан на 0x0 (${fmtSize(data.length)}), устройство перезагружено.`);
     }
 
     flashBtn.addEventListener("click", () => executeFlash(0x0));
     flashOtaBtn.addEventListener("click", () => executeFlash(Number(otaSlotSelect.value)));
+    flashBootBtn.addEventListener("click", flashBootloader);
 
     eraseBtn.addEventListener("click", async () => {
       if (!connected || !loader) return;
@@ -1322,9 +1176,14 @@ idf.py -p COM_PORT monitor</div>
       const canFlash = connected && (hasManual || hasRelease);
       flashBtn.disabled = !canFlash;
       flashOtaBtn.disabled = !canFlash;
+
+      const hasBootManual = !!bootFileInput.files?.length;
+      const hasBootRelease = releaseAssets.some(a => /bootloader/i.test(a.name));
+      flashBootBtn.disabled = !(connected && (hasBootManual || hasBootRelease));
     }
     firmwareSelect.addEventListener("change", updateFlashButton);
     localFileInput.addEventListener("change", updateFlashButton);
+    bootFileInput.addEventListener("change", updateFlashButton);
 
     /* ─── Монитор ─── */
     monitorStartBtn.addEventListener("click", async () => {
@@ -1392,6 +1251,7 @@ idf.py -p COM_PORT monitor</div>
           monitorInput.disabled = false;
           monitorSendBtn.disabled = false;
           setStatus("Подключено (сессия восстановлена)", "ok");
+          updateFlashButton();
         }
       } catch (e) {
         setMonitorControls(false);
